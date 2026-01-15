@@ -9,10 +9,8 @@
           "CPU",
           "拉檔"
         ],
-        "actual": [
-          "CM causing VCORE increase"
-        ],
-        "passed": true
+        "actual": [],
+        "passed": false
       },
       {
         "name": "VCORE Issue Detection",
@@ -53,7 +51,7 @@
         "name": "VCORE Issue Detection",
         "expected": "VCORE 725mV 29.32% exceeds 10%",
         "actual": [
-          "VCORE 725mV usage"
+          "High VCORE usage"
         ],
         "passed": true
       },
@@ -96,10 +94,8 @@
       {
         "name": "DDR Pattern Detection",
         "expected": "{'DDR5460': 23.37, 'DDR6370': 30.77, 'total': 54.14}",
-        "actual": [
-          "Total DDR usage"
-        ],
-        "passed": true
+        "actual": [],
+        "passed": false
       },
       {
         "name": "MMDVFS Handling",
