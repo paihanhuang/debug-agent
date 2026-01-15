@@ -32,8 +32,8 @@ class DiagnosisContext:
         """Convert to a prompt-ready string for LLM."""
         lines = []
         
-        # Metrics
-        lines.append("## Observed Metrics")
+        # Metrics - emphasize these are the actual values to use
+        lines.append("## Observed Metrics (USE THESE EXACT VALUES IN YOUR ANALYSIS)")
         lines.append(self.metrics.to_query_string())
         lines.append("")
         
@@ -54,8 +54,17 @@ class DiagnosisContext:
                 lines.append(f"- {chain_str}")
         lines.append("")
         
-        # Historical fixes (all, no ranking)
-        lines.append("## Historical Fixes (for reference)")
+        # Anomaly patterns - help LLM identify issues
+        lines.append("## Anomaly Patterns (CHECK THESE CONDITIONS)")
+        lines.append("- VCORE 725mV > 10%: Indicates CM/PowerHal/DDR voting issue")
+        lines.append("- VCORE floor > 575mV: Indicates MMDVFS OPP3 issue (floor should be 575mV)")
+        lines.append("- MMDVFS at OPP3 with high usage: Causes VCORE floor at 600mV")
+        lines.append("- MMDVFS at OPP4: Normal operation, rule out as cause")
+        lines.append("- DUAL ISSUE: If BOTH floor AND ceiling abnormal, report BOTH root causes")
+        lines.append("")
+        
+        # Historical fixes - clarify these are reference only
+        lines.append("## Historical Fixes (REFERENCE ONLY - do not copy these metrics)")
         if self.relevant_fixes:
             for fix in self.relevant_fixes:
                 lines.append(f"- Case {fix.case_id}: {fix.fix_description}")

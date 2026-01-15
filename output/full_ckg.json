@@ -161,6 +161,73 @@
       "attributes": {},
       "confidence": 1.0,
       "source_text": ""
+    },
+    {
+      "id": "pattern_vcore_ceiling",
+      "type": "AnomalyPattern",
+      "label": "VCORE 725mV Excessive Usage",
+      "description": "VCORE 725mV usage >10% indicates DDR voting issue. Check CM/PowerHal as root causes.",
+      "attributes": {
+        "metric": "vcore_725mv_pct",
+        "threshold": 10,
+        "threshold_type": "gt",
+        "indicates": [
+          "rc_cm",
+          "rc_powerhal"
+        ]
+      },
+      "confidence": 1.0,
+      "source_text": ""
+    },
+    {
+      "id": "pattern_vcore_floor",
+      "type": "AnomalyPattern",
+      "label": "VCORE Floor Elevated",
+      "description": "VCORE floor above 575mV indicates MMDVFS issue. If floor is 600mV, check MMDVFS OPP3 usage.",
+      "attributes": {
+        "metric": "vcore_floor_mv",
+        "threshold": 575,
+        "threshold_type": "gt",
+        "indicates": [
+          "rc_mmdvfs"
+        ]
+      },
+      "confidence": 1.0,
+      "source_text": ""
+    },
+    {
+      "id": "pattern_mmdvfs_opp3_high",
+      "type": "AnomalyPattern",
+      "label": "MMDVFS OPP3 High Usage",
+      "description": "MMDVFS OPP3 at >50% usage causes VCORE floor lock at 600mV instead of normal 575mV.",
+      "attributes": {
+        "metric": "mmdvfs_opp3_pct",
+        "threshold": 50,
+        "threshold_type": "gt",
+        "indicates": [
+          "rc_mmdvfs"
+        ]
+      },
+      "confidence": 1.0,
+      "source_text": ""
+    },
+    {
+      "id": "pattern_dual_vcore_issue",
+      "type": "AnomalyPattern",
+      "label": "Dual VCORE Issue (Floor + Ceiling)",
+      "description": "When BOTH VCORE floor (>575mV) AND VCORE 725mV (>10%) are abnormal, there are TWO independent root causes: MMDVFS for floor, CM/DDR for ceiling.",
+      "attributes": {
+        "requires": [
+          "pattern_vcore_floor",
+          "pattern_vcore_ceiling"
+        ],
+        "indicates": [
+          "rc_mmdvfs",
+          "rc_cm"
+        ]
+      },
+      "confidence": 1.0,
+      "source_text": ""
     }
   ],
   "relations": [
@@ -440,7 +507,7 @@
       "type": "RULES_OUT",
       "is_causal": false,
       "confidence": 0.9,
-      "evidence": "",
+      "evidence": "MMDVFS at OPP4 is normal - not causing VCORE issue",
       "attributes": {}
     },
     {
@@ -449,23 +516,71 @@
       "type": "RULES_OUT",
       "is_causal": false,
       "confidence": 0.9,
-      "evidence": "",
+      "evidence": "MMDVFS at OPP4 is normal - not causing VCORE issue",
       "attributes": {}
+    },
+    {
+      "source": "pattern_vcore_ceiling",
+      "target": "rc_cm",
+      "type": "INDICATES",
+      "is_causal": false,
+      "confidence": 0.9,
+      "evidence": "High VCORE 725mV usage typically caused by CM driving CPU frequencies"
+    },
+    {
+      "source": "pattern_vcore_floor",
+      "target": "rc_mmdvfs",
+      "type": "INDICATES",
+      "is_causal": false,
+      "confidence": 0.95,
+      "evidence": "Elevated VCORE floor (600mV vs 575mV) caused by MMDVFS OPP3"
+    },
+    {
+      "source": "pattern_mmdvfs_opp3_high",
+      "target": "c3_vcore_floor",
+      "type": "CAUSES",
+      "is_causal": true,
+      "confidence": 1.0,
+      "causal_effect": {
+        "strength": 1.0,
+        "is_direct": true,
+        "mechanism": "OPP3 at 100% forces minimum VCORE to 600mV"
+      }
+    },
+    {
+      "source": "pattern_dual_vcore_issue",
+      "target": "c3_vcore_floor",
+      "type": "INDICATES",
+      "is_causal": false,
+      "confidence": 0.95,
+      "evidence": "Case 3 has dual issue - this pattern matches"
+    },
+    {
+      "source": "pattern_dual_vcore_issue",
+      "target": "c3_vcore_high",
+      "type": "INDICATES",
+      "is_causal": false,
+      "confidence": 0.95,
+      "evidence": "Case 3 has dual issue - this pattern matches"
     }
   ],
   "metadata": {
-    "num_entities": 18,
-    "num_relations": 20,
+    "num_entities": 23,
+    "num_relations": 27,
     "entity_types": [
       "Hypothesis",
       "RootCause",
       "Metric",
       "Component",
-      "Symptom"
+      "Symptom",
+      "AnomalyPattern"
     ],
     "relation_types": [
       "RULES_OUT",
-      "CAUSES"
-    ]
+      "CAUSES",
+      "INDICATES"
+    ],
+    "version": "1.1.0",
+    "enhancement": "Added AnomalyPattern entities for dual-issue detection"
   }
 }

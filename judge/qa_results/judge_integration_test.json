@@ -1,0 +1,249 @@
+{
+  "test_name": "Judge Integration Test",
+  "timestamp": "2026-01-14T23:39:49.011160",
+  "total_cases": 3,
+  "results": [
+    {
+      "case_name": "case1",
+      "composite_score": 6.6,
+      "grade": "C",
+      "summary": "The agent report correctly identifies CM as the root cause but lacks precision in metrics and causal chain details. The reasoning is logical, and the suggested actions are relevant but could be more specific.",
+      "dimensions": [
+        {
+          "name": "Root Cause Accuracy",
+          "score": 7,
+          "weight": 0.5,
+          "explanation": "The agent identified CM as the root cause but did not explicitly mention 拉檔 (frequency throttling).",
+          "matched_elements": [
+            "CM (CPU Manager)"
+          ],
+          "missing_elements": [
+            "拉檔 (frequency throttling)"
+          ],
+          "weighted_score": 3.5
+        },
+        {
+          "name": "Causal Chain Completeness",
+          "score": 6,
+          "weight": 0.2,
+          "explanation": "The causal chain is partially captured but lacks the correct DDR and VCORE percentages.",
+          "matched_elements": [
+            "CM → CPU → DDR → VCORE"
+          ],
+          "missing_elements": [
+            "DDR 82.6%",
+            "VCORE 82.6%"
+          ],
+          "weighted_score": 1.2000000000000002
+        },
+        {
+          "name": "Metric Precision",
+          "score": 5,
+          "weight": 0.15,
+          "explanation": "The agent report contains incorrect VCORE and DDR percentages.",
+          "matched_elements": [
+            "CPU frequencies"
+          ],
+          "missing_elements": [
+            "VCORE 82.6%",
+            "DDR 82.6%"
+          ],
+          "weighted_score": 0.75
+        },
+        {
+          "name": "Reasoning Quality",
+          "score": 8,
+          "weight": 0.1,
+          "explanation": "The reasoning is logical, and MMDVFS is correctly ruled out.",
+          "matched_elements": [
+            "Logical reasoning",
+            "MMDVFS ruled out"
+          ],
+          "missing_elements": [],
+          "weighted_score": 0.8
+        },
+        {
+          "name": "Actionability",
+          "score": 7,
+          "weight": 0.05,
+          "explanation": "The suggested fixes are relevant but could be more specific.",
+          "matched_elements": [
+            "Review CPU frequency control policy"
+          ],
+          "missing_elements": [
+            "Specific tuning recommendations"
+          ],
+          "weighted_score": 0.35000000000000003
+        }
+      ],
+      "human_report_path": "data/1",
+      "agent_report_path": "/home/etem/inference-engine/output/e2e_production/agent_report_case1.md",
+      "timestamp": "2026-01-14T23:39:49.011160"
+    },
+    {
+      "case_name": "case2",
+      "composite_score": 8.65,
+      "grade": "A",
+      "summary": "The agent report is excellent, accurately identifying root causes and providing logical reasoning with practical recommendations. Minor details were missing in metrics and causal chain specifics.",
+      "dimensions": [
+        {
+          "name": "Root Cause Accuracy",
+          "score": 9,
+          "weight": 0.5,
+          "explanation": "The agent correctly identified both CM and PowerHal as root causes and captured the concept of 拉檔.",
+          "matched_elements": [
+            "CM",
+            "PowerHal",
+            "拉檔"
+          ],
+          "missing_elements": [],
+          "weighted_score": 4.5
+        },
+        {
+          "name": "Causal Chain Completeness",
+          "score": 8,
+          "weight": 0.2,
+          "explanation": "The agent captured the main causal links but did not explicitly mention the exact percentages in the causal chain.",
+          "matched_elements": [
+            "CM",
+            "PowerHal",
+            "DDR voting",
+            "VCORE"
+          ],
+          "missing_elements": [
+            "DDR 29.67%",
+            "VCORE 29.32%"
+          ],
+          "weighted_score": 1.6
+        },
+        {
+          "name": "Metric Precision",
+          "score": 8,
+          "weight": 0.15,
+          "explanation": "The agent correctly identified key metrics but missed some specific CPU frequency details.",
+          "matched_elements": [
+            "VCORE 29.32%",
+            "DDR5460 3.54%",
+            "DDR6370 26.13%"
+          ],
+          "missing_elements": [
+            "CPU frequencies"
+          ],
+          "weighted_score": 1.2
+        },
+        {
+          "name": "Reasoning Quality",
+          "score": 9,
+          "weight": 0.1,
+          "explanation": "The reasoning was logical and correctly ruled out MMDVFS.",
+          "matched_elements": [
+            "Logical flow",
+            "MMDVFS ruled out"
+          ],
+          "missing_elements": [],
+          "weighted_score": 0.9
+        },
+        {
+          "name": "Actionability",
+          "score": 9,
+          "weight": 0.05,
+          "explanation": "The suggested fixes were practical and relevant to the identified issues.",
+          "matched_elements": [
+            "Historical fixes",
+            "Recommendations"
+          ],
+          "missing_elements": [],
+          "weighted_score": 0.45
+        }
+      ],
+      "human_report_path": "data/2",
+      "agent_report_path": "/home/etem/inference-engine/output/e2e_production/agent_report_case2.md",
+      "timestamp": "2026-01-14T23:39:56.480414"
+    },
+    {
+      "case_name": "case3",
+      "composite_score": 7.55,
+      "grade": "B",
+      "summary": "The agent report is generally accurate but lacks emphasis on the MMDVFS OPP3 issue. It captures the main causal chain and metrics well, with logical reasoning and actionable insights.",
+      "dimensions": [
+        {
+          "name": "Root Cause Accuracy",
+          "score": 7,
+          "weight": 0.5,
+          "explanation": "The agent identified CM as a root cause but missed MMDVFS OPP3 as a contributing factor.",
+          "matched_elements": [
+            "CM aggressive CPU management"
+          ],
+          "missing_elements": [
+            "MMDVFS OPP3"
+          ],
+          "weighted_score": 3.5
+        },
+        {
+          "name": "Causal Chain Completeness",
+          "score": 8,
+          "weight": 0.2,
+          "explanation": "The agent captured the CM → CPU → DDR → VCORE chain but did not mention SW_REQ2/SW_REQ3 voting mechanisms.",
+          "matched_elements": [
+            "CM → CPU → DDR → VCORE"
+          ],
+          "missing_elements": [
+            "SW_REQ2/SW_REQ3 voting mechanisms"
+          ],
+          "weighted_score": 1.6
+        },
+        {
+          "name": "Metric Precision",
+          "score": 9,
+          "weight": 0.15,
+          "explanation": "The agent correctly identified most metrics, including VCORE and DDR percentages and CPU frequencies.",
+          "matched_elements": [
+            "VCORE 725mV 52.51%",
+            "DDR5460 23.37%",
+            "DDR6370 30.77%",
+            "CPU frequencies"
+          ],
+          "missing_elements": [],
+          "weighted_score": 1.3499999999999999
+        },
+        {
+          "name": "Reasoning Quality",
+          "score": 7,
+          "weight": 0.1,
+          "explanation": "The reasoning was logical but did not adequately address the role of MMDVFS in the VCORE 600mV floor.",
+          "matched_elements": [
+            "Logical flow of CM impact"
+          ],
+          "missing_elements": [
+            "MMDVFS role in VCORE 600mV floor"
+          ],
+          "weighted_score": 0.7000000000000001
+        },
+        {
+          "name": "Actionability",
+          "score": 8,
+          "weight": 0.05,
+          "explanation": "The agent provided relevant historical fixes but could have included more specific recommendations.",
+          "matched_elements": [
+            "Historical fixes"
+          ],
+          "missing_elements": [
+            "Specific recommendations for MMDVFS"
+          ],
+          "weighted_score": 0.4
+        }
+      ],
+      "human_report_path": "data/3",
+      "agent_report_path": "/home/etem/inference-engine/output/e2e_production/agent_report_case3.md",
+      "timestamp": "2026-01-14T23:40:03.520217"
+    }
+  ],
+  "summary": {
+    "average_score": 7.6,
+    "grades": {
+      "case1": "C",
+      "case2": "A",
+      "case3": "B"
+    }
+  }
+}

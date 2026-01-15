@@ -1,0 +1,256 @@
+{
+  "test_name": "Judge Batch Evaluation",
+  "timestamp": "2026-01-15T09:30:43.408309",
+  "run_id": "20260115_093101",
+  "total_cases": 3,
+  "judge_model": "gpt-4o",
+  "judge_provider": "openai",
+  "results": [
+    {
+      "case_name": "case1",
+      "composite_score": 8.95,
+      "grade": "A",
+      "summary": "The agent report is excellent, fully matching the human expert report with minor areas for improvement in actionability.",
+      "dimensions": [
+        {
+          "name": "Root Cause Accuracy",
+          "score": 9,
+          "weight": 0.5,
+          "explanation": "The agent correctly identified the CM as the root cause and captured the concept of frequency throttling.",
+          "matched_elements": [
+            "CM",
+            "frequency throttling"
+          ],
+          "missing_elements": [],
+          "weighted_score": 4.5
+        },
+        {
+          "name": "Causal Chain Completeness",
+          "score": 9,
+          "weight": 0.2,
+          "explanation": "The agent captured the full causal chain including CM, CPU, DDR, and VCORE.",
+          "matched_elements": [
+            "CM",
+            "CPU",
+            "DDR",
+            "VCORE"
+          ],
+          "missing_elements": [],
+          "weighted_score": 1.8
+        },
+        {
+          "name": "Metric Precision",
+          "score": 9,
+          "weight": 0.15,
+          "explanation": "The agent accurately reported the key metrics such as VCORE and DDR percentages and CPU frequencies.",
+          "matched_elements": [
+            "VCORE 82.6%",
+            "DDR 82.6%",
+            "CPU frequencies"
+          ],
+          "missing_elements": [],
+          "weighted_score": 1.3499999999999999
+        },
+        {
+          "name": "Reasoning Quality",
+          "score": 9,
+          "weight": 0.1,
+          "explanation": "The reasoning was logical and correctly ruled out MMDVFS as a cause.",
+          "matched_elements": [
+            "logical reasoning",
+            "MMDVFS ruled out"
+          ],
+          "missing_elements": [],
+          "weighted_score": 0.9
+        },
+        {
+          "name": "Actionability",
+          "score": 8,
+          "weight": 0.05,
+          "explanation": "The suggested fixes are relevant but include historical fixes that may not be directly actionable.",
+          "matched_elements": [
+            "relevant fixes"
+          ],
+          "missing_elements": [
+            "directly actionable suggestions"
+          ],
+          "weighted_score": 0.4
+        }
+      ],
+      "human_report_path": "ground_truth/case1",
+      "agent_report_path": "/home/etem/inference-engine/output/e2e_production/agent_report_case1.md",
+      "timestamp": "2026-01-15T09:30:43.408309"
+    },
+    {
+      "case_name": "case2",
+      "composite_score": 8.7,
+      "grade": "A",
+      "summary": "The agent report closely matches the human expert report with minor omissions in causal chain details and actionability. Overall, it provides a comprehensive analysis with accurate root cause identification and logical reasoning.",
+      "dimensions": [
+        {
+          "name": "Root Cause Accuracy",
+          "score": 9,
+          "weight": 0.5,
+          "explanation": "The agent correctly identified CM and PowerHal as root causes and captured the concept of frequency throttling.",
+          "matched_elements": [
+            "CM",
+            "PowerHal",
+            "拉檔"
+          ],
+          "missing_elements": [
+            "MMDVFS"
+          ],
+          "weighted_score": 4.5
+        },
+        {
+          "name": "Causal Chain Completeness",
+          "score": 8,
+          "weight": 0.2,
+          "explanation": "The agent captured the main causal links but did not explicitly mention the full CM → CPU → DDR → VCORE chain.",
+          "matched_elements": [
+            "DDR voting",
+            "SW_REQ2",
+            "SW_REQ3"
+          ],
+          "missing_elements": [
+            "CM → CPU → DDR → VCORE"
+          ],
+          "weighted_score": 1.6
+        },
+        {
+          "name": "Metric Precision",
+          "score": 9,
+          "weight": 0.15,
+          "explanation": "The agent accurately identified the key VCORE and DDR percentages.",
+          "matched_elements": [
+            "VCORE 29.32%",
+            "DDR5460 3.54%",
+            "DDR6370 26.13%"
+          ],
+          "missing_elements": [],
+          "weighted_score": 1.3499999999999999
+        },
+        {
+          "name": "Reasoning Quality",
+          "score": 9,
+          "weight": 0.1,
+          "explanation": "The reasoning was logical and MMDVFS was correctly ruled out.",
+          "matched_elements": [
+            "Logical flow",
+            "MMDVFS ruled out"
+          ],
+          "missing_elements": [],
+          "weighted_score": 0.9
+        },
+        {
+          "name": "Actionability",
+          "score": 7,
+          "weight": 0.05,
+          "explanation": "The suggested fixes were relevant but not as detailed as the historical fixes.",
+          "matched_elements": [
+            "Review PowerHal SW_REQ3",
+            "Adjust CM control strategy"
+          ],
+          "missing_elements": [
+            "Detailed tuning recommendations"
+          ],
+          "weighted_score": 0.35000000000000003
+        }
+      ],
+      "human_report_path": "ground_truth/case2",
+      "agent_report_path": "/home/etem/inference-engine/output/e2e_production/agent_report_case2.md",
+      "timestamp": "2026-01-15T09:30:54.305216"
+    },
+    {
+      "case_name": "case3",
+      "composite_score": 8.6,
+      "grade": "A",
+      "summary": "The agent report is well-constructed with accurate root cause identification and logical reasoning, but it lacks some specific details regarding MMDVFS and voting mechanisms.",
+      "dimensions": [
+        {
+          "name": "Root Cause Accuracy",
+          "score": 9,
+          "weight": 0.5,
+          "explanation": "The agent correctly identified CM and PowerHal as root causes but did not explicitly mention MMDVFS.",
+          "matched_elements": [
+            "CM",
+            "PowerHal"
+          ],
+          "missing_elements": [
+            "MMDVFS"
+          ],
+          "weighted_score": 4.5
+        },
+        {
+          "name": "Causal Chain Completeness",
+          "score": 8,
+          "weight": 0.2,
+          "explanation": "The causal chain is mostly complete but lacks explicit mention of SW_REQ2/SW_REQ3 voting mechanisms.",
+          "matched_elements": [
+            "CM → CPU → DDR → VCORE"
+          ],
+          "missing_elements": [
+            "SW_REQ2/SW_REQ3 voting mechanisms"
+          ],
+          "weighted_score": 1.6
+        },
+        {
+          "name": "Metric Precision",
+          "score": 9,
+          "weight": 0.15,
+          "explanation": "The agent accurately identified most metrics but missed the VCORE 600mV floor detail.",
+          "matched_elements": [
+            "VCORE 725mV 52.51%",
+            "DDR5460 23.37%",
+            "DDR6370 30.77%",
+            "CPU frequencies"
+          ],
+          "missing_elements": [
+            "VCORE 600mV floor"
+          ],
+          "weighted_score": 1.3499999999999999
+        },
+        {
+          "name": "Reasoning Quality",
+          "score": 8,
+          "weight": 0.1,
+          "explanation": "The reasoning is logical but does not address the MMDVFS issue explicitly.",
+          "matched_elements": [
+            "Logical flow",
+            "CM and PowerHal contributions"
+          ],
+          "missing_elements": [
+            "MMDVFS identification"
+          ],
+          "weighted_score": 0.8
+        },
+        {
+          "name": "Actionability",
+          "score": 7,
+          "weight": 0.05,
+          "explanation": "The suggested fixes are practical but could be more specific to the identified issues.",
+          "matched_elements": [
+            "Review CPU frequency control policy",
+            "Adjust CM control strategy"
+          ],
+          "missing_elements": [
+            "Specific MMDVFS adjustments"
+          ],
+          "weighted_score": 0.35000000000000003
+        }
+      ],
+      "human_report_path": "ground_truth/case3",
+      "agent_report_path": "/home/etem/inference-engine/output/e2e_production/agent_report_case3.md",
+      "timestamp": "2026-01-15T09:31:01.472583"
+    }
+  ],
+  "summary": {
+    "average_score": 8.75,
+    "grades": {
+      "case1": "A",
+      "case2": "A",
+      "case3": "A"
+    },
+    "pass_rate": 100.0
+  }
+}

@@ -17,30 +17,47 @@ from .metric_parser import MetricParser
 
 SYSTEM_PROMPT = """You are an expert power debugging assistant for mobile devices.
 
+CRITICAL RULES (MUST FOLLOW):
+1. ALWAYS use metric values from the "User Observation" section - these are the ACTUAL values
+2. NEVER copy metrics from "Historical Fixes" - those are reference cases only  
+3. In your Causal Chain, include the EXACT percentages from the user's input
+4. Treat Chinese and English terms as equivalent (拉檔 = frequency throttling)
+5. DETECT MULTIPLE ROOT CAUSES - Power issues often have 2+ independent contributing factors
+6. ALWAYS check for DUAL VCORE issues:
+   - VCORE FLOOR issue: If VCORE floor > 575mV (e.g., 600mV), this indicates MMDVFS OPP3 issue
+   - VCORE CEILING issue: If VCORE 725mV > 10%, this indicates CM/PowerHal/DDR voting issue
+   - These are INDEPENDENT issues with DIFFERENT root causes
+7. MMDVFS status MUST be addressed:
+   - If MMDVFS at OPP4: Explicitly state "MMDVFS ruled out (OPP4 = normal operation)"
+   - If MMDVFS at OPP3 with high usage: This IS a root cause for VCORE floor issues
+
 Your task is to analyze power issues based on:
-1. Observed metrics (VCORE, DDR, MMDVFS, CPU frequencies)
+1. Observed metrics (VCORE, DDR, MMDVFS, CPU frequencies) - USE EXACT VALUES
 2. Causal knowledge from the CKG (Causal Knowledge Graph)
-3. Historical fixes for similar issues
+3. Historical fixes for similar issues (for reference patterns only)
 
 Guidelines:
-- Identify the root cause based on the CKG causal chains
-- Explain the causal chain from root cause to symptom
+- Identify ALL root causes based on the CKG causal chains
+- If BOTH VCORE floor AND VCORE 725mV are abnormal, report BOTH root causes separately
+- Explain the causal chain from each root cause to its symptom with EXACT user metrics
 - List ALL relevant historical fixes (do not rank them)
 - Be precise about metric values and thresholds
 - Use technical terminology appropriate for power engineers
 
 Response format:
 ## Root Cause
-[Identified root cause]
+[Identified root cause(s) - list multiple if applicable]
 
 ## Causal Chain
-[Chain from root cause to symptom]
+[Chain from root cause to symptom - USE EXACT METRICS FROM USER INPUT]
+[If multiple root causes, show each chain separately]
 
 ## Diagnosis
 [Explanation of why this is the root cause]
+[For MMDVFS: explicitly state if ruled out (OPP4) or confirmed (OPP3 high usage)]
 
 ## Historical Fixes (for reference)
-[List all relevant fixes without ranking]
+[List all relevant fixes without ranking - do NOT copy their metrics to your analysis]
 """
 
 
@@ -221,6 +238,50 @@ class DebugAgent:
             raw_response=raw_response,
             context=context,
         )
+    
+    def refine(
+        self,
+        previous_result: DiagnosisResult,
+        feedback: str,
+        original_input: str,
+    ) -> DiagnosisResult:
+        """Refine a previous diagnosis based on Judge feedback.
+        
+        Args:
+            previous_result: Previous diagnosis to improve
+            feedback: Specific feedback on what to improve
+            original_input: Original user input for metric reference
+            
+        Returns:
+            Improved DiagnosisResult
+        """
+        refinement_prompt = f"""## Original User Input (USE THESE EXACT METRICS)
+{original_input}
+
+## Your Previous Response
+{previous_result.raw_response}
+
+## Quality Feedback from Evaluator
+{feedback}
+
+## Instructions
+Please revise your diagnosis to address the feedback above.
+CRITICAL: Use the EXACT metrics from "Original User Input" - do NOT use metrics from historical fixes.
+
+Provide a complete revised response in the standard format.
+"""
+        
+        response = self._llm_client.chat.completions.create(
+            model=self._llm_model,
+            messages=[
+                {"role": "system", "content": SYSTEM_PROMPT},
+                {"role": "user", "content": refinement_prompt},
+            ],
+            temperature=0.1,
+        )
+        
+        raw_response = response.choices[0].message.content
+        return self._parse_response(raw_response, previous_result.context)
     
     # ========================================
     # Setup methods
