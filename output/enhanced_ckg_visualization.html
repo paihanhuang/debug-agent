@@ -1,0 +1,494 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Enhanced CKG Visualization</title>
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/cytoscape/3.28.1/cytoscape.min.js"></script>
+    <style>
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+        }
+
+        body {
+            font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+            background: linear-gradient(135deg, #1a1a2e 0%, #16213e 50%, #0f3460 100%);
+            min-height: 100vh;
+            color: #fff;
+        }
+
+        .header {
+            background: rgba(255, 255, 255, 0.1);
+            backdrop-filter: blur(10px);
+            padding: 20px 40px;
+            border-bottom: 1px solid rgba(255, 255, 255, 0.1);
+        }
+
+        .header h1 {
+            font-size: 1.8rem;
+            font-weight: 600;
+            background: linear-gradient(90deg, #00d9ff, #00ff88);
+            -webkit-background-clip: text;
+            -webkit-text-fill-color: transparent;
+        }
+
+        .header p {
+            color: rgba(255, 255, 255, 0.7);
+            margin-top: 5px;
+        }
+
+        .container {
+            display: flex;
+            height: calc(100vh - 100px);
+        }
+
+        #cy {
+            flex: 1;
+            background: rgba(0, 0, 0, 0.3);
+            border-radius: 0;
+        }
+
+        .sidebar {
+            width: 350px;
+            background: rgba(255, 255, 255, 0.05);
+            padding: 20px;
+            overflow-y: auto;
+            border-left: 1px solid rgba(255, 255, 255, 0.1);
+        }
+
+        .legend {
+            margin-bottom: 30px;
+        }
+
+        .legend h3 {
+            font-size: 1rem;
+            margin-bottom: 15px;
+            color: #00d9ff;
+        }
+
+        .legend-item {
+            display: flex;
+            align-items: center;
+            margin-bottom: 10px;
+            padding: 8px 12px;
+            background: rgba(255, 255, 255, 0.05);
+            border-radius: 8px;
+        }
+
+        .legend-color {
+            width: 20px;
+            height: 20px;
+            border-radius: 50%;
+            margin-right: 12px;
+            border: 2px solid rgba(255, 255, 255, 0.3);
+        }
+
+        .legend-label {
+            font-size: 0.85rem;
+        }
+
+        .stats {
+            margin-bottom: 30px;
+        }
+
+        .stats h3 {
+            font-size: 1rem;
+            margin-bottom: 15px;
+            color: #00ff88;
+        }
+
+        .stat-row {
+            display: flex;
+            justify-content: space-between;
+            padding: 10px 0;
+            border-bottom: 1px solid rgba(255, 255, 255, 0.1);
+        }
+
+        .stat-label {
+            color: rgba(255, 255, 255, 0.7);
+        }
+
+        .stat-value {
+            font-weight: 600;
+            color: #fff;
+        }
+
+        .node-info {
+            background: rgba(255, 255, 255, 0.08);
+            border-radius: 12px;
+            padding: 20px;
+        }
+
+        .node-info h3 {
+            font-size: 1rem;
+            margin-bottom: 15px;
+            color: #ff6b6b;
+        }
+
+        .node-info p {
+            font-size: 0.85rem;
+            color: rgba(255, 255, 255, 0.7);
+            line-height: 1.6;
+        }
+
+        .node-detail {
+            margin-top: 15px;
+            padding: 12px;
+            background: rgba(0, 0, 0, 0.2);
+            border-radius: 8px;
+        }
+
+        .node-detail-label {
+            font-size: 0.75rem;
+            color: #00d9ff;
+            text-transform: uppercase;
+            letter-spacing: 1px;
+        }
+
+        .node-detail-value {
+            font-size: 0.9rem;
+            margin-top: 5px;
+        }
+
+        .edge-legend {
+            margin-top: 20px;
+        }
+
+        .edge-legend h3 {
+            font-size: 1rem;
+            margin-bottom: 15px;
+            color: #ffd93d;
+        }
+
+        .edge-item {
+            display: flex;
+            align-items: center;
+            margin-bottom: 8px;
+        }
+
+        .edge-line {
+            width: 30px;
+            height: 3px;
+            margin-right: 10px;
+            border-radius: 2px;
+        }
+    </style>
+</head>
+
+<body>
+    <div class="header">
+        <h1>🔌 Enhanced CKG - Power Debug Knowledge Graph</h1>
+        <p>Causal Knowledge Graph with AnomalyPattern Detection</p>
+    </div>
+
+    <div class="container">
+        <div id="cy"></div>
+        <div class="sidebar">
+            <div class="legend">
+                <h3>📊 Entity Types</h3>
+                <div class="legend-item">
+                    <div class="legend-color" style="background: #ff6b6b;"></div>
+                    <span class="legend-label">RootCause</span>
+                </div>
+                <div class="legend-item">
+                    <div class="legend-color" style="background: #4ecdc4;"></div>
+                    <span class="legend-label">Component</span>
+                </div>
+                <div class="legend-item">
+                    <div class="legend-color" style="background: #45b7d1;"></div>
+                    <span class="legend-label">Metric</span>
+                </div>
+                <div class="legend-item">
+                    <div class="legend-color" style="background: #f9ca24;"></div>
+                    <span class="legend-label">Symptom</span>
+                </div>
+                <div class="legend-item">
+                    <div class="legend-color" style="background: #a55eea;"></div>
+                    <span class="legend-label">AnomalyPattern (NEW)</span>
+                </div>
+                <div class="legend-item">
+                    <div class="legend-color" style="background: #95a5a6;"></div>
+                    <span class="legend-label">Hypothesis</span>
+                </div>
+            </div>
+
+            <div class="edge-legend">
+                <h3>🔗 Relation Types</h3>
+                <div class="edge-item">
+                    <div class="edge-line" style="background: #00ff88;"></div>
+                    <span class="legend-label">CAUSES</span>
+                </div>
+                <div class="edge-item">
+                    <div class="edge-line" style="background: #ff6b6b;"></div>
+                    <span class="legend-label">RULES_OUT</span>
+                </div>
+                <div class="edge-item">
+                    <div class="edge-line" style="background: #a55eea;"></div>
+                    <span class="legend-label">INDICATES (NEW)</span>
+                </div>
+            </div>
+
+            <div class="stats">
+                <h3>📈 Graph Statistics</h3>
+                <div class="stat-row">
+                    <span class="stat-label">Total Entities</span>
+                    <span class="stat-value">23</span>
+                </div>
+                <div class="stat-row">
+                    <span class="stat-label">Total Relations</span>
+                    <span class="stat-value">27</span>
+                </div>
+                <div class="stat-row">
+                    <span class="stat-label">Anomaly Patterns</span>
+                    <span class="stat-value" style="color: #a55eea;">5 (NEW)</span>
+                </div>
+                <div class="stat-row">
+                    <span class="stat-label">INDICATES Relations</span>
+                    <span class="stat-value" style="color: #a55eea;">7 (NEW)</span>
+                </div>
+            </div>
+
+            <div class="node-info" id="node-info">
+                <h3>ℹ️ Node Details</h3>
+                <p>Click on a node to see details</p>
+            </div>
+        </div>
+    </div>
+
+    <script>
+        // Enhanced CKG data
+        const elements = [
+            // Root Causes
+            { data: { id: 'rc_policy', label: '調控策略\n(Control Policy)', type: 'RootCause', desc: 'System control policy drives CM behavior' } },
+            { data: { id: 'rc_cm', label: 'CM\n(CPU Manager)', type: 'RootCause', desc: 'CPU management controls frequency and DDR voting via SW_REQ2' } },
+            { data: { id: 'rc_powerhal', label: 'PowerHal', type: 'RootCause', desc: 'Power HAL affects DDR voting via SW_REQ3' } },
+            { data: { id: 'rc_mmdvfs', label: 'MMDVFS OPP3', type: 'RootCause', desc: 'Multimedia DVFS at OPP3 - causes VCORE 600mV floor' } },
+
+            // Components
+            { data: { id: 'cpu_big', label: 'CPU 大核\n(2700MHz)', type: 'Component', desc: 'Large cores (1800-2700MHz)' } },
+            { data: { id: 'cpu_mid', label: 'CPU 中核\n(2500MHz)', type: 'Component', desc: 'Medium cores (1000-2500MHz)' } },
+            { data: { id: 'cpu_small', label: 'CPU 小核\n(2100MHz)', type: 'Component', desc: 'Small cores (1000-2100MHz)' } },
+            { data: { id: 'ddr_vote', label: 'DDR 投票機制\n(SW_REQ2/3)', type: 'Component', desc: 'SW_REQ2 (CM) + SW_REQ3 (PowerHal)' } },
+            { data: { id: 'ddr5460', label: 'DDR5460', type: 'Component', desc: 'DDR at 5460 frequency' } },
+            { data: { id: 'ddr6370', label: 'DDR6370', type: 'Component', desc: 'DDR at 6370 frequency' } },
+
+            // Case Metrics
+            { data: { id: 'c1_ddr', label: 'Case1:\nDDR 82.6%', type: 'Metric', desc: 'First case - high DDR usage' } },
+            { data: { id: 'c2_ddr', label: 'Case2:\nDDR 29.67%', type: 'Metric', desc: 'Second case - moderate DDR' } },
+            { data: { id: 'c3_ddr', label: 'Case3:\nDDR 54.14%', type: 'Metric', desc: 'Third case - DDR5460 23.37% + DDR6370 30.77%' } },
+
+            // Symptoms
+            { data: { id: 'c1_vcore', label: 'Case1: VCORE\n725mV @ 82.6%', type: 'Symptom', desc: 'Severe - ceiling CPUs' } },
+            { data: { id: 'c2_vcore', label: 'Case2: VCORE\n725mV @ 29.32%', type: 'Symptom', desc: 'Moderate - SW_REQ2+3' } },
+            { data: { id: 'c3_vcore_high', label: 'Case3: VCORE\n725mV @ 52.51%', type: 'Symptom', desc: 'High - DDR caused' } },
+            { data: { id: 'c3_vcore_floor', label: 'Case3: VCORE\n600mV floor', type: 'Symptom', desc: 'Should be 575mV - MMDVFS caused' } },
+
+            // Hypothesis
+            { data: { id: 'h_mmdvfs', label: 'MMDVFS (OPP4)\nRuled Out', type: 'Hypothesis', desc: 'Ruled out for Case1/2 - stayed at OPP4' } },
+
+            // NEW: Anomaly Patterns
+            { data: { id: 'pattern_vcore_ceiling', label: '⚠️ VCORE Ceiling\n>10% @ 725mV', type: 'AnomalyPattern', desc: 'VCORE 725mV usage >10% indicates DDR voting issue. Check CM/PowerHal.' } },
+            { data: { id: 'pattern_vcore_floor', label: '⚠️ VCORE Floor\n>575mV', type: 'AnomalyPattern', desc: 'VCORE floor above 575mV indicates MMDVFS issue. Check OPP3.' } },
+            { data: { id: 'pattern_mmdvfs_opp3_high', label: '⚠️ MMDVFS OPP3\n>50%', type: 'AnomalyPattern', desc: 'MMDVFS OPP3 at >50% causes VCORE floor lock at 600mV.' } },
+            { data: { id: 'pattern_dual_vcore', label: '⚠️ DUAL ISSUE\nFloor + Ceiling', type: 'AnomalyPattern', desc: 'When BOTH VCORE floor AND 725mV are abnormal, there are TWO independent root causes.' } },
+
+            // ========== RELATIONS ==========
+            // Root cause chain
+            { data: { source: 'rc_policy', target: 'rc_cm', type: 'CAUSES' } },
+            { data: { source: 'rc_cm', target: 'cpu_big', type: 'CAUSES' } },
+            { data: { source: 'rc_cm', target: 'cpu_mid', type: 'CAUSES' } },
+            { data: { source: 'rc_cm', target: 'cpu_small', type: 'CAUSES' } },
+
+            // CPU to DDR voting
+            { data: { source: 'cpu_big', target: 'ddr_vote', type: 'CAUSES' } },
+            { data: { source: 'rc_powerhal', target: 'ddr_vote', type: 'CAUSES' } },
+
+            // DDR voting to DDR frequencies
+            { data: { source: 'ddr_vote', target: 'ddr5460', type: 'CAUSES' } },
+            { data: { source: 'ddr_vote', target: 'ddr6370', type: 'CAUSES' } },
+
+            // DDR to case metrics
+            { data: { source: 'ddr5460', target: 'c1_ddr', type: 'CAUSES' } },
+            { data: { source: 'ddr6370', target: 'c1_ddr', type: 'CAUSES' } },
+            { data: { source: 'ddr5460', target: 'c2_ddr', type: 'CAUSES' } },
+            { data: { source: 'ddr6370', target: 'c2_ddr', type: 'CAUSES' } },
+            { data: { source: 'ddr5460', target: 'c3_ddr', type: 'CAUSES' } },
+            { data: { source: 'ddr6370', target: 'c3_ddr', type: 'CAUSES' } },
+
+            // DDR to VCORE symptoms
+            { data: { source: 'c1_ddr', target: 'c1_vcore', type: 'CAUSES' } },
+            { data: { source: 'c2_ddr', target: 'c2_vcore', type: 'CAUSES' } },
+            { data: { source: 'c3_ddr', target: 'c3_vcore_high', type: 'CAUSES' } },
+
+            // MMDVFS to VCORE floor
+            { data: { source: 'rc_mmdvfs', target: 'c3_vcore_floor', type: 'CAUSES' } },
+
+            // RULES_OUT relations
+            { data: { source: 'h_mmdvfs', target: 'c1_vcore', type: 'RULES_OUT' } },
+            { data: { source: 'h_mmdvfs', target: 'c2_vcore', type: 'RULES_OUT' } },
+
+            // NEW: INDICATES relations (Anomaly Patterns)
+            { data: { source: 'pattern_vcore_ceiling', target: 'rc_cm', type: 'INDICATES' } },
+            { data: { source: 'pattern_vcore_floor', target: 'rc_mmdvfs', type: 'INDICATES' } },
+            { data: { source: 'pattern_mmdvfs_opp3_high', target: 'c3_vcore_floor', type: 'INDICATES' } },
+            { data: { source: 'pattern_dual_vcore', target: 'c3_vcore_floor', type: 'INDICATES' } },
+            { data: { source: 'pattern_dual_vcore', target: 'c3_vcore_high', type: 'INDICATES' } },
+        ];
+
+        const cy = cytoscape({
+            container: document.getElementById('cy'),
+            elements: elements,
+            style: [
+                {
+                    selector: 'node',
+                    style: {
+                        'label': 'data(label)',
+                        'text-wrap': 'wrap',
+                        'text-valign': 'center',
+                        'text-halign': 'center',
+                        'font-size': '10px',
+                        'color': '#fff',
+                        'text-outline-width': 2,
+                        'text-outline-color': '#000',
+                        'width': 80,
+                        'height': 80,
+                        'border-width': 3,
+                        'border-color': '#fff'
+                    }
+                },
+                {
+                    selector: 'node[type="RootCause"]',
+                    style: {
+                        'background-color': '#ff6b6b',
+                        'shape': 'diamond',
+                        'width': 90,
+                        'height': 90
+                    }
+                },
+                {
+                    selector: 'node[type="Component"]',
+                    style: {
+                        'background-color': '#4ecdc4',
+                        'shape': 'round-rectangle'
+                    }
+                },
+                {
+                    selector: 'node[type="Metric"]',
+                    style: {
+                        'background-color': '#45b7d1',
+                        'shape': 'ellipse'
+                    }
+                },
+                {
+                    selector: 'node[type="Symptom"]',
+                    style: {
+                        'background-color': '#f9ca24',
+                        'shape': 'hexagon',
+                        'width': 85,
+                        'height': 85
+                    }
+                },
+                {
+                    selector: 'node[type="Hypothesis"]',
+                    style: {
+                        'background-color': '#95a5a6',
+                        'shape': 'round-rectangle',
+                        'border-style': 'dashed'
+                    }
+                },
+                {
+                    selector: 'node[type="AnomalyPattern"]',
+                    style: {
+                        'background-color': '#a55eea',
+                        'shape': 'star',
+                        'width': 100,
+                        'height': 100,
+                        'border-color': '#ffd93d',
+                        'border-width': 4
+                    }
+                },
+                {
+                    selector: 'edge',
+                    style: {
+                        'width': 2,
+                        'line-color': '#00ff88',
+                        'target-arrow-color': '#00ff88',
+                        'target-arrow-shape': 'triangle',
+                        'curve-style': 'bezier',
+                        'arrow-scale': 1.2
+                    }
+                },
+                {
+                    selector: 'edge[type="CAUSES"]',
+                    style: {
+                        'line-color': '#00ff88',
+                        'target-arrow-color': '#00ff88'
+                    }
+                },
+                {
+                    selector: 'edge[type="RULES_OUT"]',
+                    style: {
+                        'line-color': '#ff6b6b',
+                        'target-arrow-color': '#ff6b6b',
+                        'line-style': 'dashed'
+                    }
+                },
+                {
+                    selector: 'edge[type="INDICATES"]',
+                    style: {
+                        'line-color': '#a55eea',
+                        'target-arrow-color': '#a55eea',
+                        'line-style': 'dotted',
+                        'width': 3
+                    }
+                }
+            ],
+            layout: {
+                name: 'cose',
+                nodeRepulsion: 8000,
+                idealEdgeLength: 120,
+                padding: 50,
+                animate: true,
+                animationDuration: 1000
+            }
+        });
+
+        // Node click handler
+        cy.on('tap', 'node', function (evt) {
+            const node = evt.target;
+            const data = node.data();
+            const infoDiv = document.getElementById('node-info');
+
+            infoDiv.innerHTML = `
+                <h3>ℹ️ ${data.label.replace(/\n/g, ' ')}</h3>
+                <div class="node-detail">
+                    <div class="node-detail-label">Type</div>
+                    <div class="node-detail-value">${data.type}</div>
+                </div>
+                <div class="node-detail">
+                    <div class="node-detail-label">ID</div>
+                    <div class="node-detail-value">${data.id}</div>
+                </div>
+                <div class="node-detail">
+                    <div class="node-detail-label">Description</div>
+                    <div class="node-detail-value">${data.desc || 'No description'}</div>
+                </div>
+            `;
+        });
+
+        // Background click to reset
+        cy.on('tap', function (evt) {
+            if (evt.target === cy) {
+                document.getElementById('node-info').innerHTML = `
+                    <h3>ℹ️ Node Details</h3>
+                    <p>Click on a node to see details</p>
+                `;
+            }
+        });
+    </script>
+</body>
+
+</html>
