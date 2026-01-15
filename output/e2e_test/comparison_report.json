@@ -1,0 +1,112 @@
+[
+  {
+    "name": "first",
+    "checks": [
+      {
+        "name": "Root Cause Keywords",
+        "expected": [
+          "CM",
+          "CPU",
+          "拉檔"
+        ],
+        "actual": [
+          "CM causing VCORE increase"
+        ],
+        "passed": true
+      },
+      {
+        "name": "VCORE Issue Detection",
+        "expected": "VCORE 725mV 82.6% exceeds 10%",
+        "actual": [],
+        "passed": false
+      },
+      {
+        "name": "DDR Pattern Detection",
+        "expected": "{'DDR5460+DDR6370': 82.6}",
+        "actual": [],
+        "passed": false
+      },
+      {
+        "name": "MMDVFS Handling",
+        "expected": "ruled_out=True",
+        "actual": "root_cause_mmdvfs=False, hypothesis_mmdvfs=False",
+        "passed": true
+      }
+    ]
+  },
+  {
+    "name": "second",
+    "checks": [
+      {
+        "name": "Root Cause Keywords",
+        "expected": [
+          "CM",
+          "PowerHal",
+          "拉檔"
+        ],
+        "actual": [
+          "DDR causing VCORE increase"
+        ],
+        "passed": false
+      },
+      {
+        "name": "VCORE Issue Detection",
+        "expected": "VCORE 725mV 29.32% exceeds 10%",
+        "actual": [
+          "VCORE 725mV usage"
+        ],
+        "passed": true
+      },
+      {
+        "name": "DDR Pattern Detection",
+        "expected": "{'DDR5460': 3.54, 'DDR6370': 26.13, 'total': 29.67}",
+        "actual": [],
+        "passed": true
+      },
+      {
+        "name": "MMDVFS Handling",
+        "expected": "ruled_out=True",
+        "actual": "root_cause_mmdvfs=False, hypothesis_mmdvfs=False",
+        "passed": true
+      }
+    ]
+  },
+  {
+    "name": "third",
+    "checks": [
+      {
+        "name": "Root Cause Keywords",
+        "expected": [
+          "CM",
+          "MMDVFS",
+          "拉檔"
+        ],
+        "actual": [],
+        "passed": false
+      },
+      {
+        "name": "VCORE Issue Detection",
+        "expected": "VCORE 725mV 52.51% + VCORE 600mV floor",
+        "actual": [
+          "VCORE 600mV floor issue",
+          "VCORE 725mV high usage"
+        ],
+        "passed": true
+      },
+      {
+        "name": "DDR Pattern Detection",
+        "expected": "{'DDR5460': 23.37, 'DDR6370': 30.77, 'total': 54.14}",
+        "actual": [
+          "Total DDR usage"
+        ],
+        "passed": true
+      },
+      {
+        "name": "MMDVFS Handling",
+        "expected": "ruled_out=False",
+        "actual": "root_cause_mmdvfs=False, hypothesis_mmdvfs=False",
+        "passed": false
+      }
+    ]
+  }
+]

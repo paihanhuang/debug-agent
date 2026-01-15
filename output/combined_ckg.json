@@ -1,0 +1,375 @@
+{
+  "entities": [
+    {
+      "id": "rc1",
+      "type": "RootCause",
+      "label": "CM (CPU Manager)",
+      "description": "CPU management controls frequency and DDR voting",
+      "attributes": {},
+      "confidence": 1.0,
+      "source_text": ""
+    },
+    {
+      "id": "rc2",
+      "type": "RootCause",
+      "label": "PowerHal",
+      "description": "Power HAL affects DDR voting via SW_REQ3",
+      "attributes": {},
+      "confidence": 1.0,
+      "source_text": ""
+    },
+    {
+      "id": "rc3",
+      "type": "RootCause",
+      "label": "\u8abf\u63a7\u7b56\u7565 (Control Policy)",
+      "description": "System control policy drives CM behavior",
+      "attributes": {},
+      "confidence": 1.0,
+      "source_text": ""
+    },
+    {
+      "id": "cpu_big",
+      "type": "Component",
+      "label": "CPU \u5927\u6838",
+      "description": "Large cores (1800-2700MHz)",
+      "attributes": {},
+      "confidence": 1.0,
+      "source_text": ""
+    },
+    {
+      "id": "cpu_mid",
+      "type": "Component",
+      "label": "CPU \u4e2d\u6838",
+      "description": "Medium cores (1000-2500MHz)",
+      "attributes": {},
+      "confidence": 1.0,
+      "source_text": ""
+    },
+    {
+      "id": "cpu_small",
+      "type": "Component",
+      "label": "CPU \u5c0f\u6838",
+      "description": "Small cores (1000-2100MHz)",
+      "attributes": {},
+      "confidence": 1.0,
+      "source_text": ""
+    },
+    {
+      "id": "ddr_vote",
+      "type": "Component",
+      "label": "DDR \u6295\u7968\u6a5f\u5236",
+      "description": "SW_REQ2 + SW_REQ3",
+      "attributes": {},
+      "confidence": 1.0,
+      "source_text": ""
+    },
+    {
+      "id": "ddr5460",
+      "type": "Component",
+      "label": "DDR5460",
+      "description": "DDR at 5460 frequency",
+      "attributes": {},
+      "confidence": 1.0,
+      "source_text": ""
+    },
+    {
+      "id": "ddr6370",
+      "type": "Component",
+      "label": "DDR6370",
+      "description": "DDR at 6370 frequency",
+      "attributes": {},
+      "confidence": 1.0,
+      "source_text": ""
+    },
+    {
+      "id": "case1_ddr",
+      "type": "Metric",
+      "label": "Case1: DDR\u4f7f\u7528\u7387 82.6%",
+      "description": "First case - high DDR usage",
+      "attributes": {},
+      "confidence": 1.0,
+      "source_text": ""
+    },
+    {
+      "id": "case1_vcore",
+      "type": "Symptom",
+      "label": "Case1: VCORE 725mV @ 82.6%",
+      "description": "First case - severe VCORE issue",
+      "attributes": {},
+      "confidence": 1.0,
+      "source_text": ""
+    },
+    {
+      "id": "case2_ddr",
+      "type": "Metric",
+      "label": "Case2: DDR\u4f7f\u7528\u7387 29.67%",
+      "description": "Second case - moderate DDR usage",
+      "attributes": {},
+      "confidence": 1.0,
+      "source_text": ""
+    },
+    {
+      "id": "case2_vcore",
+      "type": "Symptom",
+      "label": "Case2: VCORE 725mV @ 29.32%",
+      "description": "Second case - moderate VCORE issue",
+      "attributes": {},
+      "confidence": 1.0,
+      "source_text": ""
+    },
+    {
+      "id": "mmdvfs",
+      "type": "Hypothesis",
+      "label": "MMDVFS",
+      "description": "Ruled out in both cases - OPP4",
+      "attributes": {},
+      "confidence": 1.0,
+      "source_text": ""
+    }
+  ],
+  "relations": [
+    {
+      "source": "rc3",
+      "target": "rc1",
+      "type": "CAUSES",
+      "is_causal": true,
+      "confidence": 1.0,
+      "evidence": "",
+      "attributes": {},
+      "causal_effect": {
+        "strength": 0.95,
+        "is_direct": true,
+        "temporal_order": "immediate",
+        "mechanism": "Policy drives CM behavior"
+      }
+    },
+    {
+      "source": "rc1",
+      "target": "cpu_big",
+      "type": "CAUSES",
+      "is_causal": true,
+      "confidence": 1.0,
+      "evidence": "",
+      "attributes": {},
+      "causal_effect": {
+        "strength": 0.95,
+        "is_direct": true,
+        "temporal_order": "immediate",
+        "mechanism": "CM sets large core frequency"
+      }
+    },
+    {
+      "source": "rc1",
+      "target": "cpu_mid",
+      "type": "CAUSES",
+      "is_causal": true,
+      "confidence": 1.0,
+      "evidence": "",
+      "attributes": {},
+      "causal_effect": {
+        "strength": 0.95,
+        "is_direct": true,
+        "temporal_order": "immediate",
+        "mechanism": "CM sets medium core frequency"
+      }
+    },
+    {
+      "source": "rc1",
+      "target": "cpu_small",
+      "type": "CAUSES",
+      "is_causal": true,
+      "confidence": 1.0,
+      "evidence": "",
+      "attributes": {},
+      "causal_effect": {
+        "strength": 0.95,
+        "is_direct": true,
+        "temporal_order": "immediate",
+        "mechanism": "CM sets small core frequency"
+      }
+    },
+    {
+      "source": "cpu_big",
+      "target": "ddr_vote",
+      "type": "CAUSES",
+      "is_causal": true,
+      "confidence": 1.0,
+      "evidence": "",
+      "attributes": {},
+      "causal_effect": {
+        "strength": 0.9,
+        "is_direct": true,
+        "temporal_order": "immediate",
+        "mechanism": "High CPU triggers DDR SW_REQ2"
+      }
+    },
+    {
+      "source": "rc2",
+      "target": "ddr_vote",
+      "type": "CAUSES",
+      "is_causal": true,
+      "confidence": 1.0,
+      "evidence": "",
+      "attributes": {},
+      "causal_effect": {
+        "strength": 0.7,
+        "is_direct": true,
+        "temporal_order": "immediate",
+        "mechanism": "PowerHal SW_REQ3 voting"
+      }
+    },
+    {
+      "source": "ddr_vote",
+      "target": "ddr5460",
+      "type": "CAUSES",
+      "is_causal": true,
+      "confidence": 1.0,
+      "evidence": "",
+      "attributes": {},
+      "causal_effect": {
+        "strength": 0.8,
+        "is_direct": true,
+        "temporal_order": "seconds",
+        "mechanism": "Voting elevates DDR5460"
+      }
+    },
+    {
+      "source": "ddr_vote",
+      "target": "ddr6370",
+      "type": "CAUSES",
+      "is_causal": true,
+      "confidence": 1.0,
+      "evidence": "",
+      "attributes": {},
+      "causal_effect": {
+        "strength": 0.9,
+        "is_direct": true,
+        "temporal_order": "seconds",
+        "mechanism": "Voting elevates DDR6370"
+      }
+    },
+    {
+      "source": "ddr5460",
+      "target": "case1_ddr",
+      "type": "CAUSES",
+      "is_causal": true,
+      "confidence": 1.0,
+      "evidence": "",
+      "attributes": {},
+      "causal_effect": {
+        "strength": 0.5,
+        "is_direct": true,
+        "temporal_order": "immediate",
+        "mechanism": "DDR5460 contributes to total"
+      }
+    },
+    {
+      "source": "ddr6370",
+      "target": "case1_ddr",
+      "type": "CAUSES",
+      "is_causal": true,
+      "confidence": 1.0,
+      "evidence": "",
+      "attributes": {},
+      "causal_effect": {
+        "strength": 0.5,
+        "is_direct": true,
+        "temporal_order": "immediate",
+        "mechanism": "DDR6370 contributes to total"
+      }
+    },
+    {
+      "source": "case1_ddr",
+      "target": "case1_vcore",
+      "type": "CAUSES",
+      "is_causal": true,
+      "confidence": 1.0,
+      "evidence": "",
+      "attributes": {},
+      "causal_effect": {
+        "strength": 0.95,
+        "is_direct": true,
+        "temporal_order": "immediate",
+        "mechanism": "82.6% DDR forces VCORE 725mV"
+      }
+    },
+    {
+      "source": "ddr5460",
+      "target": "case2_ddr",
+      "type": "CAUSES",
+      "is_causal": true,
+      "confidence": 1.0,
+      "evidence": "",
+      "attributes": {},
+      "causal_effect": {
+        "strength": 0.12,
+        "is_direct": true,
+        "temporal_order": "immediate",
+        "mechanism": "3.54% contribution"
+      }
+    },
+    {
+      "source": "ddr6370",
+      "target": "case2_ddr",
+      "type": "CAUSES",
+      "is_causal": true,
+      "confidence": 1.0,
+      "evidence": "",
+      "attributes": {},
+      "causal_effect": {
+        "strength": 0.88,
+        "is_direct": true,
+        "temporal_order": "immediate",
+        "mechanism": "26.13% contribution"
+      }
+    },
+    {
+      "source": "case2_ddr",
+      "target": "case2_vcore",
+      "type": "CAUSES",
+      "is_causal": true,
+      "confidence": 1.0,
+      "evidence": "",
+      "attributes": {},
+      "causal_effect": {
+        "strength": 0.95,
+        "is_direct": true,
+        "temporal_order": "immediate",
+        "mechanism": "29.67% DDR forces VCORE 725mV"
+      }
+    },
+    {
+      "source": "mmdvfs",
+      "target": "case1_vcore",
+      "type": "RULES_OUT",
+      "is_causal": false,
+      "confidence": 0.9,
+      "evidence": "",
+      "attributes": {}
+    },
+    {
+      "source": "mmdvfs",
+      "target": "case2_vcore",
+      "type": "RULES_OUT",
+      "is_causal": false,
+      "confidence": 0.9,
+      "evidence": "",
+      "attributes": {}
+    }
+  ],
+  "metadata": {
+    "num_entities": 14,
+    "num_relations": 16,
+    "entity_types": [
+      "RootCause",
+      "Hypothesis",
+      "Symptom",
+      "Component",
+      "Metric"
+    ],
+    "relation_types": [
+      "RULES_OUT",
+      "CAUSES"
+    ]
+  }
+}

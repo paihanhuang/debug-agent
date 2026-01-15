@@ -1,0 +1,31 @@
+============================= test session starts ==============================
+platform linux -- Python 3.12.3, pytest-9.0.2, pluggy-1.6.0 -- /home/etem/inference-engine/.venv/bin/python
+cachedir: .pytest_cache
+rootdir: /home/etem/inference-engine
+configfile: pyproject.toml
+plugins: anyio-4.12.1
+collecting ... collected 10 items
+
+src/tests/test_phase1.py::TestVectorStore::test_add_and_search PASSED    [ 10%]
+src/tests/test_phase1.py::TestVectorStore::test_empty_search PASSED      [ 20%]
+src/tests/test_phase1.py::TestVectorStore::test_save_and_load PASSED     [ 30%]
+src/tests/test_phase1.py::TestVectorStore::test_clear PASSED             [ 40%]
+src/tests/test_phase1.py::TestFixStore::test_add_and_get_by_root_cause PASSED [ 50%]
+src/tests/test_phase1.py::TestFixStore::test_delete_fix PASSED           [ 60%]
+src/tests/test_phase1.py::TestFixStore::test_get_all_fixes PASSED        [ 70%]
+src/tests/test_phase1.py::TestFixStore::test_update_existing_fix PASSED  [ 80%]
+src/tests/test_phase1.py::TestHistoricalFix::test_to_dict PASSED         [ 90%]
+src/tests/test_phase1.py::TestHistoricalFix::test_from_dict PASSED       [100%]
+
+=============================== warnings summary ===============================
+<frozen importlib._bootstrap>:488
+  <frozen importlib._bootstrap>:488: DeprecationWarning: builtin type SwigPyPacked has no __module__ attribute
+
+<frozen importlib._bootstrap>:488
+  <frozen importlib._bootstrap>:488: DeprecationWarning: builtin type SwigPyObject has no __module__ attribute
+
+<frozen importlib._bootstrap>:488
+  <frozen importlib._bootstrap>:488: DeprecationWarning: builtin type swigvarlink has no __module__ attribute
+
+-- Docs: https://docs.pytest.org/en/stable/how-to/capture-warnings.html
+======================== 10 passed, 3 warnings in 0.43s ========================

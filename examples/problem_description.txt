@@ -1,0 +1,5 @@
+Production web server experiencing intermittent 503 errors.
+Users report slow page loads during peak hours (10am-2pm daily).
+Error rate increased from 0.1% to 15% over the past week.
+Customer support tickets increased by 300% related to "page not loading" issues.
+The issue affects all endpoints but is most severe on /api/users and /api/orders.

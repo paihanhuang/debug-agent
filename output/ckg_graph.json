@@ -1,0 +1,211 @@
+{
+  "entities": [
+    {
+      "id": "e1",
+      "type": "RootCause",
+      "label": "Missing database index",
+      "description": "",
+      "attributes": {},
+      "confidence": 1.0,
+      "source_text": ""
+    },
+    {
+      "id": "e2",
+      "type": "Component",
+      "label": "user_sessions table",
+      "description": "",
+      "attributes": {},
+      "confidence": 1.0,
+      "source_text": ""
+    },
+    {
+      "id": "e3",
+      "type": "Observation",
+      "label": "Full table scans",
+      "description": "",
+      "attributes": {},
+      "confidence": 1.0,
+      "source_text": ""
+    },
+    {
+      "id": "e4",
+      "type": "Metric",
+      "label": "Slow queries (45s)",
+      "description": "",
+      "attributes": {},
+      "confidence": 1.0,
+      "source_text": ""
+    },
+    {
+      "id": "e5",
+      "type": "Component",
+      "label": "Connection pool",
+      "description": "",
+      "attributes": {},
+      "confidence": 1.0,
+      "source_text": ""
+    },
+    {
+      "id": "e6",
+      "type": "Symptom",
+      "label": "Connection exhaustion",
+      "description": "",
+      "attributes": {},
+      "confidence": 1.0,
+      "source_text": ""
+    },
+    {
+      "id": "e7",
+      "type": "Metric",
+      "label": "High memory (92%)",
+      "description": "",
+      "attributes": {},
+      "confidence": 1.0,
+      "source_text": ""
+    },
+    {
+      "id": "e8",
+      "type": "Symptom",
+      "label": "503 errors",
+      "description": "",
+      "attributes": {},
+      "confidence": 1.0,
+      "source_text": ""
+    },
+    {
+      "id": "e9",
+      "type": "Symptom",
+      "label": "Slow page loads",
+      "description": "",
+      "attributes": {},
+      "confidence": 1.0,
+      "source_text": ""
+    },
+    {
+      "id": "e10",
+      "type": "Hypothesis",
+      "label": "Network congestion (ruled out)",
+      "description": "",
+      "attributes": {},
+      "confidence": 1.0,
+      "source_text": ""
+    }
+  ],
+  "relations": [
+    {
+      "source": "e1",
+      "target": "e3",
+      "type": "CAUSES",
+      "is_causal": true,
+      "confidence": 1.0,
+      "evidence": "",
+      "attributes": {},
+      "causal_effect": {
+        "strength": 0.95,
+        "is_direct": true,
+        "temporal_order": "immediate",
+        "mechanism": "Missing index forces full scan"
+      }
+    },
+    {
+      "source": "e3",
+      "target": "e4",
+      "type": "CAUSES",
+      "is_causal": true,
+      "confidence": 1.0,
+      "evidence": "",
+      "attributes": {},
+      "causal_effect": {
+        "strength": 0.9,
+        "is_direct": true,
+        "temporal_order": "seconds",
+        "mechanism": "Full scans slow on large tables"
+      }
+    },
+    {
+      "source": "e4",
+      "target": "e6",
+      "type": "CAUSES",
+      "is_causal": true,
+      "confidence": 1.0,
+      "evidence": "",
+      "attributes": {},
+      "causal_effect": {
+        "strength": 0.85,
+        "is_direct": true,
+        "temporal_order": "minutes",
+        "mechanism": "Slow queries hold connections"
+      }
+    },
+    {
+      "source": "e6",
+      "target": "e7",
+      "type": "CAUSES",
+      "is_causal": true,
+      "confidence": 1.0,
+      "evidence": "",
+      "attributes": {},
+      "causal_effect": {
+        "strength": 0.7,
+        "is_direct": true,
+        "temporal_order": "minutes",
+        "mechanism": "Waiting increases memory"
+      }
+    },
+    {
+      "source": "e6",
+      "target": "e8",
+      "type": "CAUSES",
+      "is_causal": true,
+      "confidence": 1.0,
+      "evidence": "",
+      "attributes": {},
+      "causal_effect": {
+        "strength": 0.95,
+        "is_direct": true,
+        "temporal_order": "immediate",
+        "mechanism": "No connections for new requests"
+      }
+    },
+    {
+      "source": "e8",
+      "target": "e9",
+      "type": "CAUSES",
+      "is_causal": true,
+      "confidence": 1.0,
+      "evidence": "",
+      "attributes": {},
+      "causal_effect": {
+        "strength": 0.8,
+        "is_direct": true,
+        "temporal_order": "immediate",
+        "mechanism": "Errors cause slowness"
+      }
+    },
+    {
+      "source": "e10",
+      "target": "e6",
+      "type": "RULES_OUT",
+      "is_causal": false,
+      "confidence": 0.9,
+      "evidence": "",
+      "attributes": {}
+    }
+  ],
+  "metadata": {
+    "num_entities": 10,
+    "num_relations": 7,
+    "entity_types": [
+      "Observation",
+      "RootCause",
+      "Hypothesis",
+      "Component",
+      "Metric",
+      "Symptom"
+    ],
+    "relation_types": [
+      "CAUSES",
+      "RULES_OUT"
+    ]
+  }
+}

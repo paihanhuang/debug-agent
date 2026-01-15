@@ -1,0 +1,52 @@
+# Incident Analysis Report
+
+## Investigation
+
+Initial investigation started by checking application server metrics.
+Observed high memory consumption (92%) on all 4 app server nodes.
+CPU usage was elevated at 85% but not at critical levels.
+
+Checked connection pool metrics using monitoring dashboard.
+Found that all 100 database connections were exhausted.
+Connection wait time exceeded 30 seconds during peak hours.
+
+## Observations
+
+Database query logs revealed multiple long-running queries.
+The slowest queries were taking 45+ seconds to complete.
+Most slow queries were SELECT statements on the user_sessions table.
+
+EXPLAIN ANALYZE showed full table scans on user_sessions.
+The table contains 50 million rows and lacks proper indexing.
+
+## Hypothesis
+
+Hypothesis 1: Network congestion between app servers and database.
+- Ruled out after checking network metrics (latency < 1ms).
+
+Hypothesis 2: Database server resource exhaustion.
+- Ruled out as database CPU and memory were normal.
+
+Hypothesis 3: Missing database index causing slow queries.
+- Confirmed after analyzing query execution plans.
+
+## Root Cause
+
+Root cause identified: Missing database index on the user_sessions table.
+
+The user_sessions table was missing an index on the (user_id, created_at) columns.
+This caused full table scans for every session lookup query.
+During peak hours, the slow queries blocked connection pool resources.
+This led to connection exhaustion, causing 503 errors for new requests.
+
+## Resolution
+
+Applied the following fix:
+1. Created composite index on user_sessions(user_id, created_at)
+2. Increased connection pool size to 150 as temporary measure
+3. Implemented connection timeout of 5 seconds
+
+After fix deployment:
+- Query time reduced from 45s to 50ms
+- Error rate dropped to 0.01%
+- Connection pool utilization normalized at 40%

@@ -1,0 +1,471 @@
+{
+  "entities": [
+    {
+      "id": "rc_policy",
+      "type": "RootCause",
+      "label": "\u8abf\u63a7\u7b56\u7565 (Control Policy)",
+      "description": "System control policy drives CM behavior",
+      "attributes": {},
+      "confidence": 1.0,
+      "source_text": ""
+    },
+    {
+      "id": "rc_cm",
+      "type": "RootCause",
+      "label": "CM (CPU Manager)",
+      "description": "CPU management controls frequency and DDR voting via SW_REQ2",
+      "attributes": {},
+      "confidence": 1.0,
+      "source_text": ""
+    },
+    {
+      "id": "rc_powerhal",
+      "type": "RootCause",
+      "label": "PowerHal",
+      "description": "Power HAL affects DDR voting via SW_REQ3",
+      "attributes": {},
+      "confidence": 1.0,
+      "source_text": ""
+    },
+    {
+      "id": "rc_mmdvfs",
+      "type": "RootCause",
+      "label": "MMDVFS OPP3",
+      "description": "Multimedia DVFS at OPP3 - causes VCORE 600mV floor (Case3 only)",
+      "attributes": {},
+      "confidence": 1.0,
+      "source_text": ""
+    },
+    {
+      "id": "cpu_big",
+      "type": "Component",
+      "label": "CPU \u5927\u6838",
+      "description": "Large cores (1800-2700MHz)",
+      "attributes": {},
+      "confidence": 1.0,
+      "source_text": ""
+    },
+    {
+      "id": "cpu_mid",
+      "type": "Component",
+      "label": "CPU \u4e2d\u6838",
+      "description": "Medium cores (1000-2500MHz)",
+      "attributes": {},
+      "confidence": 1.0,
+      "source_text": ""
+    },
+    {
+      "id": "cpu_small",
+      "type": "Component",
+      "label": "CPU \u5c0f\u6838",
+      "description": "Small cores (1000-2100MHz)",
+      "attributes": {},
+      "confidence": 1.0,
+      "source_text": ""
+    },
+    {
+      "id": "ddr_vote",
+      "type": "Component",
+      "label": "DDR \u6295\u7968\u6a5f\u5236",
+      "description": "SW_REQ2 (CM) + SW_REQ3 (PowerHal)",
+      "attributes": {},
+      "confidence": 1.0,
+      "source_text": ""
+    },
+    {
+      "id": "ddr5460",
+      "type": "Component",
+      "label": "DDR5460",
+      "description": "DDR at 5460 frequency",
+      "attributes": {},
+      "confidence": 1.0,
+      "source_text": ""
+    },
+    {
+      "id": "ddr6370",
+      "type": "Component",
+      "label": "DDR6370",
+      "description": "DDR at 6370 frequency",
+      "attributes": {},
+      "confidence": 1.0,
+      "source_text": ""
+    },
+    {
+      "id": "c1_ddr",
+      "type": "Metric",
+      "label": "Case1: DDR 82.6%",
+      "description": "First case - high DDR usage",
+      "attributes": {},
+      "confidence": 1.0,
+      "source_text": ""
+    },
+    {
+      "id": "c1_vcore",
+      "type": "Symptom",
+      "label": "Case1: VCORE 725mV @ 82.6%",
+      "description": "Severe - ceiling CPUs",
+      "attributes": {},
+      "confidence": 1.0,
+      "source_text": ""
+    },
+    {
+      "id": "c2_ddr",
+      "type": "Metric",
+      "label": "Case2: DDR 29.67%",
+      "description": "Second case - moderate DDR",
+      "attributes": {},
+      "confidence": 1.0,
+      "source_text": ""
+    },
+    {
+      "id": "c2_vcore",
+      "type": "Symptom",
+      "label": "Case2: VCORE 725mV @ 29.32%",
+      "description": "Moderate - SW_REQ2+3",
+      "attributes": {},
+      "confidence": 1.0,
+      "source_text": ""
+    },
+    {
+      "id": "c3_ddr",
+      "type": "Metric",
+      "label": "Case3: DDR 54.14%",
+      "description": "Third case - DDR5460 23.37% + DDR6370 30.77%",
+      "attributes": {},
+      "confidence": 1.0,
+      "source_text": ""
+    },
+    {
+      "id": "c3_vcore_high",
+      "type": "Symptom",
+      "label": "Case3: VCORE 725mV @ 52.51%",
+      "description": "High - DDR caused",
+      "attributes": {},
+      "confidence": 1.0,
+      "source_text": ""
+    },
+    {
+      "id": "c3_vcore_floor",
+      "type": "Symptom",
+      "label": "Case3: VCORE 600mV floor",
+      "description": "Should be 575mV - MMDVFS caused",
+      "attributes": {},
+      "confidence": 1.0,
+      "source_text": ""
+    },
+    {
+      "id": "h_mmdvfs",
+      "type": "Hypothesis",
+      "label": "MMDVFS (OPP4)",
+      "description": "Ruled out for Case1/2 - stayed at OPP4",
+      "attributes": {},
+      "confidence": 1.0,
+      "source_text": ""
+    }
+  ],
+  "relations": [
+    {
+      "source": "rc_policy",
+      "target": "rc_cm",
+      "type": "CAUSES",
+      "is_causal": true,
+      "confidence": 1.0,
+      "evidence": "",
+      "attributes": {},
+      "causal_effect": {
+        "strength": 0.95,
+        "is_direct": true,
+        "temporal_order": "immediate",
+        "mechanism": "Policy drives CM"
+      }
+    },
+    {
+      "source": "rc_cm",
+      "target": "cpu_big",
+      "type": "CAUSES",
+      "is_causal": true,
+      "confidence": 1.0,
+      "evidence": "",
+      "attributes": {},
+      "causal_effect": {
+        "strength": 0.95,
+        "is_direct": true,
+        "temporal_order": "immediate",
+        "mechanism": "CM sets CPU freq"
+      }
+    },
+    {
+      "source": "rc_cm",
+      "target": "cpu_mid",
+      "type": "CAUSES",
+      "is_causal": true,
+      "confidence": 1.0,
+      "evidence": "",
+      "attributes": {},
+      "causal_effect": {
+        "strength": 0.95,
+        "is_direct": true,
+        "temporal_order": "immediate",
+        "mechanism": "CM sets CPU freq"
+      }
+    },
+    {
+      "source": "rc_cm",
+      "target": "cpu_small",
+      "type": "CAUSES",
+      "is_causal": true,
+      "confidence": 1.0,
+      "evidence": "",
+      "attributes": {},
+      "causal_effect": {
+        "strength": 0.95,
+        "is_direct": true,
+        "temporal_order": "immediate",
+        "mechanism": "CM sets CPU freq"
+      }
+    },
+    {
+      "source": "cpu_big",
+      "target": "ddr_vote",
+      "type": "CAUSES",
+      "is_causal": true,
+      "confidence": 1.0,
+      "evidence": "",
+      "attributes": {},
+      "causal_effect": {
+        "strength": 0.9,
+        "is_direct": true,
+        "temporal_order": "immediate",
+        "mechanism": "SW_REQ2 voting"
+      }
+    },
+    {
+      "source": "rc_powerhal",
+      "target": "ddr_vote",
+      "type": "CAUSES",
+      "is_causal": true,
+      "confidence": 1.0,
+      "evidence": "",
+      "attributes": {},
+      "causal_effect": {
+        "strength": 0.7,
+        "is_direct": true,
+        "temporal_order": "immediate",
+        "mechanism": "SW_REQ3 voting"
+      }
+    },
+    {
+      "source": "ddr_vote",
+      "target": "ddr5460",
+      "type": "CAUSES",
+      "is_causal": true,
+      "confidence": 1.0,
+      "evidence": "",
+      "attributes": {},
+      "causal_effect": {
+        "strength": 0.8,
+        "is_direct": true,
+        "temporal_order": "seconds",
+        "mechanism": "Elevates DDR5460"
+      }
+    },
+    {
+      "source": "ddr_vote",
+      "target": "ddr6370",
+      "type": "CAUSES",
+      "is_causal": true,
+      "confidence": 1.0,
+      "evidence": "",
+      "attributes": {},
+      "causal_effect": {
+        "strength": 0.9,
+        "is_direct": true,
+        "temporal_order": "seconds",
+        "mechanism": "Elevates DDR6370"
+      }
+    },
+    {
+      "source": "ddr5460",
+      "target": "c1_ddr",
+      "type": "CAUSES",
+      "is_causal": true,
+      "confidence": 1.0,
+      "evidence": "",
+      "attributes": {},
+      "causal_effect": {
+        "strength": 0.5,
+        "is_direct": true,
+        "temporal_order": "immediate",
+        "mechanism": "Contributes to 82.6%"
+      }
+    },
+    {
+      "source": "ddr6370",
+      "target": "c1_ddr",
+      "type": "CAUSES",
+      "is_causal": true,
+      "confidence": 1.0,
+      "evidence": "",
+      "attributes": {},
+      "causal_effect": {
+        "strength": 0.5,
+        "is_direct": true,
+        "temporal_order": "immediate",
+        "mechanism": "Contributes to 82.6%"
+      }
+    },
+    {
+      "source": "c1_ddr",
+      "target": "c1_vcore",
+      "type": "CAUSES",
+      "is_causal": true,
+      "confidence": 1.0,
+      "evidence": "",
+      "attributes": {},
+      "causal_effect": {
+        "strength": 0.95,
+        "is_direct": true,
+        "temporal_order": "immediate",
+        "mechanism": "DDR forces VCORE"
+      }
+    },
+    {
+      "source": "ddr5460",
+      "target": "c2_ddr",
+      "type": "CAUSES",
+      "is_causal": true,
+      "confidence": 1.0,
+      "evidence": "",
+      "attributes": {},
+      "causal_effect": {
+        "strength": 0.12,
+        "is_direct": true,
+        "temporal_order": "immediate",
+        "mechanism": "3.54% contribution"
+      }
+    },
+    {
+      "source": "ddr6370",
+      "target": "c2_ddr",
+      "type": "CAUSES",
+      "is_causal": true,
+      "confidence": 1.0,
+      "evidence": "",
+      "attributes": {},
+      "causal_effect": {
+        "strength": 0.88,
+        "is_direct": true,
+        "temporal_order": "immediate",
+        "mechanism": "26.13% contribution"
+      }
+    },
+    {
+      "source": "c2_ddr",
+      "target": "c2_vcore",
+      "type": "CAUSES",
+      "is_causal": true,
+      "confidence": 1.0,
+      "evidence": "",
+      "attributes": {},
+      "causal_effect": {
+        "strength": 0.95,
+        "is_direct": true,
+        "temporal_order": "immediate",
+        "mechanism": "DDR forces VCORE"
+      }
+    },
+    {
+      "source": "ddr5460",
+      "target": "c3_ddr",
+      "type": "CAUSES",
+      "is_causal": true,
+      "confidence": 1.0,
+      "evidence": "",
+      "attributes": {},
+      "causal_effect": {
+        "strength": 0.43,
+        "is_direct": true,
+        "temporal_order": "immediate",
+        "mechanism": "23.37% contribution"
+      }
+    },
+    {
+      "source": "ddr6370",
+      "target": "c3_ddr",
+      "type": "CAUSES",
+      "is_causal": true,
+      "confidence": 1.0,
+      "evidence": "",
+      "attributes": {},
+      "causal_effect": {
+        "strength": 0.57,
+        "is_direct": true,
+        "temporal_order": "immediate",
+        "mechanism": "30.77% contribution"
+      }
+    },
+    {
+      "source": "c3_ddr",
+      "target": "c3_vcore_high",
+      "type": "CAUSES",
+      "is_causal": true,
+      "confidence": 1.0,
+      "evidence": "",
+      "attributes": {},
+      "causal_effect": {
+        "strength": 0.95,
+        "is_direct": true,
+        "temporal_order": "immediate",
+        "mechanism": "DDR 54% forces VCORE 725mV"
+      }
+    },
+    {
+      "source": "rc_mmdvfs",
+      "target": "c3_vcore_floor",
+      "type": "CAUSES",
+      "is_causal": true,
+      "confidence": 1.0,
+      "evidence": "",
+      "attributes": {},
+      "causal_effect": {
+        "strength": 1.0,
+        "is_direct": true,
+        "temporal_order": "immediate",
+        "mechanism": "OPP3 100% locks VCORE 600mV"
+      }
+    },
+    {
+      "source": "h_mmdvfs",
+      "target": "c1_vcore",
+      "type": "RULES_OUT",
+      "is_causal": false,
+      "confidence": 0.9,
+      "evidence": "",
+      "attributes": {}
+    },
+    {
+      "source": "h_mmdvfs",
+      "target": "c2_vcore",
+      "type": "RULES_OUT",
+      "is_causal": false,
+      "confidence": 0.9,
+      "evidence": "",
+      "attributes": {}
+    }
+  ],
+  "metadata": {
+    "num_entities": 18,
+    "num_relations": 20,
+    "entity_types": [
+      "Hypothesis",
+      "RootCause",
+      "Metric",
+      "Component",
+      "Symptom"
+    ],
+    "relation_types": [
+      "RULES_OUT",
+      "CAUSES"
+    ]
+  }
+}
