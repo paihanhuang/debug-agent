@@ -349,6 +349,12 @@ def main():
     refine_parser.add_argument("--threshold", "-t", type=float, default=8.0, help="Score threshold to stop (1-10)")
     refine_parser.add_argument("--output", "-o", help="Output file for final result")
     
+    # Hybrid two-stage diagnosis command
+    hybrid_parser = subparsers.add_parser("hybrid", help="Run hybrid two-stage diagnosis")
+    hybrid_parser.add_argument("--input", "-i", required=True, help="Input metrics/observation text or file path")
+    hybrid_parser.add_argument("--output", "-o", help="Output file for result")
+    hybrid_parser.add_argument("--case-name", "-n", default="hybrid_diagnosis", help="Case name for output")
+    
     args = parser.parse_args()
     
     if args.command == "run":
@@ -357,10 +363,128 @@ def main():
         return run_batch_evaluation(args)
     elif args.command == "refine":
         return run_refinement(args)
+    elif args.command == "hybrid":
+        return run_hybrid_diagnosis(args)
     else:
         parser.print_help()
         return 1
 
 
+def run_hybrid_diagnosis(args) -> int:
+    """Run hybrid two-stage diagnosis."""
+    import tempfile
+    
+    # Add paths for imports
+    project_root = Path(__file__).parent.parent
+    sys.path.insert(0, str(project_root))
+    sys.path.insert(0, str(project_root / "debug-engine" / "src"))
+    
+    print("=" * 70)
+    print("Hybrid Two-Stage Diagnosis")
+    print("=" * 70)
+    
+    # Get input
+    if os.path.isfile(args.input):
+        with open(args.input, "r") as f:
+            user_input = f.read()
+        print(f"\nInput file: {args.input}")
+    else:
+        user_input = args.input
+    
+    print(f"\nInput:\n{user_input[:200]}...")
+    
+    # Load CKG
+    ckg_path = project_root / "output" / "full_ckg.json"
+    if not ckg_path.exists():
+        print(f"\n❌ CKG not found at: {ckg_path}")
+        return 1
+    
+    with open(ckg_path, "r") as f:
+        ckg_data = json.load(f)
+    
+    print(f"\n[1] Loading CKG (Entities: {ckg_data['metadata']['num_entities']}, Relations: {ckg_data['metadata']['num_relations']})")
+    
+    # Import hybrid agent
+    try:
+        from graphrag.hybrid_agent import HybridTwoStageAgent
+    except ImportError as e:
+        print(f"\n❌ Failed to import HybridTwoStageAgent: {e}")
+        return 1
+    
+    # Initialize agent
+    print("\n[2] Initializing Hybrid Two-Stage Agent...")
+    
+    with tempfile.TemporaryDirectory() as tmpdir:
+        fix_db_path = Path(tmpdir) / "fixes.db"
+        
+        try:
+            agent = HybridTwoStageAgent(
+                neo4j_uri=os.getenv("NEO4J_URI", "bolt://localhost:7687"),
+                neo4j_user=os.getenv("NEO4J_USER", "neo4j"),
+                neo4j_password=os.getenv("NEO4J_PASSWORD", "password"),
+                fix_db_path=str(fix_db_path),
+                openai_api_key=os.getenv("OPENAI_API_KEY"),
+            )
+        except Exception as e:
+            print(f"\n❌ Failed to initialize agent: {e}")
+            return 1
+        
+        with agent:
+            # Load CKG
+            agent.load_ckg(ckg_data)
+            print("    ✓ CKG loaded")
+            
+            # Add historical fixes
+            from graphrag.fix_store import HistoricalFix
+            agent.add_historical_fix(
+                case_id="case_001",
+                root_cause="CM (CPU Manager)",
+                symptom_summary="VCORE 725mV at 82.6%",
+                metrics={"VCORE_725": 82.6},
+                fix_description="Review CPU frequency control policy.",
+            )
+            agent.add_historical_fix(
+                case_id="case_003a",
+                root_cause="MMDVFS OPP3",
+                symptom_summary="VCORE 600mV floor",
+                metrics={"MMDVFS_OPP3": 100},
+                fix_description="Review MMDVFS OPP settings.",
+            )
+            print("    ✓ Historical fixes added")
+            
+            # Run diagnosis
+            print("\n[3] Running 3-stage diagnosis pipeline...")
+            result = agent.diagnose(user_input)
+            
+            # Display results
+            print("\n" + "=" * 70)
+            print("RESULTS")
+            print("=" * 70)
+            
+            print(f"\n📊 Anomalies Detected: {len(result.anomalies)}")
+            for a in result.anomalies:
+                print(f"   - {a.type}: {a.metric} = {a.value} ({a.severity})")
+            
+            print(f"\n🔍 Dual Issue: {'Yes' if result.has_dual_issue else 'No'}")
+            print(f"📞 LLM Calls: {result.llm_calls}")
+            
+            print(f"\n📝 Synthesized Report:")
+            print("-" * 50)
+            print(result.synthesized_report)
+            print("-" * 50)
+            
+            # Save output
+            if args.output:
+                output_data = result.to_dict()
+                with open(args.output, "w") as f:
+                    json.dump(output_data, f, indent=2, ensure_ascii=False)
+                print(f"\n✓ Results saved to: {args.output}")
+            
+            print("\n" + "=" * 70)
+    
+    return 0
+
+
 if __name__ == "__main__":
     sys.exit(main())
+

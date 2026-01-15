@@ -186,3 +186,97 @@ class Retriever:
         # Convert metrics to search query and proceed
         query_text = metrics.to_query_string()
         return self.retrieve(query_text, top_k_vectors=top_k_vectors)
+    
+    def retrieve_for_anomaly(
+        self,
+        anomaly: "DetectedAnomaly",
+        metrics: ExtractedMetrics,
+    ) -> DiagnosisContext:
+        """Retrieve CKG context specific to one anomaly (Stage 2).
+        
+        Args:
+            anomaly: The detected anomaly to get context for
+            metrics: Original extracted metrics
+            
+        Returns:
+            DiagnosisContext focused on this anomaly's indicated causes
+        """
+        from .models import DetectedAnomaly  # Import here to avoid circular
+        
+        # Get indicated root cause entities
+        root_causes = []
+        for cause_id in anomaly.indicated_causes:
+            entity = self._neo4j_store.get_entity(cause_id)
+            if entity and entity.type == "RootCause":
+                root_causes.append(entity)
+        
+        # If no indicated causes, try to find by anomaly type
+        if not root_causes:
+            root_causes = self._infer_causes_from_type(anomaly.type)
+        
+        # Get subgraph around indicated causes
+        cause_ids = anomaly.indicated_causes or [rc.id for rc in root_causes]
+        subgraph = {}
+        if cause_ids:
+            subgraph = self._neo4j_store.get_subgraph(cause_ids, hops=2)
+        
+        # Build causal chains from root causes
+        causal_chains = []
+        for rc in root_causes:
+            # Find symptom nodes that match anomaly type
+            symptom_ids = self._find_symptom_for_anomaly(anomaly.type)
+            for symptom_id in symptom_ids[:1]:  # Just first match
+                chain = self._neo4j_store.get_causal_chain(rc.id, symptom_id)
+                if chain:
+                    causal_chains.append(chain)
+        
+        # Get relevant historical fixes
+        relevant_fixes = []
+        for rc in root_causes:
+            fixes = self._fix_store.get_fixes_by_root_cause(rc.label)
+            relevant_fixes.extend(fixes)
+        
+        # Limit fixes to avoid token bloat
+        relevant_fixes = relevant_fixes[:3]
+        
+        return DiagnosisContext(
+            metrics=metrics,
+            matched_entities=[],  # Not using vector search here
+            root_causes=root_causes,
+            causal_chains=causal_chains,
+            subgraph=subgraph,
+            relevant_fixes=relevant_fixes,
+        )
+    
+    def _infer_causes_from_type(self, anomaly_type: str) -> list:
+        """Infer likely root causes from anomaly type."""
+        from .neo4j_store import EntityNode
+        
+        # Map anomaly types to likely root causes
+        type_to_causes = {
+            "VCORE_CEILING": ["rc_cm", "rc_powerhal"],
+            "VCORE_FLOOR": ["rc_mmdvfs"],
+            "DDR_HIGH": ["rc_cm", "rc_powerhal"],
+            "MMDVFS_ABNORMAL": ["rc_mmdvfs"],
+            "CPU_CEILING": ["rc_cm", "rc_policy"],
+        }
+        
+        cause_ids = type_to_causes.get(anomaly_type, [])
+        causes = []
+        for cid in cause_ids:
+            entity = self._neo4j_store.get_entity(cid)
+            if entity:
+                causes.append(entity)
+        return causes
+    
+    def _find_symptom_for_anomaly(self, anomaly_type: str) -> list[str]:
+        """Find symptom entity IDs that match anomaly type."""
+        # Map anomaly types to symptom entity patterns
+        type_to_symptoms = {
+            "VCORE_CEILING": ["c1_vcore", "c2_vcore", "c3_vcore_high"],
+            "VCORE_FLOOR": ["c3_vcore_floor"],
+            "DDR_HIGH": ["c1_ddr", "c2_ddr", "c3_ddr"],
+            "MMDVFS_ABNORMAL": ["c3_vcore_floor"],
+        }
+        return type_to_symptoms.get(anomaly_type, [])
+
