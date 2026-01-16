@@ -19,8 +19,7 @@ from pathlib import Path
 
 from dotenv import load_dotenv
 
-from .llm_judge import LLMReportJudge, LLMProvider
-from .models import EvaluationResult
+from .llm_judge import LLMReportJudge
 
 
 def run_single_evaluation(args) -> int:
@@ -435,7 +434,6 @@ def run_hybrid_diagnosis(args) -> int:
             print("    ✓ CKG loaded")
             
             # Add historical fixes
-            from graphrag.fix_store import HistoricalFix
             agent.add_historical_fix(
                 case_id="case_001",
                 root_cause="CM (CPU Manager)",

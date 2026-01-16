@@ -11,7 +11,7 @@ from typing import TYPE_CHECKING, Any
 import json
 
 if TYPE_CHECKING:
-    from .agent import DebugAgent, DiagnosisResult
+    from .agent import DebugAgent
 
 
 @dataclass

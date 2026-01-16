@@ -185,7 +185,7 @@ class RelationExtractor:
         
         try:
             result = self._llm.complete_json(prompt, RELATION_EXTRACTION_SYSTEM_PROMPT)
-        except Exception as e:
+        except Exception:
             # Fallback to heuristic relation extraction
             return self._fallback_extraction(entities)
         

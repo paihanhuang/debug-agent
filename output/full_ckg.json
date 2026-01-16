@@ -64,10 +64,38 @@
       "source_text": ""
     },
     {
+      "id": "sw_req2",
+      "type": "Component",
+      "label": "SW_REQ2",
+      "description": "DDR voting signal from CM (CPU Manager). If SW_REQ2 is active, root cause is CM.",
+      "attributes": {
+        "source": "CM",
+        "indicates": [
+          "rc_cm"
+        ]
+      },
+      "confidence": 1.0,
+      "source_text": ""
+    },
+    {
+      "id": "sw_req3",
+      "type": "Component",
+      "label": "SW_REQ3",
+      "description": "DDR voting signal from PowerHal. If SW_REQ3 is active, root cause is PowerHal.",
+      "attributes": {
+        "source": "PowerHal",
+        "indicates": [
+          "rc_powerhal"
+        ]
+      },
+      "confidence": 1.0,
+      "source_text": ""
+    },
+    {
       "id": "ddr_vote",
       "type": "Component",
-      "label": "DDR \u6295\u7968\u6a5f\u5236",
-      "description": "SW_REQ2 (CM) + SW_REQ3 (PowerHal)",
+      "label": "DDR 投票機制",
+      "description": "DDR voting mechanism. Check SW_REQ2 for CM, SW_REQ3 for PowerHal.",
       "attributes": {},
       "confidence": 1.0,
       "source_text": ""
@@ -163,14 +191,52 @@
       "source_text": ""
     },
     {
-      "id": "pattern_vcore_ceiling",
+      "id": "pattern_vcore_ceiling_sw_req2",
       "type": "AnomalyPattern",
-      "label": "VCORE 725mV Excessive Usage",
-      "description": "VCORE 725mV usage >10% indicates DDR voting issue. Check CM/PowerHal as root causes.",
+      "label": "VCORE 725mV via SW_REQ2 (CM)",
+      "description": "VCORE 725mV >10% with SW_REQ2 activity indicates CM (CPU Manager) as root cause. SW_REQ2 = CM only.",
       "attributes": {
         "metric": "vcore_725mv_pct",
         "threshold": 10,
         "threshold_type": "gt",
+        "requires_signal": "SW_REQ2",
+        "indicates": [
+          "rc_cm"
+        ]
+      },
+      "confidence": 1.0,
+      "source_text": ""
+    },
+    {
+      "id": "pattern_vcore_ceiling_sw_req3",
+      "type": "AnomalyPattern",
+      "label": "VCORE 725mV via SW_REQ3 (PowerHal)",
+      "description": "VCORE 725mV >10% with SW_REQ3 activity indicates PowerHal as root cause. SW_REQ3 = PowerHal only.",
+      "attributes": {
+        "metric": "vcore_725mv_pct",
+        "threshold": 10,
+        "threshold_type": "gt",
+        "requires_signal": "SW_REQ3",
+        "indicates": [
+          "rc_powerhal"
+        ]
+      },
+      "confidence": 1.0,
+      "source_text": ""
+    },
+    {
+      "id": "pattern_vcore_ceiling_both",
+      "type": "AnomalyPattern",
+      "label": "VCORE 725mV via SW_REQ2+SW_REQ3 (CM+PowerHal)",
+      "description": "VCORE 725mV >10% with BOTH SW_REQ2 AND SW_REQ3 activity indicates both CM and PowerHal as root causes.",
+      "attributes": {
+        "metric": "vcore_725mv_pct",
+        "threshold": 10,
+        "threshold_type": "gt",
+        "requires_signal": [
+          "SW_REQ2",
+          "SW_REQ3"
+        ],
         "indicates": [
           "rc_cm",
           "rc_powerhal"
@@ -293,7 +359,7 @@
     },
     {
       "source": "cpu_big",
-      "target": "ddr_vote",
+      "target": "sw_req2",
       "type": "CAUSES",
       "is_causal": true,
       "confidence": 1.0,
@@ -303,22 +369,52 @@
         "strength": 0.9,
         "is_direct": true,
         "temporal_order": "immediate",
-        "mechanism": "SW_REQ2 voting"
+        "mechanism": "CM drives CPU which triggers SW_REQ2"
+      }
+    },
+    {
+      "source": "sw_req2",
+      "target": "ddr_vote",
+      "type": "CAUSES",
+      "is_causal": true,
+      "confidence": 1.0,
+      "evidence": "SW_REQ2 signal triggers DDR voting from CM",
+      "attributes": {},
+      "causal_effect": {
+        "strength": 0.95,
+        "is_direct": true,
+        "temporal_order": "immediate",
+        "mechanism": "SW_REQ2 is the CM voting signal"
       }
     },
     {
       "source": "rc_powerhal",
-      "target": "ddr_vote",
+      "target": "sw_req3",
       "type": "CAUSES",
       "is_causal": true,
       "confidence": 1.0,
       "evidence": "",
       "attributes": {},
       "causal_effect": {
-        "strength": 0.7,
+        "strength": 0.9,
         "is_direct": true,
         "temporal_order": "immediate",
-        "mechanism": "SW_REQ3 voting"
+        "mechanism": "PowerHal triggers SW_REQ3"
+      }
+    },
+    {
+      "source": "sw_req3",
+      "target": "ddr_vote",
+      "type": "CAUSES",
+      "is_causal": true,
+      "confidence": 1.0,
+      "evidence": "SW_REQ3 signal triggers DDR voting from PowerHal",
+      "attributes": {},
+      "causal_effect": {
+        "strength": 0.95,
+        "is_direct": true,
+        "temporal_order": "immediate",
+        "mechanism": "SW_REQ3 is the PowerHal voting signal"
       }
     },
     {
@@ -520,12 +616,36 @@
       "attributes": {}
     },
     {
-      "source": "pattern_vcore_ceiling",
+      "source": "pattern_vcore_ceiling_sw_req2",
       "target": "rc_cm",
       "type": "INDICATES",
       "is_causal": false,
-      "confidence": 0.9,
-      "evidence": "High VCORE 725mV usage typically caused by CM driving CPU frequencies"
+      "confidence": 0.95,
+      "evidence": "SW_REQ2 activity indicates CM (CPU Manager) as root cause"
+    },
+    {
+      "source": "pattern_vcore_ceiling_sw_req3",
+      "target": "rc_powerhal",
+      "type": "INDICATES",
+      "is_causal": false,
+      "confidence": 0.95,
+      "evidence": "SW_REQ3 activity indicates PowerHal as root cause"
+    },
+    {
+      "source": "sw_req2",
+      "target": "rc_cm",
+      "type": "INDICATES",
+      "is_causal": false,
+      "confidence": 1.0,
+      "evidence": "SW_REQ2 is the DDR voting signal from CM"
+    },
+    {
+      "source": "sw_req3",
+      "target": "rc_powerhal",
+      "type": "INDICATES",
+      "is_causal": false,
+      "confidence": 1.0,
+      "evidence": "SW_REQ3 is the DDR voting signal from PowerHal"
     },
     {
       "source": "pattern_vcore_floor",
@@ -565,8 +685,8 @@
     }
   ],
   "metadata": {
-    "num_entities": 23,
-    "num_relations": 27,
+    "num_entities": 27,
+    "num_relations": 30,
     "entity_types": [
       "Hypothesis",
       "RootCause",

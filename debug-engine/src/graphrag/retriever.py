@@ -201,8 +201,6 @@ class Retriever:
         Returns:
             DiagnosisContext focused on this anomaly's indicated causes
         """
-        from .models import DetectedAnomaly  # Import here to avoid circular
-        
         # Get indicated root cause entities
         root_causes = []
         for cause_id in anomaly.indicated_causes:
@@ -250,8 +248,6 @@ class Retriever:
     
     def _infer_causes_from_type(self, anomaly_type: str) -> list:
         """Infer likely root causes from anomaly type."""
-        from .neo4j_store import EntityNode
-        
         # Map anomaly types to likely root causes
         type_to_causes = {
             "VCORE_CEILING": ["rc_cm", "rc_powerhal"],

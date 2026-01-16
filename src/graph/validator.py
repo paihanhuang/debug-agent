@@ -6,7 +6,7 @@ from pathlib import Path
 from dataclasses import dataclass, field
 from typing import Any
 
-from .models import CausalGraph, EntityType, RelationType, CAUSAL_RELATION_TYPES
+from .models import CausalGraph, EntityType
 
 
 @dataclass

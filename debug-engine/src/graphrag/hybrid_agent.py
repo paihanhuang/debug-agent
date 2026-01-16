@@ -18,7 +18,7 @@ from .models import (
     HybridDiagnosisResult,
 )
 from .anomaly_detector import AnomalyDetector
-from .retriever import Retriever, DiagnosisContext
+from .retriever import Retriever
 from .vector_store import VectorStore
 from .neo4j_store import Neo4jStore
 from .fix_store import FixStore

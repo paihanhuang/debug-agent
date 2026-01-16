@@ -2,13 +2,12 @@
 
 from __future__ import annotations
 from pathlib import Path
-from typing import Any
 
-from ..parser.text_parser import TextParser, ParsedDocument
+from ..parser.text_parser import TextParser
 from ..extraction.entity_extractor import EntityExtractor
 from ..extraction.relation_extractor import RelationExtractor
 from ..llm.client import BaseLLMClient, LLMClient
-from .models import CausalGraph, Entity, Relation
+from .models import CausalGraph, Entity
 
 
 class GraphBuilder:

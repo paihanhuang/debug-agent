@@ -5,21 +5,6 @@
       "anomalies": 3,
       "has_dual_issue": true,
       "llm_calls": 5,
-      "score": 8.75,
-      "grade": "A",
-      "dimensions": {
-        "Root Cause Accuracy": 9,
-        "Causal Chain Completeness": 8,
-        "Metric Precision": 9,
-        "Reasoning Quality": 9,
-        "Actionability": 8
-      }
-    },
-    {
-      "case": "case2",
-      "anomalies": 2,
-      "has_dual_issue": true,
-      "llm_calls": 4,
       "score": 8.65,
       "grade": "A",
       "dimensions": {
@@ -31,21 +16,36 @@
       }
     },
     {
-      "case": "case3",
-      "anomalies": 5,
+      "case": "case2",
+      "anomalies": 2,
       "has_dual_issue": true,
-      "llm_calls": 7,
-      "score": 7.95,
-      "grade": "B",
+      "llm_calls": 4,
+      "score": 8.05,
+      "grade": "A",
       "dimensions": {
         "Root Cause Accuracy": 8,
         "Causal Chain Completeness": 7,
         "Metric Precision": 9,
-        "Reasoning Quality": 8,
+        "Reasoning Quality": 9,
+        "Actionability": 8
+      }
+    },
+    {
+      "case": "case3",
+      "anomalies": 5,
+      "has_dual_issue": true,
+      "llm_calls": 7,
+      "score": 8.75,
+      "grade": "A",
+      "dimensions": {
+        "Root Cause Accuracy": 9,
+        "Causal Chain Completeness": 8,
+        "Metric Precision": 9,
+        "Reasoning Quality": 9,
         "Actionability": 8
       }
     }
   ],
-  "average_score": 8.450000000000001,
+  "average_score": 8.483333333333334,
   "total_llm_calls": 16
 }

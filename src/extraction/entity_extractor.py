@@ -2,8 +2,6 @@
 
 from __future__ import annotations
 import re
-import uuid
-from typing import Any
 
 from ..graph.models import Entity, EntityType
 from ..llm.client import BaseLLMClient, LLMClient
@@ -103,7 +101,7 @@ class EntityExtractor:
         
         try:
             result = self._llm.complete_json(prompt, ENTITY_EXTRACTION_SYSTEM_PROMPT)
-        except Exception as e:
+        except Exception:
             # Fallback to basic extraction if LLM fails
             return self._fallback_extraction(text)
         
