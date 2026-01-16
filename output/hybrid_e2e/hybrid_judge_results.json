@@ -17,16 +17,16 @@
     },
     {
       "case": "case2",
-      "anomalies": 2,
-      "has_dual_issue": true,
-      "llm_calls": 4,
-      "score": 7.0,
-      "grade": "B",
+      "anomalies": 1,
+      "has_dual_issue": false,
+      "llm_calls": 3,
+      "score": 8.45,
+      "grade": "A",
       "dimensions": {
-        "Root Cause Accuracy": 7,
-        "Causal Chain Completeness": 6,
-        "Metric Precision": 8,
-        "Reasoning Quality": 7,
+        "Root Cause Accuracy": 9,
+        "Causal Chain Completeness": 8,
+        "Metric Precision": 7,
+        "Reasoning Quality": 9,
         "Actionability": 8
       }
     },
@@ -46,6 +46,6 @@
       }
     }
   ],
-  "average_score": 8.083333333333334,
-  "total_llm_calls": 16
+  "average_score": 8.566666666666666,
+  "total_llm_calls": 15
 }

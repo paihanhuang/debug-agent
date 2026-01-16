@@ -1,35 +1,33 @@
 # Hybrid Agent Report - case3
 
 ## Root Cause(s)
-1. PowerHal
-2. MMDVFS OPP3 issue
-3. CM (CPU Manager)
+1. PowerHal issues affecting DDR voting mechanism.
+2. MMDVFS OPP3 issue causing an elevated VCORE floor.
+3. CM (CPU Manager) issues affecting CPU frequencies and DDR usage.
 
 ## Causal Chain
-### Issue 1: PowerHal
-- PowerHal → DDR 投票機制 → DDR6370 30.77% → Case1: DDR 82.6% → Case1: VCORE 725mV @ 82.6%
-- PowerHal → DDR 投票機制 → DDR6370 (30.77%) → DDR total (54.14%)
+### Issue 1: PowerHal and DDR Voting Mechanism
+- PowerHal → DDR 投票機制 → DDR6370 at 30.77% → Case1: DDR at 82.6% → Case1: VCORE 725mV @ 82.6%
+- CM (CPU Manager) → 調控策略 (Control Policy) → CPU 大核 → DDR 投票機制 → DDR5460 at 23.37% → DDR total at 54.14%
 
 ### Issue 2: MMDVFS OPP3
-- MMDVFS OPP3 usage at 100% → VCORE floor lock at 600mV (Case3) → VCORE 725.0mV
-- MMDVFS OPP3 → Case3: VCORE 600mV floor → VCORE floor elevated above normal 575mV
+- MMDVFS OPP3 usage at 100% → VCORE floor lock at 600mV (normal should be 575mV) → VCORE 725.0mV
 
-### Issue 3: CM (CPU Manager)
-- CM (CPU Manager) → 調控策略 (Control Policy) → CM (CPU Manager) → CPU 大核 → DDR 投票機制 → DDR5460 (23.37%) → DDR total (54.14%)
-- CM (CPU Manager) → 調控策略 (Control Policy) → VCORE 725.0mV > 10% → CPU frequencies at high usage levels (2700MHz, 2500MHz, 2100MHz)
+### Issue 3: CM (CPU Manager) and CPU Frequencies
+- CM (CPU Manager) → 調控策略 (Control Policy) → VCORE 725.0mV > 10% → CPU frequencies: 大核 at 2700MHz, 中核 at 2500MHz, 小核 at 2100MHz → CPU_CEILING anomaly
 
 ## Diagnosis Summary
-There are THREE INTERRELATED ISSUES contributing to the anomalies observed. PowerHal and CM (CPU Manager) are affecting DDR usage and VCORE levels, while MMDVFS OPP3 is causing a VCORE floor lock at 600mV, which is above the normal 575mV. These issues collectively lead to elevated CPU frequencies and VCORE usage beyond the acceptable thresholds.
+There are TWO INDEPENDENT ISSUES contributing to the anomalies observed:
+
+1. **PowerHal and CM (CPU Manager) Issues**: These are causing elevated DDR usage and high CPU frequencies. The DDR voting mechanism is being influenced by both PowerHal and CM, leading to increased DDR usage and subsequently affecting VCORE usage.
+
+2. **MMDVFS OPP3 Issue**: The MMDVFS is confirmed to be at OPP3 with 100% usage, causing the VCORE floor to be locked at 600mV, which is higher than the normal 575mV. This is independently contributing to the elevated VCORE levels.
 
 ## Recommended Actions
-1. **PowerHal**: 
-   - Review and optimize the PowerHal settings to reduce its impact on DDR voting mechanisms and VCORE usage.
-   - Implement a more efficient power management strategy to prevent excessive DDR and VCORE usage.
+1. **PowerHal and CM (CPU Manager) Issues**:
+   - Review and optimize the DDR voting mechanism to ensure it is not overly influenced by PowerHal and CM.
+   - Adjust the control policy in CM to prevent excessive CPU frequency scaling, which contributes to high VCORE usage.
 
-2. **MMDVFS OPP3**:
-   - Investigate and resolve the MMDVFS OPP3 issue to prevent the VCORE floor from being locked at 600mV.
-   - Consider adjusting the MMDVFS settings to ensure it operates at an optimal level without causing excessive VCORE usage.
-
-3. **CM (CPU Manager)**:
-   - Re-evaluate the control policies managed by CM to ensure they do not lead to unnecessary high CPU frequencies and DDR usage.
-   - Implement a balanced CPU frequency scaling strategy to maintain performance without exceeding VCORE and DDR thresholds.
+2. **MMDVFS OPP3 Issue**:
+   - Investigate and resolve the MMDVFS OPP3 configuration to ensure it does not lock the VCORE floor at an elevated level.
+   - Consider adjusting the MMDVFS settings to allow for a lower VCORE floor, closer to the normal 575mV, when appropriate.

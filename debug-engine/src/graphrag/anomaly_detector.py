@@ -33,6 +33,21 @@ ANOMALY_DETECTION_PROMPT = """You are a power debugging anomaly detector for mob
 5. CPU at ceiling frequencies: This may be CPU_CEILING
 6. Any other unusual value: Mark as UNKNOWN
 
+## EXCLUSION RULES (CRITICAL - CHECK THESE FIRST):
+⚠️ If "MMDVFS is at OPP4" or "OPP4" appears in the input:
+   - DO NOT flag VCORE_FLOOR anomaly
+   - DO NOT flag MMDVFS_ABNORMAL anomaly  
+   - DO NOT include rc_mmdvfs in indicated_causes
+   - Reason: OPP4 is normal operation, MMDVFS is ruled out
+
+⚠️ If DDR voting shows "SW_REQ2 only" (no SW_REQ3):
+   - DO NOT include rc_powerhal in indicated_causes
+   - Reason: PowerHal only affects via SW_REQ3
+
+⚠️ If DDR voting shows "SW_REQ3 only" (no SW_REQ2):
+   - DO NOT include rc_cm in indicated_causes
+   - Reason: CM only affects via SW_REQ2
+
 ## Severity Guidelines:
 - high: Metric exceeds threshold by >50% (e.g., VCORE 725mV at 80% when threshold is 10%)
 - medium: Metric exceeds threshold by 10-50%
@@ -40,11 +55,11 @@ ANOMALY_DETECTION_PROMPT = """You are a power debugging anomaly detector for mob
 
 ## Task
 Identify ALL anomalies present in the user's metrics. Include:
-1. Known patterns that match
+1. Known patterns that match (after checking exclusions)
 2. Any unusual values even if not in patterns
-3. Both VCORE floor AND ceiling issues if present (DUAL ISSUE)
+3. Both VCORE floor AND ceiling issues if present (DUAL ISSUE) - but only if not excluded
 
-IMPORTANT: If BOTH VCORE floor issue AND VCORE 725mV issue exist, you MUST detect BOTH as separate anomalies.
+IMPORTANT: Always check EXCLUSION RULES before flagging any anomaly.
 
 Return JSON only:
 {{

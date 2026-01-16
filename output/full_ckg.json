@@ -256,7 +256,16 @@
         "threshold_type": "gt",
         "indicates": [
           "rc_mmdvfs"
-        ]
+        ],
+        "exclude_when": {
+          "condition": "MMDVFS is at OPP4",
+          "trigger_text": [
+            "OPP4",
+            "MMDVFS at OPP4",
+            "MMDVFS is at OPP4"
+          ],
+          "reason": "OPP4 is normal operation - no floor issue"
+        }
       },
       "confidence": 1.0,
       "source_text": ""
@@ -272,7 +281,16 @@
         "threshold_type": "gt",
         "indicates": [
           "rc_mmdvfs"
-        ]
+        ],
+        "exclude_when": {
+          "condition": "MMDVFS is at OPP4",
+          "trigger_text": [
+            "OPP4",
+            "MMDVFS at OPP4",
+            "MMDVFS is at OPP4"
+          ],
+          "reason": "OPP4 means OPP3 is not active"
+        }
       },
       "confidence": 1.0,
       "source_text": ""
