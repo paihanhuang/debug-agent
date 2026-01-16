@@ -1,25 +1,25 @@
 # Hybrid Agent Report - case2
 
 ## Root Cause(s)
-1. DDR voting issue influenced by both the CPU Manager (CM) and PowerHal, leading to excessive VCORE 725mV usage.
-2. PowerHal affecting DDR voting via SW_REQ3, resulting in high DDR usage.
+1. The DDR voting issue related to the CPU Manager (CM) and PowerHal, causing VCORE 725mV usage to exceed the 10% threshold.
+2. MMDVFS OPP3 issue causing the VCORE floor to be higher than expected.
 
 ## Causal Chain
 ### Issue 1: VCORE_CEILING
-- CM (CPU Manager) → CPU 大核 → DDR 投票機制 → DDR5460 3.54% → VCORE 725.0mV 29.32%
-- PowerHal → DDR 投票機制 → DDR6370 26.13% → VCORE 725.0mV 29.32%
+- CM (CPU Manager) → 調控策略 (Control Policy) → CM (CPU Manager) → CPU 大核 → DDR 投票機制 → DDR5460 3.54% → Case1: DDR 82.6% → Case1: VCORE 725mV @ 82.6%
+- PowerHal → DDR 投票機制 → DDR6370 26.13% → Case1: DDR 82.6% → Case1: VCORE 725mV @ 82.6%
 
-### Issue 2: DDR_HIGH
-- PowerHal → DDR 投票機制 → DDR6370 26.13% → DDR total 29.67%
+### Issue 2: VCORE_FLOOR
+- MMDVFS OPP3 → VCORE floor > 575mV → VCORE 725.0mV
 
 ## Diagnosis Summary
-There are TWO INDEPENDENT ISSUES affecting the system. The first issue is related to a DDR voting problem influenced by both the CPU Manager and PowerHal, causing excessive VCORE 725mV usage. The second issue is due to PowerHal's impact on DDR voting via SW_REQ3, leading to high DDR usage. MMDVFS is ruled out as a contributing factor since it is at OPP4.
+TWO INDEPENDENT ISSUES have been identified. The first issue involves a DDR voting problem linked to the CPU Manager and PowerHal, resulting in excessive VCORE 725mV usage, which is currently at 29.32%, surpassing the 10% threshold. The second issue is related to the MMDVFS OPP3, which is causing the VCORE floor to be higher than expected. However, the user input indicates MMDVFS is at OPP4, suggesting that the MMDVFS issue might be ruled out or needs further investigation to confirm if OPP3 is indeed high.
 
 ## Recommended Actions
-1. **For VCORE_CEILING:**
-   - Investigate and adjust the DDR voting mechanism to reduce the influence of the CPU Manager and PowerHal on VCORE usage.
-   - Optimize CPU Manager settings to prevent excessive VCORE demands.
+### Fix for Issue 1: VCORE_CEILING
+- Investigate and adjust the DDR voting mechanism within the CPU Manager and PowerHal to ensure VCORE 725mV usage remains below the 10% threshold.
+- Optimize the control policy and CPU core management to reduce unnecessary DDR activity.
 
-2. **For DDR_HIGH:**
-   - Review and modify PowerHal's configuration to minimize its impact on DDR voting, particularly focusing on SW_REQ3.
-   - Implement strategies to balance DDR load and reduce overall DDR usage.
+### Fix for Issue 2: VCORE_FLOOR
+- Verify the MMDVFS operating point to confirm if it is indeed at OPP3 or OPP4. If confirmed at OPP3, adjust the MMDVFS settings to lower the VCORE floor to the expected level.
+- If MMDVFS is at OPP4, further investigate other potential causes for the elevated VCORE floor.

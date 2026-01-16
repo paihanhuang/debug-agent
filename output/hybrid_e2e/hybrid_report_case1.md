@@ -1,30 +1,29 @@
 # Hybrid Agent Report - case1
 
 ## Root Cause(s)
-1. The CPU Manager (CM) is causing an issue with the DDR voting mechanism, leading to excessive VCORE 725mV usage.
-2. The CPU Manager (CM) is controlling CPU frequencies and DDR voting via SW_REQ2, causing all CPU cores to operate at ceiling frequencies.
-3. The abnormal DDR voting mechanism, influenced by both the CPU Manager (CM) and PowerHal, is leading to excessive DDR usage.
+1. CM (CPU Manager) control policy issue leading to excessive VCORE 725mV usage.
+2. PowerHal causing high DDR usage.
 
 ## Causal Chain
 ### Issue 1: VCORE_CEILING
-- CM (CPU Manager) → CPU 大核 → DDR 投票機制 → DDR5460 → Case1: DDR 82.6% → Case1: VCORE 725mV @ 82.6%
+- CM (CPU Manager) → 調控策略 (Control Policy) → CPU 大核 → DDR 投票機制 → DDR5460 → Case1: DDR 82.6% → Case1: VCORE 725mV @ 82.6%
 
-### Issue 2: CPU_CEILING
-- CM (CPU Manager) → CPU management controls frequency and DDR voting via SW_REQ2 → All CPU cores operating at ceiling frequencies (2700MHz, 2500MHz, 2100MHz) → VCORE 725.0mV
-
-### Issue 3: DDR_HIGH
-- CM (CPU Manager) → CPU 大核 → DDR 投票機制 → DDR5460 → Case1: DDR 82.6%
+### Issue 2: DDR_HIGH
 - PowerHal → DDR 投票機制 → DDR6370 → Case1: DDR 82.6%
 
+### Issue 3: CPU_CEILING
+- CM (CPU Manager) → 調控策略 (Control Policy) → VCORE 725.0mV → CPU 大核, 中核, 小核 frequencies at 2700MHz, 2500MHz, 2100MHz → CPU_CEILING anomaly
+
 ## Diagnosis Summary
-There are two independent issues contributing to the anomalies observed. The first issue involves the CPU Manager (CM) affecting the DDR voting mechanism, resulting in excessive VCORE 725mV usage. The second issue is related to the CPU Manager (CM) controlling CPU frequencies and DDR voting via SW_REQ2, causing all CPU cores to operate at their ceiling frequencies. Additionally, the DDR voting mechanism is abnormally influenced by both the CPU Manager (CM) and PowerHal, leading to excessive DDR usage. MMDVFS is ruled out as a contributing factor since it is at OPP4.
+TWO INDEPENDENT ISSUES have been identified. The first issue is related to the CM (CPU Manager) control policy, which is causing excessive VCORE 725mV usage and leading to CPU frequency ceilings across all cores. The second issue is due to PowerHal, which is causing high DDR usage. Both issues are contributing to the overall system performance anomalies.
 
 ## Recommended Actions
-1. **For VCORE_CEILING:**
-   - Investigate and rectify the CPU Manager's influence on the DDR voting mechanism to reduce VCORE 725mV usage.
+1. **For CM (CPU Manager) Control Policy Issue:**
+   - Review and adjust the CM control policy to optimize VCORE usage and prevent CPU frequency ceilings.
+   - Implement monitoring to ensure VCORE usage stays within acceptable limits.
 
-2. **For CPU_CEILING:**
-   - Adjust the CPU Manager's control over CPU frequencies and DDR voting via SW_REQ2 to prevent all CPU cores from operating at ceiling frequencies.
+2. **For PowerHal Issue:**
+   - Investigate and optimize PowerHal settings to reduce DDR usage.
+   - Implement a more efficient DDR voting mechanism to balance performance and power consumption.
 
-3. **For DDR_HIGH:**
-   - Review and correct the DDR voting mechanism to mitigate the influence of both the CPU Manager (CM) and PowerHal, thereby reducing excessive DDR usage.
+Note: MMDVFS is ruled out as a contributing factor since it is at OPP4.

@@ -5,12 +5,12 @@
       "anomalies": 3,
       "has_dual_issue": true,
       "llm_calls": 5,
-      "score": 8.65,
+      "score": 8.8,
       "grade": "A",
       "dimensions": {
         "Root Cause Accuracy": 9,
         "Causal Chain Completeness": 8,
-        "Metric Precision": 8,
+        "Metric Precision": 9,
         "Reasoning Quality": 9,
         "Actionability": 9
       }
@@ -20,13 +20,13 @@
       "anomalies": 2,
       "has_dual_issue": true,
       "llm_calls": 4,
-      "score": 8.05,
-      "grade": "A",
+      "score": 7.0,
+      "grade": "B",
       "dimensions": {
-        "Root Cause Accuracy": 8,
-        "Causal Chain Completeness": 7,
-        "Metric Precision": 9,
-        "Reasoning Quality": 9,
+        "Root Cause Accuracy": 7,
+        "Causal Chain Completeness": 6,
+        "Metric Precision": 8,
+        "Reasoning Quality": 7,
         "Actionability": 8
       }
     },
@@ -35,17 +35,17 @@
       "anomalies": 5,
       "has_dual_issue": true,
       "llm_calls": 7,
-      "score": 8.75,
+      "score": 8.45,
       "grade": "A",
       "dimensions": {
         "Root Cause Accuracy": 9,
         "Causal Chain Completeness": 8,
-        "Metric Precision": 9,
+        "Metric Precision": 7,
         "Reasoning Quality": 9,
         "Actionability": 8
       }
     }
   ],
-  "average_score": 8.483333333333334,
+  "average_score": 8.083333333333334,
   "total_llm_calls": 16
 }

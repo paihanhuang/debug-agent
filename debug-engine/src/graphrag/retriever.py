@@ -37,11 +37,16 @@ class DiagnosisContext:
         lines.append(self.metrics.to_query_string())
         lines.append("")
         
-        # Root causes from graph
-        lines.append("## Root Causes (from CKG)")
+        # Root causes from graph (with full ancestry)
+        lines.append("## Root Causes (from CKG - traced to top-level)")
         if self.root_causes:
             for rc in self.root_causes:
-                lines.append(f"- {rc.label}: {rc.description}")
+                # Show hierarchy if available
+                if hasattr(rc, 'ancestry') and rc.ancestry:
+                    ancestry_str = " → ".join(a.label for a in rc.ancestry)
+                    lines.append(f"- {ancestry_str} → **{rc.label}**")
+                else:
+                    lines.append(f"- {rc.label}: {rc.description}")
         else:
             lines.append("- No root causes identified")
         lines.append("")
@@ -212,21 +217,35 @@ class Retriever:
         if not root_causes:
             root_causes = self._infer_causes_from_type(anomaly.type)
         
+        # ENHANCEMENT: Get full causal ancestry for each root cause
+        for rc in root_causes:
+            ancestry = self._get_full_causal_ancestry(rc.id)
+            rc.ancestry = ancestry  # Attach ancestry to entity
+        
         # Get subgraph around indicated causes
         cause_ids = anomaly.indicated_causes or [rc.id for rc in root_causes]
         subgraph = {}
         if cause_ids:
             subgraph = self._neo4j_store.get_subgraph(cause_ids, hops=2)
         
-        # Build causal chains from root causes
+        # Build causal chains from root causes (include top-level)
         causal_chains = []
         for rc in root_causes:
-            # Find symptom nodes that match anomaly type
-            symptom_ids = self._find_symptom_for_anomaly(anomaly.type)
-            for symptom_id in symptom_ids[:1]:  # Just first match
-                chain = self._neo4j_store.get_causal_chain(rc.id, symptom_id)
-                if chain:
-                    causal_chains.append(chain)
+            # Start chain from top-level ancestor if available
+            if hasattr(rc, 'ancestry') and rc.ancestry:
+                top_level = rc.ancestry[-1]  # Last item is top-level
+                symptom_ids = self._find_symptom_for_anomaly(anomaly.type)
+                for symptom_id in symptom_ids[:1]:
+                    chain = self._neo4j_store.get_causal_chain(top_level.id, symptom_id)
+                    if chain:
+                        causal_chains.append(chain)
+            else:
+                # Fallback to original behavior
+                symptom_ids = self._find_symptom_for_anomaly(anomaly.type)
+                for symptom_id in symptom_ids[:1]:
+                    chain = self._neo4j_store.get_causal_chain(rc.id, symptom_id)
+                    if chain:
+                        causal_chains.append(chain)
         
         # Get relevant historical fixes
         relevant_fixes = []
@@ -275,4 +294,48 @@ class Retriever:
             "MMDVFS_ABNORMAL": ["c3_vcore_floor"],
         }
         return type_to_symptoms.get(anomaly_type, [])
+    
+    def _get_full_causal_ancestry(self, entity_id: str) -> list:
+        """Get full causal ancestry for an entity, tracing to top-level node.
+        
+        Traverses upstream in the CKG to find all ancestor entities,
+        allowing the LLM to see the complete causal hierarchy.
+        
+        Args:
+            entity_id: Starting entity ID
+            
+        Returns:
+            List of ancestor EntityNodes, ordered from immediate parent to top-level
+        """
+        # Get all upstream causes using existing method
+        upstream = self._neo4j_store.get_upstream_causes(entity_id, max_hops=5)
+        
+        # Filter to find the path to top-level (entities with no parents)
+        ancestry = []
+        for entity in upstream:
+            if entity.type == "RootCause":
+                # Check if this entity has any upstream causes
+                parents = self._neo4j_store.get_upstream_causes(entity.id, max_hops=1)
+                parent_root_causes = [p for p in parents if p.type == "RootCause"]
+                
+                if not parent_root_causes:
+                    # This is a top-level root cause (no parent RootCause)
+                    ancestry.append(entity)
+                else:
+                    # Has parent root causes - add those first
+                    for parent in parent_root_causes:
+                        if parent not in ancestry:
+                            ancestry.append(parent)
+                    ancestry.append(entity)
+        
+        # Deduplicate while preserving order (top-level first)
+        seen = set()
+        unique_ancestry = []
+        for entity in ancestry:
+            if entity.id not in seen:
+                seen.add(entity.id)
+                unique_ancestry.append(entity)
+        
+        # Reverse so top-level is last (for display: parent → child → target)
+        return list(reversed(unique_ancestry))
 
