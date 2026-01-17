@@ -61,6 +61,11 @@ Response format:
 [List all relevant fixes without ranking - do NOT copy their metrics to your analysis]
 """
 
+POSTPROCESS_SYSTEM_PROMPT = """You are a precise technical editor.
+Ensure the report includes all required CKG traversal node labels.
+If any are missing, revise the report to include them without changing metrics.
+Return only the revised report text."""
+
 
 @dataclass
 class DiagnosisResult:
@@ -187,6 +192,7 @@ class DebugAgent:
         )
         
         raw_response = response.choices[0].message.content
+        raw_response = self._ensure_traversal_nodes(raw_response, context)
         
         # Step 4: Parse response
         return self._parse_response(raw_response, context)
@@ -239,6 +245,55 @@ class DebugAgent:
             raw_response=raw_response,
             context=context,
         )
+
+    def _ensure_traversal_nodes(
+        self,
+        raw_response: str,
+        context: DiagnosisContext,
+    ) -> str:
+        """LLM post-processing to include all traversed nodes."""
+        required_nodes = self._collect_required_nodes(context)
+        if not required_nodes:
+            return raw_response
+
+        missing = [
+            label for label in required_nodes
+            if label.lower() not in raw_response.lower()
+        ]
+        if not missing:
+            return raw_response
+
+        prompt = """You are given a diagnosis report and a list of required CKG nodes.
+Update the report so that EVERY required node label appears in the report text.
+Preserve the original structure and all metric values. If you add text, do so in the Causal Chain section.
+
+Required Nodes:
+{required_nodes}
+
+Original Report:
+{report}
+"""
+        response = self._llm_client.chat.completions.create(
+            model=self._llm_model,
+            messages=[
+                {"role": "system", "content": POSTPROCESS_SYSTEM_PROMPT},
+                {"role": "user", "content": prompt.format(
+                    required_nodes=", ".join(required_nodes),
+                    report=raw_response,
+                )},
+            ],
+            temperature=0.0,
+        )
+        return response.choices[0].message.content or raw_response
+
+    def _collect_required_nodes(self, context: DiagnosisContext) -> list[str]:
+        labels = []
+        for chain in context.causal_chains:
+            for node in chain:
+                label = getattr(node, "label", "")
+                if label and label not in labels:
+                    labels.append(label)
+        return labels
     
     def refine(
         self,

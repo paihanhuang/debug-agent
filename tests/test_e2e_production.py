@@ -152,6 +152,53 @@ def check_keywords(text: str, keywords: list[str]) -> tuple[bool, list[str]]:
     return len(found) > 0, found
 
 
+def build_agent_report(test_case: TestCase, diagnosis, rc_match: bool, rc_found: list[str],
+                       chain_match: bool, chain_found: list[str]) -> str:
+    """Build a markdown agent report for judge evaluation."""
+    rc_line = ", ".join(rc_found) if rc_found else "None"
+    causal_line = ", ".join(chain_found) if chain_found else "None"
+    result_status = "✓ PASS" if rc_match and chain_match else "✗ FAIL"
+
+    return f"""# Agent Generated Report - {test_case.name}
+
+## Root Cause
+
+{diagnosis.root_cause}
+
+## Causal Chain
+
+{diagnosis.causal_chain}
+
+## Diagnosis
+
+{diagnosis.diagnosis}
+
+## Historical Fixes (for reference)
+
+{chr(10).join(f"- {fix}" for fix in diagnosis.historical_fixes) if diagnosis.historical_fixes else "- None"}
+
+---
+
+## Comparison with Ground Truth
+
+| Aspect | Result |
+|--------|--------|
+| Root Cause | {'✓ Found: ' + rc_line if rc_match else '✗ Missing: ' + ', '.join(test_case.expected_root_cause)} |
+| Causal Elements | {'✓ Found: ' + causal_line if chain_match else '✗ Missing: ' + ', '.join(test_case.expected_causal_elements)} |
+
+**Result: {result_status}**
+
+---
+
+### Generated After CKG Enhancement
+
+This report was generated with the enhanced CKG that includes:
+- AnomalyPattern entities for VCORE floor/ceiling detection
+- Multi-issue detection rules in SYSTEM_PROMPT
+- Explicit MMDVFS rule-out confirmation
+"""
+
+
 def run_production_test():
     """Run the production E2E test."""
     print("=" * 70)
@@ -265,6 +312,20 @@ def run_production_test():
                     "ground_truth": test_case.ground_truth_summary.strip(),
                 }
                 results.append(result)
+
+                # Write agent report for judge evaluation
+                report_name = f"agent_report_case{len(results)}.md"
+                report_path = output_dir / report_name
+                report_md = build_agent_report(
+                    test_case,
+                    diagnosis,
+                    rc_match,
+                    rc_found,
+                    chain_match,
+                    chain_found,
+                )
+                with open(report_path, "w", encoding="utf-8") as f:
+                    f.write(report_md)
                 
                 # Print comparison
                 print(f"\n--- Agent Response ---")
@@ -289,7 +350,7 @@ def run_production_test():
                 })
         
         # Save results
-        report_path = output_dir / "production_comparison_report.json"
+            report_path = output_dir / "production_comparison_report.json"
         with open(report_path, "w", encoding="utf-8") as f:
             json.dump(results, f, indent=2, ensure_ascii=False)
         
