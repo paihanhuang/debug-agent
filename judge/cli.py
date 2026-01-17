@@ -6,7 +6,7 @@ Usage:
     python3 -m judge.cli --help
     python3 -m judge.cli run --human-report path/to/human.md --agent-report path/to/agent.md
     python3 -m judge.cli batch --output-dir judge/qa_results
-    python3 -m judge.cli refine --input "VCORE at 82.6%..." --threshold 8.0
+    # Refinement loop removed
 """
 
 from __future__ import annotations
@@ -213,111 +213,6 @@ Details:
     return 0 if avg >= 7.0 else 1
 
 
-def run_refinement(args) -> int:
-    """Run diagnosis with iterative refinement using closed-loop system."""
-    project_root = Path(__file__).parent.parent
-    load_dotenv(project_root / ".env")
-    
-    # Add debug-engine to path
-    sys.path.insert(0, str(project_root / "debug-engine" / "src"))
-    
-    print("=" * 70)
-    print("Closed-Loop Refinement - GPT-4o Agent + Claude Judge")
-    print("=" * 70)
-    
-    # Load input
-    input_text = args.input
-    if Path(input_text).exists():
-        input_text = Path(input_text).read_text(encoding="utf-8")
-    
-    ground_truth = None
-    if args.ground_truth:
-        if Path(args.ground_truth).exists():
-            ground_truth = Path(args.ground_truth).read_text(encoding="utf-8")
-        else:
-            ground_truth = args.ground_truth
-    
-    print(f"\n[1] Input: {input_text[:100]}...")
-    print(f"[2] Max Iterations: {args.max_iterations}")
-    print(f"[3] Score Threshold: {args.threshold}/10")
-    
-    # Initialize components
-    print("\n[4] Initializing components...")
-    
-    try:
-        from graphrag.agent import DebugAgent
-        from graphrag.refinement_loop import RefinementLoop
-    except ImportError as e:
-        print(f"    ⚠ Import error: {e}")
-        print("    Make sure you're running from the project root.")
-        return 1
-    
-    # Initialize Judge (Claude)
-    judge = LLMReportJudge(provider="anthropic")
-    print(f"    Judge: {judge._model} ({judge._provider.value})")
-    
-    # Initialize Agent (GPT-4o) - requires Neo4j
-    neo4j_uri = os.getenv("NEO4J_URI", "bolt://localhost:7687")
-    neo4j_user = os.getenv("NEO4J_USER", "neo4j")
-    neo4j_password = os.getenv("NEO4J_PASSWORD", "password")
-    
-    try:
-        agent = DebugAgent(
-            neo4j_uri=neo4j_uri,
-            neo4j_user=neo4j_user,
-            neo4j_password=neo4j_password,
-        )
-        print(f"    Agent: {agent._llm_model}")
-    except Exception as e:
-        print(f"    ⚠ Failed to initialize Agent: {e}")
-        print("    Make sure Neo4j is running.")
-        return 1
-    
-    # Create refinement loop
-    loop = RefinementLoop(
-        agent=agent,
-        judge=judge,
-        max_iterations=args.max_iterations,
-        score_threshold=args.threshold,
-        verbose=True,
-    )
-    
-    # Run refinement
-    print("\n[5] Running refinement loop...")
-    print("-" * 70)
-    
-    with agent:
-        result = loop.diagnose_with_refinement(
-            input_text=input_text,
-            ground_truth=ground_truth,
-        )
-    
-    # Print results
-    print("\n" + "=" * 70)
-    print("REFINEMENT COMPLETE")
-    print("=" * 70)
-    print(f"  Final Score: {result.final_score}/10.0 ({result.final_grade})")
-    print(f"  Iterations: {result.iterations}")
-    print(f"\n  Improvement History:")
-    for h in result.improvement_history:
-        print(f"    Iteration {h['iteration']}: {h['score']}/10 ({h['grade']})")
-    
-    if result.final_diagnosis:
-        print(f"\n  Root Cause: {result.final_diagnosis.root_cause[:100]}...")
-    
-    # Save output
-    if args.output:
-        output_path = Path(args.output)
-        output_path.parent.mkdir(parents=True, exist_ok=True)
-        
-        output_data = result.to_dict()
-        with open(output_path, "w", encoding="utf-8") as f:
-            json.dump(output_data, f, indent=2, ensure_ascii=False)
-        print(f"\n  Saved to: {output_path}")
-    
-    print("=" * 70)
-    
-    return 0 if result.final_score >= args.threshold else 1
 
 
 def main():
@@ -341,12 +236,6 @@ def main():
     batch_parser.add_argument("--provider", "-p", choices=["openai", "anthropic"], default="anthropic", help="LLM provider")
     
     # Refinement command (closed-loop)
-    refine_parser = subparsers.add_parser("refine", help="Run diagnosis with iterative refinement")
-    refine_parser.add_argument("--input", "-i", required=True, help="Input metrics/observation text or file path")
-    refine_parser.add_argument("--ground-truth", "-g", help="Optional ground truth for comparison")
-    refine_parser.add_argument("--max-iterations", "-m", type=int, default=3, help="Maximum refinement iterations")
-    refine_parser.add_argument("--threshold", "-t", type=float, default=8.0, help="Score threshold to stop (1-10)")
-    refine_parser.add_argument("--output", "-o", help="Output file for final result")
     
     # Hybrid two-stage diagnosis command
     hybrid_parser = subparsers.add_parser("hybrid", help="Run hybrid two-stage diagnosis")
@@ -360,8 +249,6 @@ def main():
         return run_single_evaluation(args)
     elif args.command == "batch":
         return run_batch_evaluation(args)
-    elif args.command == "refine":
-        return run_refinement(args)
     elif args.command == "hybrid":
         return run_hybrid_diagnosis(args)
     else:

@@ -8,8 +8,8 @@
 ## Causal Chain
 
 1. **CM/PowerHal/DDR Voting Issue:**
-   - CM (CPU Manager) → CPU 大核 → SW_REQ2 → VCORE 725mV usage at 82.6%
-   - 調控策略 (Control Policy) → CM (CPU Manager) → CPU 大核 → SW_REQ2 → VCORE 725mV usage at 82.6%
+   - CM (CPU Manager) → CPU 大核 at 2700MHz → SW_REQ2 → VCORE 725mV usage at 82.6%
+   - 調控策略 (Control Policy) → CM (CPU Manager) → CPU 大核 at 2700MHz → SW_REQ2 → VCORE 725mV usage at 82.6%
    - PowerHal → DDR 投票機制 → VCORE 725mV usage at 82.6%
 
 2. **High CPU Frequency Usage:**
@@ -18,18 +18,19 @@
 ## Diagnosis
 
 1. **CM/PowerHal/DDR Voting Issue:**
-   - The VCORE 725mV usage is significantly above the 10% threshold at 82.6%, indicating a problem with the CPU Manager (CM) and PowerHal affecting DDR voting. The SW_REQ2 activity suggests that the CM is driving high CPU frequencies, which in turn increases VCORE usage.
+   - The VCORE 725mV usage at 82.6% significantly exceeds the 10% threshold, indicating a problem with CPU management and DDR voting. The CM (CPU Manager) and PowerHal are contributing to this issue through SW_REQ2 and DDR 投票機制, respectively. The control policy is driving the CM behavior, leading to high VCORE usage.
 
 2. **High CPU Frequency Usage:**
-   - All CPU cores are operating at their ceiling frequencies, which is causing increased DDR activity and contributing to the high VCORE 725mV usage. This is driven by the CM and the system's control policy, which are not adequately managing CPU frequencies to prevent excessive power consumption.
+   - All CPU cores are operating at their ceiling frequencies, which is causing a spike in DDR voting activity. This is evident from the DDR5460 and DDR6370 combined usage at 82.6%. The high CPU frequency usage is directly impacting the DDR voting mechanism, further exacerbating the power issue.
 
-- **MMDVFS Status:** MMDVFS is at OPP4, indicating normal operation, and is ruled out as a cause for the VCORE floor issue.
+- **MMDVFS Status:**
+  - MMDVFS is at OPP4, which is normal operation. Therefore, MMDVFS is ruled out as a root cause in this scenario.
 
 ## Historical Fixes (for reference)
 
-- Case case_001: Review CPU frequency control policy. Consider tuning CM scheduling.
-- Case case_002: Review PowerHal SW_REQ3 voting policy. Adjust CM control strategy.
-- Case case_003b: Tune CPU scheduling to reduce DDR pressure. Review control policy.
+- **Case case_001:** Review CPU frequency control policy. Consider tuning CM scheduling. Notes: All CPU cores at ceiling frequencies caused DDR voting spike.
+- **Case case_002:** Review PowerHal SW_REQ3 voting policy. Adjust CM control strategy. Notes: Both CM (SW_REQ2) and PowerHal (SW_REQ3) contributed to issue.
+- **Case case_003b:** Tune CPU scheduling to reduce DDR pressure. Review control policy. Notes: High CPU frequency usage driving DDR voting.
 
 ---
 
