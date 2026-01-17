@@ -2,25 +2,34 @@
 
 ## Root Cause
 
-1. CM (CPU Manager) and PowerHal contributing to high VCORE 725mV usage due to DDR voting issues.
-2. MMDVFS ruled out as a root cause since it is at OPP4, indicating normal operation.
+1. CM/PowerHal/DDR voting issue due to excessive VCORE 725mV usage.
+2. High CPU frequency usage driving DDR voting, influenced by CM and Control Policy.
 
 ## Causal Chain
 
-1. **CM (CPU Manager) and PowerHal Influence:**
-   - CM (CPU Manager) → CPU 大核 at 2700MHz, 中核 at 2500MHz, 小核 at 2100MHz (all at ceiling) → DDR 投票機制 (DDR voting mechanism) → DDR5460 and DDR6370 combined usage at 82.6% → VCORE 725mV usage at 82.6% (exceeding the 10% threshold).
-   - PowerHal → DDR 投票機制 → DDR5460 and DDR6370 combined usage at 82.6% → VCORE 725mV usage at 82.6% (exceeding the 10% threshold).
+1. **CM/PowerHal/DDR Voting Issue:**
+   - CM (CPU Manager) → CPU 大核 → SW_REQ2 → VCORE 725mV usage at 82.6%
+   - PowerHal → DDR 投票機制 → VCORE 725mV usage at 82.6%
+
+2. **High CPU Frequency Usage:**
+   - 調控策略 (Control Policy) → CM (CPU Manager) → CPU 大核 at 2700MHz, 中核 at 2500MHz, 小核 at 2100MHz (all at ceiling) → SW_REQ2 → DDR5460 and DDR6370 combined usage at 82.6%
 
 ## Diagnosis
 
-- The high VCORE 725mV usage at 82.6% is primarily due to the influence of CM (CPU Manager) and PowerHal on DDR voting. The CPU frequencies are at their ceiling, which increases the demand on DDR, leading to excessive VCORE usage.
-- MMDVFS is at OPP4, which is normal operation, ruling it out as a root cause for the VCORE floor issue. There is no indication of a VCORE floor issue since the MMDVFS is not at OPP3.
+1. **CM/PowerHal/DDR Voting Issue:**
+   - The VCORE 725mV usage is significantly above the 10% threshold, indicating a problem with CM and PowerHal's management of DDR voting. The SW_REQ2 activity suggests that the CPU Manager is heavily influencing DDR voting, leading to excessive power consumption.
+
+2. **High CPU Frequency Usage:**
+   - All CPU cores are operating at their ceiling frequencies, which is driven by the system's control policy and CPU Manager. This high frequency usage is causing increased DDR activity, as indicated by the 82.6% combined usage of DDR5460 and DDR6370, further contributing to the power issue.
+
+- **MMDVFS Status:**
+  - MMDVFS is at OPP4, which is normal operation. Therefore, MMDVFS is ruled out as a root cause.
 
 ## Historical Fixes (for reference)
 
-- **Case case_001**: Review CPU frequency control policy. Consider tuning CM scheduling.
-- **Case case_002**: Review PowerHal SW_REQ3 voting policy. Adjust CM control strategy.
-- **Case case_003b**: Tune CPU scheduling to reduce DDR pressure. Review control policy.
+- **Case case_001:** Review CPU frequency control policy. Consider tuning CM scheduling.
+- **Case case_002:** Review PowerHal SW_REQ3 voting policy. Adjust CM control strategy.
+- **Case case_003b:** Tune CPU scheduling to reduce DDR pressure. Review control policy.
 
 ---
 
@@ -28,11 +37,10 @@
 
 | Aspect | Result |
 |--------|--------|
-| Root Cause | ✓ Found: CM (CPU Manager) |
-| Causal Elements | ✓ Found: DDR 82.6%, VCORE 82.6%, CPU ceiling |
-| MMDVFS Status | ✓ Ruled out (OPP4 = normal) |
+| Root Cause | ✓ Found: CM, CPU |
+| Causal Elements | ✓ Found: DDR, CPU, VCORE, 725 |
 
-**Result: ✓ PASS** - All checks passed
+**Result: ✓ PASS**
 
 ---
 
