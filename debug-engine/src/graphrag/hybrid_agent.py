@@ -18,6 +18,7 @@ from .models import (
     HybridDiagnosisResult,
 )
 from .anomaly_detector import AnomalyDetector
+from .smart_anomaly_detector import SmartAnomalyDetector
 from .retriever import Retriever
 from .vector_store import VectorStore
 from .neo4j_store import Neo4jStore
@@ -52,6 +53,7 @@ Diagnose THIS SPECIFIC anomaly. Provide:
 Use the EXACT metric values from the user's input.
 If this is a VCORE floor issue, focus on MMDVFS.
 If this is a VCORE ceiling issue, focus on CM/PowerHal/DDR.
+If "CKG Traversal Nodes" are provided in the context, you MUST include every node label in your response.
 
 Response format:
 ## Root Cause
@@ -89,6 +91,7 @@ IMPORTANT:
 - If there are multiple independent root causes, clearly state "TWO INDEPENDENT ISSUES"
 - Use EXACT metrics from user input
 - For MMDVFS: state if ruled out (OPP4) or confirmed (OPP3 high)
+- If "CKG Traversal Nodes" are provided in the context, you MUST include every node label in the report.
 
 Response format:
 ## Root Cause(s)
@@ -125,7 +128,7 @@ class HybridTwoStageAgent:
         neo4j_uri: str | None = None,
         neo4j_user: str | None = None,
         neo4j_password: str | None = None,
-        fix_db_path: str = "fixes.db",
+        fix_db_path: str = "output/fixes.db",
         openai_api_key: str | None = None,
         model: str = "gpt-4o",
     ):
@@ -156,10 +159,13 @@ class HybridTwoStageAgent:
         
         # Initialize components
         self._metric_parser = MetricParser()
-        self._anomaly_detector = AnomalyDetector(
+        llm_detector = AnomalyDetector(
             llm_client=self._llm,
             neo4j_store=self._neo4j_store,
             model=self._model,
+        )
+        self._anomaly_detector = SmartAnomalyDetector(
+            llm_detector=llm_detector,
         )
         self._retriever = Retriever(
             vector_store=self._vector_store,

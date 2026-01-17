@@ -30,6 +30,7 @@ CRITICAL RULES (MUST FOLLOW):
 7. MMDVFS status MUST be addressed:
    - If MMDVFS at OPP4: Explicitly state "MMDVFS ruled out (OPP4 = normal operation)"
    - If MMDVFS at OPP3 with high usage: This IS a root cause for VCORE floor issues
+8. If a section titled "CKG Traversal Nodes" is provided, you MUST explicitly include every node label listed there in your report.
 
 Your task is to analyze power issues based on:
 1. Observed metrics (VCORE, DDR, MMDVFS, CPU frequencies) - USE EXACT VALUES
@@ -89,7 +90,7 @@ class DebugAgent:
         neo4j_uri: str | None = None,
         neo4j_user: str | None = None,
         neo4j_password: str | None = None,
-        fix_db_path: str = "fixes.db",
+        fix_db_path: str = "output/fixes.db",
         vector_store_path: str | None = None,
         openai_api_key: str | None = None,
         llm_model: str = "gpt-4o",
@@ -229,7 +230,7 @@ class DebugAgent:
                     for line in content.split("\n")
                     if line.strip().startswith("-")
                 ]
-        
+
         return DiagnosisResult(
             root_cause=root_cause,
             causal_chain=causal_chain,

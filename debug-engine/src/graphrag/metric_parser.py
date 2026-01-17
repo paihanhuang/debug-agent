@@ -15,9 +15,11 @@ class ExtractedMetrics:
     ddr6370_percent: float | None = None
     ddr_total_percent: float | None = None
     mmdvfs_opp: str | None = None  # "OPP3", "OPP4", etc.
+    mmdvfs_opp_percent: float | None = None
     cpu_big_mhz: int | None = None
     cpu_mid_mhz: int | None = None
     cpu_small_mhz: int | None = None
+    sw_req_flags: set[str] = field(default_factory=set)
     raw_text: str = ""
     extra: dict[str, Any] = field(default_factory=dict)
     
@@ -37,6 +39,10 @@ class ExtractedMetrics:
             parts.append(f"DDR total {self.ddr_total_percent}%")
         if self.mmdvfs_opp is not None:
             parts.append(f"MMDVFS {self.mmdvfs_opp}")
+        if self.mmdvfs_opp_percent is not None:
+            parts.append(f"MMDVFS usage {self.mmdvfs_opp_percent}%")
+        if self.sw_req_flags:
+            parts.append(f"DDR voting {', '.join(sorted(self.sw_req_flags))}")
         
         return ", ".join(parts) if parts else self.raw_text
     
@@ -48,6 +54,8 @@ class ExtractedMetrics:
             self.ddr5460_percent is not None,
             self.ddr6370_percent is not None,
             self.mmdvfs_opp is not None,
+            self.mmdvfs_opp_percent is not None,
+            bool(self.sw_req_flags),
         ])
 
 
@@ -77,6 +85,10 @@ class MetricParser:
         "mmdvfs_opp": [
             r"MMDVFS\s*(OPP\d+)",
             r"MMDVFS\s*(?:at|@|:|：)?\s*(OPP\d+)",
+        ],
+        "mmdvfs_opp_percent": [
+            r"MMDVFS.*?([\d.]+)\s*%\s*usage",
+            r"MMDVFS.*?([\d.]+)\s*%",
         ],
         "cpu_big_mhz": [
             r"大核\s*([\d]+)\s*MHz",
@@ -117,6 +129,11 @@ class MetricParser:
                     else:
                         setattr(metrics, field_name, float(value))
                     break
+
+        # Extract DDR voting flags (SW_REQ2/SW_REQ3)
+        sw_reqs = re.findall(r"SW_REQ\d", text, re.IGNORECASE)
+        if sw_reqs:
+            metrics.sw_req_flags = {req.upper() for req in sw_reqs}
         
         # Calculate DDR total if not provided
         if metrics.ddr_total_percent is None:
@@ -141,8 +158,10 @@ class MetricParser:
             ddr6370_percent=data.get("ddr6370_percent") or data.get("DDR6370"),
             ddr_total_percent=data.get("ddr_total_percent"),
             mmdvfs_opp=data.get("mmdvfs_opp") or data.get("MMDVFS"),
+            mmdvfs_opp_percent=data.get("mmdvfs_opp_percent"),
             cpu_big_mhz=data.get("cpu_big_mhz"),
             cpu_mid_mhz=data.get("cpu_mid_mhz"),
             cpu_small_mhz=data.get("cpu_small_mhz"),
+            sw_req_flags=set(data.get("sw_req_flags", [])),
             extra=data,
         )

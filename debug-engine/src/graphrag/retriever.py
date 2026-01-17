@@ -58,6 +58,20 @@ class DiagnosisContext:
                 chain_str = " → ".join(e.label for e in chain)
                 lines.append(f"- {chain_str}")
         lines.append("")
+
+        # Required nodes from traversal (must appear in report)
+        lines.append("## CKG Traversal Nodes (MUST INCLUDE ALL IN YOUR REPORT)")
+        required_nodes = []
+        for chain in self.causal_chains:
+            for node in chain:
+                if node.label not in required_nodes:
+                    required_nodes.append(node.label)
+        if required_nodes:
+            for label in required_nodes:
+                lines.append(f"- {label}")
+        else:
+            lines.append("- None")
+        lines.append("")
         
         # Anomaly patterns - help LLM identify issues
         lines.append("## Anomaly Patterns (CHECK THESE CONDITIONS)")
