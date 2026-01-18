@@ -40,5 +40,12 @@ htmlcov/
 # Neo4j
 neo4j/
 
-# Output artifacts (optional - uncomment if not tracking)
-# output/
+# Generated artifacts (do not commit)
+output/
+
+# Judge run artifacts (do not commit)
+judge/qa_results/latest_qa_summary.json
+judge/qa_results/judge_qa_report_*.json
+
+# Debug-engine QA dumps (do not commit)
+debug-engine/qa_results/*.txt

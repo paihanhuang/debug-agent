@@ -127,7 +127,7 @@ import json
 from debug-engine.src.graphrag import DebugAgent
 
 # Load your CKG
-with open("output/full_ckg.json") as f:
+with open("assets/ckg/full_ckg.json") as f:
     ckg_data = json.load(f)
 
 # Initialize agent
@@ -190,7 +190,7 @@ python tests/test_e2e_production.py
 ```
 
 This will:
-1. Load the combined CKG from `output/full_ckg.json`
+1. Load the combined CKG from `assets/ckg/full_ckg.json`
 2. Store in Neo4j (graph), FAISS (vectors), SQLite (fixes)
 3. Run diagnosis for 3 test cases
 4. Compare agent output against ground truth

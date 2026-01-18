@@ -8,7 +8,7 @@ report.
 ```bash
 python -m ckg_augment.cli \
   --report data/first \
-  --ckg output/full_ckg.json \
+  --ckg assets/ckg/full_ckg.json \
   --output output/augmented_ckg.json \
   --diff output/augmentation_diff.json
 ```

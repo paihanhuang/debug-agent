@@ -24,7 +24,7 @@ The only learner is `ckg-augment/`.
 - Detailed v1 plan: `implementation-plan/ckg-augment-feedback-v1.md`
 
 ### 2) Debug Engine (`debug-engine/`)
-- **Input:** CKG JSON (recommended standard path: `output/full_ckg.json`)
+- **Input:** CKG JSON (recommended standard path: `assets/ckg/full_ckg.json`)
 - **Execution:** run the existing E2E driver (`tests/test_e2e_production.py`)
 - **Output:** agent reports:
   - `output/e2e_production/agent_report_case1.md`
@@ -51,10 +51,10 @@ The only learner is `ckg-augment/`.
 ### Step A — Augment CKG
 - Inputs:
   - human report text file (ground truth source)
-  - current base CKG JSON (e.g., `output/full_ckg.json`)
+  - current base CKG JSON (e.g., `assets/ckg/full_ckg.json`)
   - (later) `feedback.json` + previous agent report(s)
 - Example:
-  - `python -m ckg_augment.cli --report data/first --ckg output/full_ckg.json --output output/full_ckg.json --diff output/augmentation_diff.json`
+  - `python -m ckg_augment.cli --report data/first --ckg assets/ckg/full_ckg.json --output output/full_ckg.json --diff output/augmentation_diff.json`
 
 ### Step B — Generate Agent Reports (Debug Engine)
 - Run:

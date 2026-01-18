@@ -28,7 +28,7 @@ This section is the **step-by-step wiring plan** to execute a real iteration (`i
 #### Non-functional
 - No file overwrites:
   - Orchestrator refuses to reuse `run_<run_id>`
-  - Orchestrator does not overwrite `output/full_ckg.json`
+  - Orchestrator does not overwrite `assets/ckg/full_ckg.json`
   - All outputs include `iter_XXXX` and `case_XX` in filenames
 
 ### Design rationale (why these choices)
@@ -50,7 +50,7 @@ This section is the **step-by-step wiring plan** to execute a real iteration (`i
 
 **Verification**
 - Minimal smoke run:
-  - `CKG_JSON_PATH=output/full_ckg.json python tests/test_e2e_production.py`
+  - `CKG_JSON_PATH=assets/ckg/full_ckg.json python tests/test_e2e_production.py`
 
 #### Step 2 — Implement CKG path injection in debug-engine E2E (minimal code change)
 - Modify `tests/test_e2e_production.py`:
@@ -207,7 +207,7 @@ At run start:
 
 **No-overwrite rule:**
 - Orchestrator fails fast if `run_<run_id>` exists.
-- Orchestrator never writes to `output/full_ckg.json`.
+- Orchestrator never writes to `assets/ckg/full_ckg.json`.
 
 ---
 
@@ -219,7 +219,7 @@ At run start:
 ### Contract
 - New env var: `CKG_JSON_PATH`
 - E2E harness (`tests/test_e2e_production.py`) uses:
-  - `os.getenv("CKG_JSON_PATH", "output/full_ckg.json")`
+  - `os.getenv("CKG_JSON_PATH", "assets/ckg/full_ckg.json")`
 
 **Rationale**
 This is the smallest change that enables “no overwrite” iteration bundles and supports scratch bootstrapping.

@@ -17,7 +17,7 @@ def _parse_args() -> argparse.Namespace:
     run.add_argument("--max-iters", type=int, default=1, help="Max iterations to run")
     run.add_argument("--dry-run", action="store_true", help="Write synthetic outputs; do not call debug-engine/judge")
     run.add_argument("--output-root", type=str, default="output/closed_loop_runs", help="Root folder for run bundles")
-    run.add_argument("--base-ckg", type=str, default="output/full_ckg.json", help="Base CKG JSON path")
+    run.add_argument("--base-ckg", type=str, default="assets/ckg/full_ckg.json", help="Base CKG JSON path")
     run.add_argument("--per-case", action="store_true", help="Run per-case iterations (case_01..case_03 folders)")
     run.add_argument("--max-iters-per-case", type=int, default=None, help="Max iterations per case (defaults to --max-iters)")
     run.add_argument("--start-from-scratch", action="store_true", help="Start each case from empty CKG (no base CKG)")
