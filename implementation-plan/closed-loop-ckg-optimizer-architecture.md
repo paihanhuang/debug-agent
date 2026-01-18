@@ -18,6 +18,11 @@ The only learner is `ckg-augment/`.
 - **Input:** human expert report text file + current CKG JSON (+ feedback in later iterations)
 - **Output:** augmented CKG JSON + augmentation diff artifact
 
+**Bootstrap support (no base CKG):**
+- When starting from scratch, the augmenter must support initializing from an empty CKG
+  (no `--ckg` input) and building the initial graph from the human report and/or feedback.
+- Detailed v1 plan: `implementation-plan/ckg-augment-feedback-v1.md`
+
 ### 2) Debug Engine (`debug-engine/`)
 - **Input:** CKG JSON (recommended standard path: `output/full_ckg.json`)
 - **Execution:** run the existing E2E driver (`tests/test_e2e_production.py`)

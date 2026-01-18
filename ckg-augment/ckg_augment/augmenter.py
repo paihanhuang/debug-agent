@@ -9,7 +9,7 @@ from typing import Any
 
 from src.extraction.entity_extractor import EntityExtractor
 from src.extraction.relation_extractor import RelationExtractor
-from src.graph.models import CausalGraph, Entity, Relation, RelationType
+from src.graph.models import CausalGraph, Entity, EntityType, Relation, RelationType
 
 
 @dataclass
@@ -20,6 +20,8 @@ class AugmentDiff:
     updated_relations: list[dict[str, str]]
     skipped_relations: list[dict[str, str]]
     conflicts: list[str]
+    feedback_added_entities: list[str] | None = None
+    feedback_skipped_existing: list[str] | None = None
 
     def to_dict(self) -> dict[str, Any]:
         return {
@@ -29,6 +31,8 @@ class AugmentDiff:
             "updated_relations": self.updated_relations,
             "skipped_relations": self.skipped_relations,
             "conflicts": self.conflicts,
+            "feedback_added_entities": self.feedback_added_entities or [],
+            "feedback_skipped_existing": self.feedback_skipped_existing or [],
         }
 
 
@@ -53,6 +57,8 @@ class CkgAugmenter:
         report_text: str,
         base_ckg: CausalGraph,
         report_id: str,
+        feedback: dict[str, Any] | None = None,
+        case_filter: str = "all",
     ) -> tuple[CausalGraph, AugmentDiff]:
         """Augment base CKG with report-derived knowledge."""
         diff = AugmentDiff(
@@ -62,6 +68,8 @@ class CkgAugmenter:
             updated_relations=[],
             skipped_relations=[],
             conflicts=[],
+            feedback_added_entities=[],
+            feedback_skipped_existing=[],
         )
 
         extracted_entities = self._entity_extractor.extract_entities(report_text)
@@ -127,7 +135,63 @@ class CkgAugmenter:
             except Exception as exc:
                 diff.conflicts.append(str(exc))
 
+        # Phase B: apply orchestrator feedback (add-only, deterministic)
+        if feedback:
+            missing = extract_missing_elements(feedback, case_filter=case_filter)
+            self._ensure_missing_entities(base_ckg, missing, report_id=report_id, diff=diff)
+
         return base_ckg, diff
+
+    def _ensure_missing_entities(
+        self,
+        graph: CausalGraph,
+        missing_labels: list[str],
+        report_id: str,
+        diff: AugmentDiff,
+    ) -> None:
+        if not missing_labels:
+            return
+
+        if diff.feedback_added_entities is None:
+            diff.feedback_added_entities = []
+        if diff.feedback_skipped_existing is None:
+            diff.feedback_skipped_existing = []
+
+        existing_by_norm = {self._normalize_label(e.label): e.id for e in graph.get_entities()}
+
+        for label in missing_labels:
+            norm = self._normalize_label(label)
+            if not norm:
+                continue
+            if norm in existing_by_norm:
+                diff.feedback_skipped_existing.append(existing_by_norm[norm])
+                continue
+
+            entity_type = infer_feedback_entity_type(label)
+            entity_id = generate_feedback_entity_id(entity_type, label)
+            # Ensure uniqueness in this graph (avoid ID collision)
+            if graph.get_entity(entity_id) is not None:
+                # fallback: salt with report_id (still deterministic within run)
+                entity_id = generate_feedback_entity_id(entity_type, f"{label}:{report_id}")
+
+            fb_prov = {
+                "source": "closed_loop_feedback",
+                "report_id": report_id,
+                "label": label,
+                "reason": "missing_elements",
+            }
+            new_entity = Entity(
+                id=entity_id,
+                entity_type=entity_type,
+                label=label,
+                description="",
+                attributes={"provenance": [fb_prov]},
+                confidence=1.0,
+                source_text="",
+            )
+            graph.add_entity(new_entity)
+            diff.feedback_added_entities.append(entity_id)
+            existing_by_norm[norm] = entity_id
 
     def _build_entity_index(self, entities: list[Entity]) -> dict[tuple[str, str], str]:
         index: dict[tuple[str, str], str] = {}
@@ -262,3 +326,58 @@ def load_ckg(path: str | Path) -> CausalGraph:
 
 def save_ckg(graph: CausalGraph, path: str | Path) -> None:
     Path(path).write_text(graph.to_json(indent=2), encoding="utf-8")
+
+
+def load_or_init_ckg(path: str | Path | None, init_empty: bool) -> CausalGraph:
+    if path and init_empty:
+        raise ValueError("Provide either --ckg or --init-empty, not both.")
+    if path:
+        return load_ckg(path)
+    if init_empty:
+        return CausalGraph()
+    raise ValueError("No base CKG provided. Use --ckg or --init-empty.")
+
+
+def extract_missing_elements(feedback: dict[str, Any], case_filter: str = "all") -> list[str]:
+    """Extract missing elements from orchestrator feedback (minimal v1 dependency)."""
+    per_case = feedback.get("per_case", {}) or {}
+    wanted_cases: list[str]
+    if case_filter == "all":
+        wanted_cases = list(per_case.keys())
+    else:
+        wanted_cases = [case_filter]
+
+    missing: list[str] = []
+    for case_id in wanted_cases:
+        case_obj = per_case.get(case_id, {}) or {}
+        for dim in case_obj.get("dimensions", []) or []:
+            missing.extend(dim.get("missing_elements", []) or [])
+    # stable de-dup while preserving order
+    seen = set()
+    out = []
+    for m in missing:
+        if not isinstance(m, str):
+            continue
+        key = m.strip()
+        if not key or key in seen:
+            continue
+        seen.add(key)
+        out.append(key)
+    return out
+
+
+def infer_feedback_entity_type(label: str) -> EntityType:
+    """Heuristic v1: choose a safe default type for feedback-added labels."""
+    norm = label.strip().lower()
+    if norm.startswith("sw_req"):
+        return EntityType.OBSERVATION
+    if "vcore" in norm or "ddr" in norm or "%" in norm:
+        return EntityType.METRIC
+    return EntityType.OBSERVATION
+
+
+def generate_feedback_entity_id(entity_type: EntityType, label: str) -> str:
+    norm = " ".join(label.strip().lower().split())
+    raw = f"fb:{entity_type.value}:{norm}"
+    digest = hashlib.sha1(raw.encode("utf-8")).hexdigest()[:10]
+    return f"fb_{entity_type.value.lower()}_{digest}"

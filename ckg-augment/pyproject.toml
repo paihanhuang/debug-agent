@@ -1,0 +1,14 @@
+[build-system]
+requires = ["setuptools>=68", "wheel"]
+build-backend = "setuptools.build_meta"
+
+[project]
+name = "ckg-augment"
+version = "0.1.0"
+description = "CKG augmenter for inference-engine (merges expert report knowledge into a CKG)."
+requires-python = ">=3.10"
+dependencies = []
+
+[tool.setuptools]
+packages = ["ckg_augment"]
+

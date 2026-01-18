@@ -74,3 +74,78 @@ def test_augment_adds_new_entity_and_relation():
     assert len(diff.added_entities) == 1
     assert "rc_cm" in diff.updated_entities
     assert len(diff.added_relations) == 1
+
+
+def test_feedback_missing_element_adds_entity():
+    base = CausalGraph()
+    base.add_entity(
+        Entity(
+            id="rc_cm",
+            entity_type=EntityType.ROOT_CAUSE,
+            label="CM",
+            description="CPU Manager",
+        )
+    )
+
+    augmenter = CkgAugmenter(
+        entity_extractor=FakeEntityExtractor([]),
+        relation_extractor=FakeRelationExtractor([]),
+        fuzzy_match=False,
+    )
+
+    feedback = {
+        "run_id": "r1",
+        "iter_num": 1,
+        "per_case": {
+            "case1": {
+                "dimensions": [
+                    {"name": "Causal Chain Completeness", "missing_elements": ["SW_REQ2"]},
+                ]
+            }
+        },
+    }
+
+    augmented, diff = augmenter.augment(
+        report_text="",
+        base_ckg=base,
+        report_id="test_report",
+        feedback=feedback,
+        case_filter="case1",
+    )
+
+    labels = {e.label for e in augmented.get_entities()}
+    assert "SW_REQ2" in labels
+    assert diff.feedback_added_entities is not None
+    assert len(diff.feedback_added_entities) == 1
+
+
+def test_feedback_idempotent_no_duplicates():
+    base = CausalGraph()
+    augmenter = CkgAugmenter(
+        entity_extractor=FakeEntityExtractor([]),
+        relation_extractor=FakeRelationExtractor([]),
+        fuzzy_match=False,
+    )
+    feedback = {
+        "per_case": {"case1": {"dimensions": [{"missing_elements": ["SW_REQ2"]}]}}
+    }
+
+    augmented1, diff1 = augmenter.augment(
+        report_text="",
+        base_ckg=base,
+        report_id="r",
+        feedback=feedback,
+        case_filter="case1",
+    )
+    augmented2, diff2 = augmenter.augment(
+        report_text="",
+        base_ckg=augmented1,
+        report_id="r",
+        feedback=feedback,
+        case_filter="case1",
+    )
+
+    labels2 = [e.label for e in augmented2.get_entities()]
+    assert labels2.count("SW_REQ2") == 1
+    assert diff1.feedback_added_entities is not None and len(diff1.feedback_added_entities) == 1
+    assert diff2.feedback_added_entities is not None and len(diff2.feedback_added_entities) == 0
