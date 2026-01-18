@@ -178,6 +178,11 @@ class Retriever:
         for rc in root_causes:
             fixes = self._fix_store.get_fixes_by_root_cause(rc.label)
             relevant_fixes.extend(fixes)
+
+        # Fallback: if traversal yielded no usable matches, still try to attach fixes based
+        # on key tokens present in the user query/metrics text.
+        if not relevant_fixes:
+            relevant_fixes = self._fallback_fix_lookup(query_text)
         
         return DiagnosisContext(
             metrics=metrics,
@@ -269,6 +274,9 @@ class Retriever:
         
         # Limit fixes to avoid token bloat
         relevant_fixes = relevant_fixes[:3]
+
+        if not relevant_fixes:
+            relevant_fixes = self._fallback_fix_lookup(metrics.to_query_string())
         
         return DiagnosisContext(
             metrics=metrics,
@@ -278,6 +286,16 @@ class Retriever:
             subgraph=subgraph,
             relevant_fixes=relevant_fixes,
         )
+
+    def _fallback_fix_lookup(self, query_text: str) -> list[HistoricalFix]:
+        """Fallback fix lookup when root-cause traversal provides no usable matches."""
+        q = (query_text or "").lower()
+        tokens = ["CM", "PowerHal", "MMDVFS", "DDR"]
+        fixes: list[HistoricalFix] = []
+        for t in tokens:
+            if t.lower() in q:
+                fixes.extend(self._fix_store.get_fixes_by_root_cause(t))
+        return fixes[:3]
     
     def _infer_causes_from_type(self, anomaly_type: str) -> list:
         """Infer likely root causes from anomaly type."""

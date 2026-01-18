@@ -28,6 +28,7 @@ def test_case_loop_dry_run_stops_at_iter_1(tmp_path: Path) -> None:
         dry_run_stop_iter=1,
         start_from_scratch=True,
         base_ckg_path=None,
+        base_fix_db_path=None,
         judge_provider="openai",
     )
 
@@ -38,6 +39,7 @@ def test_case_loop_dry_run_stops_at_iter_1(tmp_path: Path) -> None:
     fb_path = iters[0] / "feedback" / "feedback_iter_0001_case_02.json"
     fb = json.loads(fb_path.read_text(encoding="utf-8"))
     assert fb["stop_reached"] is True
+    assert (iters[0] / "fix" / "fixes_iter_0001_case_02.db").exists()
 
 
 def test_case_loop_dry_run_stops_at_iter_3(tmp_path: Path) -> None:
@@ -62,6 +64,7 @@ def test_case_loop_dry_run_stops_at_iter_3(tmp_path: Path) -> None:
         dry_run_stop_iter=3,
         start_from_scratch=True,
         base_ckg_path=None,
+        base_fix_db_path=None,
         judge_provider="openai",
     )
 
@@ -73,6 +76,7 @@ def test_case_loop_dry_run_stops_at_iter_3(tmp_path: Path) -> None:
     assert fb2["stop_reached"] is False
     fb3 = json.loads((iters[2] / "feedback" / "feedback_iter_0003_case_02.json").read_text(encoding="utf-8"))
     assert fb3["stop_reached"] is True
+    assert (iters[2] / "fix" / "fixes_iter_0003_case_02.db").exists()
 
 
 def test_case_loop_no_overwrite(tmp_path: Path) -> None:
@@ -97,6 +101,7 @@ def test_case_loop_no_overwrite(tmp_path: Path) -> None:
         dry_run_stop_iter=1,
         start_from_scratch=True,
         base_ckg_path=None,
+        base_fix_db_path=None,
         judge_provider="openai",
     )
 
@@ -131,6 +136,7 @@ def test_case_loop_base_ckg_snapshot_written(tmp_path: Path) -> None:
         dry_run_stop_iter=1,
         start_from_scratch=False,
         base_ckg_path=base_ckg,
+        base_fix_db_path=None,
         judge_provider="openai",
     )
 

@@ -109,9 +109,17 @@ class FixStore:
             List of matching fixes
         """
         conn = self._get_conn()
+        # Be tolerant to how root cause labels appear in reports/CKG:
+        # - exact match (case-insensitive)
+        # - substring match in either direction (e.g., "CM" vs "CM causing VCORE increase")
         cursor = conn.execute(
-            "SELECT * FROM historical_fixes WHERE root_cause = ?",
-            (root_cause,),
+            """
+            SELECT * FROM historical_fixes
+            WHERE lower(root_cause) = lower(?)
+               OR lower(?) LIKE '%' || lower(root_cause) || '%'
+               OR lower(root_cause) LIKE '%' || lower(?) || '%'
+            """,
+            (root_cause, root_cause, root_cause),
         )
         
         fixes = []

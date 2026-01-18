@@ -7,6 +7,8 @@ from pathlib import Path
 import sys
 
 from .augmenter import CkgAugmenter, load_or_init_ckg, save_ckg
+from .fix_db import FixDbDiff, copy_or_init_base_fix_db, upsert_fixes
+from .fix_extractor import FixExtractor, filter_metrics_to_source_text
 
 
 def main() -> int:
@@ -33,6 +35,10 @@ def main() -> int:
     parser.add_argument("--llm-provider", default="openai", choices=["openai", "anthropic"])
     parser.add_argument("--no-fuzzy", action="store_true", help="Disable fuzzy entity matching")
     parser.add_argument("--similarity-threshold", type=float, default=0.88)
+    parser.add_argument("--fix-db", help="Path to base fix DB (optional)")
+    parser.add_argument("--fix-db-out", help="Path to output fix DB (optional)")
+    parser.add_argument("--fix-db-diff", help="Path to write fix DB diff JSON (optional)")
+    parser.add_argument("--no-fix-db", action="store_true", help="Disable fix DB extraction/writing")
 
     args = parser.parse_args()
 
@@ -41,6 +47,9 @@ def main() -> int:
     output_path = Path(args.output)
     diff_path = Path(args.diff) if args.diff else None
     feedback_path = Path(args.feedback) if args.feedback else None
+    base_fix_db = Path(args.fix_db) if args.fix_db else None
+    fix_db_out = Path(args.fix_db_out) if args.fix_db_out else None
+    fix_db_diff = Path(args.fix_db_diff) if args.fix_db_diff else None
 
     if not report_path.exists():
         print(f"Error: report not found: {report_path}", file=sys.stderr)
@@ -50,6 +59,9 @@ def main() -> int:
         return 1
     if feedback_path and not feedback_path.exists():
         print(f"Error: feedback not found: {feedback_path}", file=sys.stderr)
+        return 1
+    if base_fix_db and not base_fix_db.exists():
+        print(f"Error: base fix DB not found: {base_fix_db}", file=sys.stderr)
         return 1
     if not ckg_path and not args.init_empty:
         print("Error: no base CKG provided. Use --ckg or --init-empty.", file=sys.stderr)
@@ -85,8 +97,58 @@ def main() -> int:
         diff_path.write_text(json.dumps(diff.to_dict(), indent=2, ensure_ascii=False), encoding="utf-8")
         print(f"Diff saved to: {diff_path}")
 
+    # Optional: build/update fix DB (SQLite) compatible with debug-engine FixStore.
+    if not args.no_fix_db and fix_db_out:
+        try:
+            human_report_text = _extract_human_report_only(report_text)
+        except Exception:
+            human_report_text = report_text
+
+        extractor = FixExtractor(llm_provider=args.llm_provider)
+        fixes = extractor.extract_fixes(text=human_report_text, report_id=report_path.stem)
+        # Safety filter: keep only metrics that appear in the source text
+        fixes = [
+            f.__class__(
+                case_id=f.case_id,
+                root_cause=f.root_cause,
+                symptom_summary=f.symptom_summary,
+                metrics=filter_metrics_to_source_text(f.metrics, human_report_text),
+                fix_description=f.fix_description,
+                resolution_notes=f.resolution_notes,
+                created_at=f.created_at,
+            )
+            for f in fixes
+        ]
+
+        copy_or_init_base_fix_db(base_db=base_fix_db, out_db=fix_db_out)
+        db_diff: FixDbDiff = upsert_fixes(fix_db_out, fixes)
+        print(f"Fix DB saved to: {fix_db_out}")
+        if fix_db_diff:
+            fix_db_diff.parent.mkdir(parents=True, exist_ok=True)
+            fix_db_diff.write_text(json.dumps(db_diff.to_dict(), indent=2, ensure_ascii=False), encoding="utf-8")
+            print(f"Fix DB diff saved to: {fix_db_diff}")
+
     return 0
 
 
 if __name__ == "__main__":
     raise SystemExit(main())
+
+
+def _extract_human_report_only(raw: str) -> str:
+    """If raw is a combined data/<case> file, return only the human report portion."""
+    lines = (raw or "").splitlines()
+    marker = None
+    for i, l in enumerate(lines):
+        if "E2E Test Query" in l:
+            marker = i
+            break
+    if marker is None:
+        return raw.strip()
+
+    report_end = marker
+    for j in range(marker - 1, -1, -1):
+        if lines[j].strip() == "---":
+            report_end = j
+            break
+    return "\n".join(lines[:report_end]).strip()

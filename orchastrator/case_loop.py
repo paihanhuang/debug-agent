@@ -27,6 +27,7 @@ class CaseLoopConfig:
     # Start mode
     start_from_scratch: bool
     base_ckg_path: Path | None
+    base_fix_db_path: Path | None
 
     # Testability
     dry_run: bool = False
@@ -79,6 +80,8 @@ def run_case_loop(cfg: CaseLoopConfig) -> Path:
     run_dir = cfg.output_root / f"run_{cfg.run_id}"
     if run_dir.exists():
         raise FileExistsError(f"Run folder already exists: {run_dir}")
+    if cfg.start_from_scratch and cfg.base_fix_db_path is not None:
+        raise ValueError("base_fix_db_path must be None when start_from_scratch=True")
 
     case_tag = f"case_{cfg.case_num:02d}"
     iters_dir = run_dir / case_tag / "iterations"
@@ -95,14 +98,21 @@ def run_case_loop(cfg: CaseLoopConfig) -> Path:
     if cfg.start_from_scratch:
         _write_json(inputs_dir / "base_ckg_snapshot.json", {"entities": [], "relations": [], "metadata": {}})
         base_ckg_path = None
+        # Snapshot empty fix DB (schema-only) for traceability
+        base_fix_db_path = None
+        _init_empty_fix_db(inputs_dir / "base_fix_db_snapshot.db")
     else:
         if not cfg.base_ckg_path:
             raise ValueError("base_ckg_path required when start_from_scratch=False")
         _write_text(inputs_dir / "base_ckg_snapshot.json", cfg.base_ckg_path.read_text(encoding="utf-8"))
         base_ckg_path = cfg.base_ckg_path
+        base_fix_db_path = cfg.base_fix_db_path
+        if base_fix_db_path:
+            (inputs_dir / "base_fix_db_snapshot.db").write_bytes(base_fix_db_path.read_bytes())
 
     prev_feedback_path: Path | None = None
     prev_ckg_path: Path | None = base_ckg_path
+    prev_fix_db_path: Path | None = base_fix_db_path
 
     for iter_num in range(1, cfg.max_iters + 1):
         iter_tag = f"iter_{iter_num:04d}"
@@ -111,7 +121,8 @@ def run_case_loop(cfg: CaseLoopConfig) -> Path:
         agent_dir = iter_dir / "agent"
         judge_dir = iter_dir / "judge"
         feedback_dir = iter_dir / "feedback"
-        for d in (ckg_dir, agent_dir, judge_dir, feedback_dir):
+        fix_dir = iter_dir / "fix"
+        for d in (ckg_dir, agent_dir, judge_dir, feedback_dir, fix_dir):
             _ensure_dir(d)
 
         candidate_ckg = ckg_dir / f"candidate_ckg_{iter_tag}_{case_tag}.json"
@@ -119,6 +130,8 @@ def run_case_loop(cfg: CaseLoopConfig) -> Path:
         agent_report = agent_dir / f"agent_report_{iter_tag}_{case_tag}.md"
         judge_result = judge_dir / f"judge_result_{iter_tag}_{case_tag}.json"
         feedback_path = feedback_dir / f"feedback_{iter_tag}_{case_tag}.json"
+        fix_db_path = fix_dir / f"fixes_{iter_tag}_{case_tag}.db"
+        fix_db_diff = fix_dir / f"fix_db_diff_{iter_tag}_{case_tag}.json"
 
         if cfg.dry_run:
             # Deterministic synthetic artifacts for tests.
@@ -133,6 +146,8 @@ def run_case_loop(cfg: CaseLoopConfig) -> Path:
             )
             _write_json(diff_path, {"mode": "dry_run", "iter": iter_tag, "case": cfg.case_id})
             _write_text(agent_report, f"# Agent Report (dry-run)\n\n- iter: {iter_tag}\n- case: {cfg.case_id}\n")
+            _init_empty_fix_db(fix_db_path)
+            _write_json(fix_db_diff, {"mode": "dry_run", "iter": iter_tag, "case": cfg.case_id})
 
             # Synthetic judge result: below threshold until dry_run_stop_iter
             reached = iter_num >= int(cfg.dry_run_stop_iter)
@@ -171,6 +186,7 @@ def run_case_loop(cfg: CaseLoopConfig) -> Path:
 
             prev_feedback_path = feedback_path
             prev_ckg_path = candidate_ckg
+            prev_fix_db_path = fix_db_path
 
             if feedback["stop_reached"]:
                 break
@@ -187,7 +203,10 @@ def run_case_loop(cfg: CaseLoopConfig) -> Path:
             ckg_cmd += ["--ckg", str(prev_ckg_path)]
         if prev_feedback_path is not None:
             ckg_cmd += ["--feedback", str(prev_feedback_path)]
+        if prev_fix_db_path is not None:
+            ckg_cmd += ["--fix-db", str(prev_fix_db_path)]
         ckg_cmd += ["--case", cfg.case_id, "--output", str(candidate_ckg), "--diff", str(diff_path)]
+        ckg_cmd += ["--fix-db-out", str(fix_db_path), "--fix-db-diff", str(fix_db_diff)]
         _run_cmd(ckg_cmd, cwd=Path.cwd())
 
         # 2) DebugAgent: load ckg + diagnose prompt
@@ -196,7 +215,7 @@ def run_case_loop(cfg: CaseLoopConfig) -> Path:
             ckg_path=candidate_ckg,
             prompt=prompt,
             agent_report_path=agent_report,
-            fix_db_path=agent_dir / "fixes.db",
+            fix_db_path=fix_db_path,
         )
 
         # 3) Judge (single-case) → JSON
@@ -232,9 +251,19 @@ def run_case_loop(cfg: CaseLoopConfig) -> Path:
 
         prev_feedback_path = feedback_path
         prev_ckg_path = candidate_ckg
+        prev_fix_db_path = fix_db_path
 
         if fb["stop_reached"]:
             break
+
+    # Always visualize the final candidate CKG for convenience (HTML, vis-network).
+    try:
+        last_iter = sorted(iters_dir.glob("iter_*"))[-1]
+        last_ckg = next((last_iter / "ckg").glob("candidate_ckg_*.json"))
+        out_html = last_iter / "ckg" / f"ckg_visualization_{last_iter.name}_{case_tag}.html"
+        _write_ckg_visualization(last_ckg, out_html, title=f"CKG Visualization ({cfg.case_id} {last_iter.name})")
+    except Exception:
+        pass
 
     return run_dir
 
@@ -290,6 +319,124 @@ def _run_debug_agent(
         agent_report_path.write_text(res.raw_response, encoding="utf-8")
 
 
+def _init_empty_fix_db(path: Path) -> None:
+    import sqlite3
+
+    path.parent.mkdir(parents=True, exist_ok=True)
+    conn = sqlite3.connect(str(path))
+    try:
+        conn.execute(
+            """
+            CREATE TABLE IF NOT EXISTS historical_fixes (
+                id INTEGER PRIMARY KEY AUTOINCREMENT,
+                case_id TEXT UNIQUE NOT NULL,
+                root_cause TEXT NOT NULL,
+                symptom_summary TEXT,
+                metrics_json TEXT,
+                fix_description TEXT NOT NULL,
+                resolution_notes TEXT,
+                created_at TEXT
+            )
+            """
+        )
+        conn.execute(
+            """
+            CREATE INDEX IF NOT EXISTS idx_root_cause
+            ON historical_fixes(root_cause)
+            """
+        )
+        conn.commit()
+    finally:
+        conn.close()
+
+
+def _write_ckg_visualization(ckg_json: Path, out_html: Path, title: str) -> None:
+    data = json.loads(ckg_json.read_text(encoding="utf-8"))
+    entities = data.get("entities", []) or []
+    relations = data.get("relations", []) or []
+
+    type_colors = {
+        "RootCause": "#ff6b6b",
+        "Symptom": "#ffa94d",
+        "Component": "#74c0fc",
+        "Metric": "#69db7c",
+        "Hypothesis": "#ffd43b",
+        "Action": "#adb5bd",
+        "Observation": "#f1f3f5",
+        "Conclusion": "#f783ac",
+    }
+
+    nodes = []
+    for e in entities:
+        eid = e.get("id")
+        etype = e.get("type") or e.get("entity_type") or "Unknown"
+        label = e.get("label") or eid
+        desc = e.get("description") or ""
+        src = e.get("source_text") or ""
+        tip = (desc + ("\n\nsource_text: " + src if src else "")).strip() or label
+        nodes.append(
+            {
+                "id": eid,
+                "label": f"{label}\n({etype})",
+                "group": etype,
+                "color": type_colors.get(etype, "#e9ecef"),
+                "title": tip,
+            }
+        )
+
+    edges = []
+    for r in relations:
+        s = r.get("source") or r.get("source_id")
+        t = r.get("target") or r.get("target_id")
+        rel_type = r.get("type") or r.get("relation_type") or ""
+        is_causal = bool(r.get("is_causal"))
+        edges.append({"from": s, "to": t, "label": rel_type, "arrows": "to", "dashes": (not is_causal)})
+
+    html = f"""<!doctype html>
+<html>
+<head>
+  <meta charset="utf-8"/>
+  <title>{title}</title>
+  <style>
+    body {{ margin: 0; font-family: Arial, sans-serif; }}
+    #topbar {{ padding: 10px 14px; border-bottom: 1px solid #eee; }}
+    #network {{ width: 100%; height: calc(100vh - 52px); }}
+    .meta {{ color: #666; font-size: 12px; }}
+  </style>
+  <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/vis-network/9.1.2/dist/vis-network.min.css" />
+  <script src="https://cdnjs.cloudflare.com/ajax/libs/vis-network/9.1.2/dist/vis-network.min.js"></script>
+</head>
+<body>
+  <div id="topbar">
+    <div><b>{title}</b></div>
+    <div class="meta">Source JSON: {ckg_json}</div>
+    <div class="meta">Nodes: {len(nodes)} | Edges: {len(edges)} (dashed = non-causal / weak)</div>
+  </div>
+  <div id="network"></div>
+
+  <script>
+    const nodes = new vis.DataSet({json.dumps(nodes, ensure_ascii=False)});
+    const edges = new vis.DataSet({json.dumps(edges, ensure_ascii=False)});
+
+    const container = document.getElementById('network');
+    const data = {{ nodes, edges }};
+    const options = {{
+      layout: {{ improvedLayout: true }},
+      interaction: {{ hover: true, navigationButtons: true }},
+      physics: {{ stabilization: true }},
+      nodes: {{ shape: 'box', margin: 10, font: {{ multi: 'html', size: 13 }} }},
+      edges: {{ smooth: {{ type: 'dynamic' }}, font: {{ align: 'middle' }} }}
+    }};
+
+    new vis.Network(container, data, options);
+  </script>
+</body>
+</html>
+"""
+
+    out_html.write_text(html, encoding="utf-8")
+
+
 def main() -> int:
     p = argparse.ArgumentParser(prog="orchastrator.case_loop")
     p.add_argument("--data", required=True, help="Path to data/<case> file containing report + E2E query")
@@ -305,6 +452,7 @@ def main() -> int:
     start = p.add_mutually_exclusive_group(required=True)
     start.add_argument("--start-from-scratch", action="store_true")
     start.add_argument("--base-ckg", type=str, default=None)
+    p.add_argument("--base-fix-db", type=str, default=None, help="Base fixes sqlite DB (used when --base-ckg is set)")
 
     p.add_argument("--dry-run", action="store_true")
     p.add_argument("--dry-run-stop-iter", type=int, default=1)
@@ -326,6 +474,7 @@ def main() -> int:
         judge_provider=str(args.judge_provider),
         start_from_scratch=bool(args.start_from_scratch),
         base_ckg_path=(Path(args.base_ckg) if args.base_ckg else None),
+        base_fix_db_path=(Path(args.base_fix_db) if args.base_fix_db else None),
         dry_run=bool(args.dry_run),
         dry_run_stop_iter=int(args.dry_run_stop_iter),
     )
