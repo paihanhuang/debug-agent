@@ -13,6 +13,7 @@ from .neo4j_store import Neo4jStore
 from .fix_store import FixStore
 from .embeddings import EmbeddingService
 from .metric_parser import MetricParser
+from .metric_parser import ExtractedMetrics
 
 
 SYSTEM_PROMPT = """You are an expert power debugging assistant for mobile devices.
@@ -66,6 +67,17 @@ Ensure the report includes all required CKG traversal node labels.
 If any are missing, revise the report to include them without changing metrics.
 Return only the revised report text."""
 
+METRIC_REWRITE_SYSTEM_PROMPT = """You are an expert technical editor for power debugging reports.
+
+Your job is to revise an existing report to NATURALLY include specific REQUIRED FACTS (metrics/frequencies).
+
+CRITICAL RULES (MUST FOLLOW):
+1. Do not change any numeric values already present in the report.
+2. Do not invent any new metrics, numbers, thresholds, or facts beyond the REQUIRED FACTS list.
+3. Do not add a new section like \"Metric Echo\". Blend facts into existing sections.
+4. Preserve the report structure and tone. Make minimal edits.
+5. Return ONLY the revised report text (no markdown fences, no commentary)."""
+
 
 @dataclass
 class DiagnosisResult:
@@ -99,6 +111,7 @@ class DebugAgent:
         vector_store_path: str | None = None,
         openai_api_key: str | None = None,
         llm_model: str = "gpt-4o",
+        llm_client: Any | None = None,
     ):
         """Initialize the debug agent.
         
@@ -144,8 +157,8 @@ class DebugAgent:
             embedding_service=self._embedding_service,
         )
         
-        # LLM client
-        self._llm_client = OpenAI(api_key=self._api_key)
+        # LLM client (injectable for tests)
+        self._llm_client = llm_client or OpenAI(api_key=self._api_key)
         
         # Metric parser
         self._metric_parser = MetricParser()
@@ -193,9 +206,77 @@ class DebugAgent:
         
         raw_response = response.choices[0].message.content
         raw_response = self._ensure_traversal_nodes(raw_response, context)
+        raw_response = self._rewrite_report_to_include_required_metrics(raw_response, context.metrics)
         
         # Step 4: Parse response
         return self._parse_response(raw_response, context)
+
+    def _metric_rewrite_enabled(self) -> bool:
+        v = os.getenv("ENABLE_REPORT_METRIC_REWRITE")
+        if v is None:
+            return True  # default ON
+        return v.strip().lower() not in {"0", "false", "no", "off"}
+
+    def _rewrite_report_to_include_required_metrics(self, report: str, metrics: ExtractedMetrics) -> str:
+        """Second-pass LLM editor to blend required metrics into the report (default ON).
+
+        This is a targeted editor pass. It should not change meaning or numeric values.
+        """
+        if not self._metric_rewrite_enabled():
+            return report
+
+        required: list[str] = []
+        # DDR breakdown
+        if metrics.ddr5460_percent is not None:
+            required.append(f"DDR5460: {metrics.ddr5460_percent}%")
+        if metrics.ddr6370_percent is not None:
+            required.append(f"DDR6370: {metrics.ddr6370_percent}%")
+        if metrics.ddr_total_percent is not None:
+            required.append(f"DDR total: {metrics.ddr_total_percent}%")
+
+        # CPU frequencies
+        if metrics.cpu_big_mhz is not None or metrics.cpu_mid_mhz is not None or metrics.cpu_small_mhz is not None:
+            required.append(
+                "CPU frequencies observed: "
+                f"big={metrics.cpu_big_mhz}MHz, mid={metrics.cpu_mid_mhz}MHz, small={metrics.cpu_small_mhz}MHz"
+            )
+
+        if not required:
+            return report
+
+        lower = report.lower()
+        need_tokens: list[str] = []
+        if metrics.ddr5460_percent is not None:
+            need_tokens.append("ddr5460")
+        if metrics.ddr6370_percent is not None:
+            need_tokens.append("ddr6370")
+        if (metrics.cpu_big_mhz is not None or metrics.cpu_mid_mhz is not None or metrics.cpu_small_mhz is not None):
+            need_tokens.append("mhz")
+
+        # If already present, avoid the extra LLM call.
+        if all(t in lower for t in need_tokens):
+            return report
+
+        prompt = f"""You are given a draft power debugging report and a list of REQUIRED FACTS.
+
+REQUIRED FACTS (must be included verbatim, but you may adjust surrounding wording):
+{chr(10).join('- ' + r for r in required)}
+
+Draft Report:
+{report}
+"""
+        try:
+            resp = self._llm_client.chat.completions.create(
+                model=self._llm_model,
+                messages=[
+                    {"role": "system", "content": METRIC_REWRITE_SYSTEM_PROMPT},
+                    {"role": "user", "content": prompt},
+                ],
+                temperature=0.1,
+            )
+            return resp.choices[0].message.content or report
+        except Exception:
+            return report
     
     def _build_prompt(self, input_text: str, context: DiagnosisContext) -> str:
         """Build the prompt for LLM."""
