@@ -22,6 +22,8 @@ class AugmentDiff:
     conflicts: list[str]
     feedback_added_entities: list[str] | None = None
     feedback_skipped_existing: list[str] | None = None
+    feedback_added_relations: list[dict[str, str]] | None = None
+    feedback_skipped_existing_relations: list[dict[str, str]] | None = None
 
     def to_dict(self) -> dict[str, Any]:
         return {
@@ -33,6 +35,8 @@ class AugmentDiff:
             "conflicts": self.conflicts,
             "feedback_added_entities": self.feedback_added_entities or [],
             "feedback_skipped_existing": self.feedback_skipped_existing or [],
+            "feedback_added_relations": self.feedback_added_relations or [],
+            "feedback_skipped_existing_relations": self.feedback_skipped_existing_relations or [],
         }
 
 
@@ -70,6 +74,8 @@ class CkgAugmenter:
             conflicts=[],
             feedback_added_entities=[],
             feedback_skipped_existing=[],
+            feedback_added_relations=[],
+            feedback_skipped_existing_relations=[],
         )
 
         extracted_entities = self._entity_extractor.extract_entities(report_text)
@@ -138,7 +144,19 @@ class CkgAugmenter:
         # Phase B: apply orchestrator feedback (add-only, deterministic)
         if feedback:
             missing = extract_missing_elements(feedback, case_filter=case_filter)
-            self._ensure_missing_entities(base_ckg, missing, report_id=report_id, diff=diff)
+            missing_norm = [self._normalize_feedback_missing_element(m) for m in missing]
+            missing_norm = [m for m in missing_norm if m]
+            # stable de-dup while preserving order
+            seen = set()
+            missing_norm_dedup = []
+            for m in missing_norm:
+                if m in seen:
+                    continue
+                seen.add(m)
+                missing_norm_dedup.append(m)
+
+            self._ensure_missing_entities(base_ckg, missing_norm_dedup, report_id=report_id, diff=diff)
+            self._ensure_missing_relations(base_ckg, missing_norm_dedup, report_id=report_id, diff=diff)
 
         # Phase C: deterministic autolink pass to reduce isolated metric/component nodes.
         # This adds ONLY non-causal, low-confidence evidential edges (Metric -> Component via INDICATES).
@@ -146,6 +164,223 @@ class CkgAugmenter:
 
         return base_ckg, diff
 
+    @staticmethod
+    def _normalize_feedback_missing_element(s: str) -> str:
+        """Normalize missing elements to stable CKG labels (v1)."""
+        s = (s or "").strip()
+        if not s:
+            return ""
+        low = s.lower()
+        if "拉檔" in s:
+            return "拉檔"
+        if "frequency throttling" in low:
+            return "拉檔"
+        return s
+
+    def _ensure_missing_relations(
+        self,
+        graph: CausalGraph,
+        missing_labels: list[str],
+        report_id: str,
+        diff: AugmentDiff,
+    ) -> None:
+        """Add safe, non-causal relations implied by missing elements.
+
+        This is intentionally conservative:
+        - never adds CAUSES
+        - adds only evidential/analysis-flow relations with low confidence
+        - all relations are provenance-tagged
+        """
+        if not missing_labels:
+            return
+
+        if diff.feedback_added_relations is None:
+            diff.feedback_added_relations = []
+        if diff.feedback_skipped_existing_relations is None:
+            diff.feedback_skipped_existing_relations = []
+
+        existing_relation_keys = self._relation_keys(graph.get_relations())
+
+        # Build label indices for resolution.
+        entities = list(graph.get_entities())
+        by_norm = {self._normalize_label(e.label): e.id for e in entities}
+        # For contains matching (CM often appears as "CM causing ...")
+        def _find_best_id_contains(token: str, prefer_type: EntityType | None = None) -> str | None:
+            t = token.strip().lower()
+            if not t:
+                return None
+            # exact normalized match first
+            exact = by_norm.get(self._normalize_label(token))
+            if exact:
+                return exact
+            # type-preferred contains match
+            candidates = []
+            for e in entities:
+                if prefer_type and e.entity_type != prefer_type:
+                    continue
+                if t in (e.label or "").lower():
+                    candidates.append(e)
+            if candidates:
+                return candidates[0].id
+            # fallback contains match without type constraint
+            for e in entities:
+                if t in (e.label or "").lower():
+                    return e.id
+            return None
+
+        def _ensure_component(label: str) -> str:
+            norm = self._normalize_label(label)
+            if norm in by_norm:
+                return by_norm[norm]
+            eid = generate_feedback_entity_id(EntityType.COMPONENT, label)
+            if graph.get_entity(eid) is not None:
+                eid = generate_feedback_entity_id(EntityType.COMPONENT, f"{label}:{report_id}")
+            graph.add_entity(
+                Entity(
+                    id=eid,
+                    entity_type=EntityType.COMPONENT,
+                    label=label,
+                    description="",
+                    attributes={"provenance": [{"source": "closed_loop_feedback", "report_id": report_id, "reason": "missing_relation_target"}]},
+                    confidence=1.0,
+                    source_text="",
+                )
+            )
+            by_norm[norm] = eid
+            entities.append(graph.get_entity(eid))  # type: ignore[arg-type]
+            return eid
+
+        def _ensure_observation(label: str) -> str:
+            norm = self._normalize_label(label)
+            if norm in by_norm:
+                return by_norm[norm]
+            eid = generate_feedback_entity_id(EntityType.OBSERVATION, label)
+            if graph.get_entity(eid) is not None:
+                eid = generate_feedback_entity_id(EntityType.OBSERVATION, f"{label}:{report_id}")
+            graph.add_entity(
+                Entity(
+                    id=eid,
+                    entity_type=EntityType.OBSERVATION,
+                    label=label,
+                    description="",
+                    attributes={"provenance": [{"source": "closed_loop_feedback", "report_id": report_id, "reason": "missing_relation_source"}]},
+                    confidence=1.0,
+                    source_text="",
+                )
+            )
+            by_norm[norm] = eid
+            entities.append(graph.get_entity(eid))  # type: ignore[arg-type]
+            return eid
+
+        def _ensure_metric(label: str) -> str:
+            norm = self._normalize_label(label)
+            if norm in by_norm:
+                return by_norm[norm]
+            eid = generate_feedback_entity_id(EntityType.METRIC, label)
+            if graph.get_entity(eid) is not None:
+                eid = generate_feedback_entity_id(EntityType.METRIC, f"{label}:{report_id}")
+            graph.add_entity(
+                Entity(
+                    id=eid,
+                    entity_type=EntityType.METRIC,
+                    label=label,
+                    description="",
+                    attributes={"provenance": [{"source": "closed_loop_feedback", "report_id": report_id, "reason": "missing_metric"}]},
+                    confidence=1.0,
+                    source_text="",
+                )
+            )
+            by_norm[norm] = eid
+            entities.append(graph.get_entity(eid))  # type: ignore[arg-type]
+            return eid
+
+        def _add_relation(source_id: str, rel_type: RelationType, target_id: str, rule_id: str) -> None:
+            key = (source_id, rel_type.value, target_id)
+            if key in existing_relation_keys:
+                diff.feedback_skipped_existing_relations.append(
+                    {"source": source_id, "target": target_id, "type": rel_type.value}
+                )
+                return
+            rel = Relation(
+                source_id=source_id,
+                target_id=target_id,
+                relation_type=rel_type,
+                confidence=0.3,
+                evidence=f"closed_loop_feedback_relation:{rule_id}",
+                causal_effect=None,
+                attributes={
+                    "provenance": [
+                        {
+                            "source": "closed_loop_feedback_relation",
+                            "report_id": report_id,
+                            "reason": "missing_elements",
+                            "rule_id": rule_id,
+                        }
+                    ]
+                },
+            )
+            graph.add_relation(rel, validate_dag=False)
+            existing_relation_keys.add(key)
+            diff.feedback_added_relations.append({"source": source_id, "target": target_id, "type": rel_type.value})
+
+        # Resolve key targets
+        cm_target = _find_best_id_contains("CM", prefer_type=EntityType.ROOT_CAUSE) or _find_best_id_contains(
+            "CM"
+        ) or _ensure_component("CM")
+        powerhal_target = _find_best_id_contains("PowerHal", prefer_type=EntityType.COMPONENT) or _ensure_component(
+            "PowerHal"
+        )
+        ddr_target = _find_best_id_contains("DDR", prefer_type=EntityType.COMPONENT) or None
+        cpu_target = _find_best_id_contains("CPU", prefer_type=EntityType.COMPONENT) or None
+
+        # Rule A/B/C/D dispatch
+        for m in missing_labels:
+            low = m.lower()
+
+            # Rule A: SW_REQ mapping
+            if m.strip().upper() == "SW_REQ2":
+                sw = _ensure_observation("SW_REQ2")
+                _add_relation(sw, RelationType.INDICATES, cm_target, rule_id="sw_req2_indicates_cm")
+                continue
+            if m.strip().upper() == "SW_REQ3":
+                sw = _ensure_observation("SW_REQ3")
+                _add_relation(sw, RelationType.INDICATES, powerhal_target, rule_id="sw_req3_indicates_powerhal")
+                continue
+
+            # Rule B: 拉檔
+            if "拉檔" in m or "frequency throttling" in low:
+                th = _ensure_observation("拉檔")
+                _add_relation(th, RelationType.INDICATES, cm_target, rule_id="throttling_indicates_cm")
+                continue
+
+            # Rule C: specific metrics
+            if "ddr5460" in low or "ddr6370" in low:
+                met = _ensure_metric(m)
+                if ddr_target is None:
+                    ddr_target = _ensure_component("DDR")
+                _add_relation(met, RelationType.INDICATES, ddr_target, rule_id="ddr_metric_indicates_ddr")
+                continue
+            if m.strip().lower() == "cpu frequencies":
+                met = _ensure_metric("CPU frequencies")
+                if cpu_target is None:
+                    cpu_target = _ensure_component("CPU")
+                _add_relation(met, RelationType.INDICATES, cpu_target, rule_id="cpu_freq_indicates_cpu")
+                continue
+
+            # Rule D: chain parsing
+            if "->" in m or "→" in m:
+                arrow = "→" if "→" in m else "->"
+                parts = [p.strip() for p in m.split(arrow)]
+                parts = [p for p in parts if p]
+                if len(parts) >= 2:
+                    ids: list[str] = []
+                    for token in parts:
+                        # best-effort resolve to existing entity, else create component.
+                        tid = _find_best_id_contains(token) or _ensure_component(token)
+                        ids.append(tid)
+                    for a, b in zip(ids, ids[1:], strict=False):
+                        _add_relation(a, RelationType.LEADS_TO, b, rule_id="chain_leads_to")
+                continue
     def _autolink_metrics_to_components(self, graph: CausalGraph, report_id: str, diff: AugmentDiff) -> None:
         """Add weak evidential edges to connect metric nodes to their component.
 
