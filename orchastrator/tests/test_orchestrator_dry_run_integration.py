@@ -41,25 +41,28 @@ def test_dry_run_creates_full_iteration_bundle(tmp_path: Path) -> None:
         base_ckg_path=base_ckg,
         stop=StopCriteria(min_accuracy=9.0, min_overall=8.0),
         cases=cases,
+        per_case=True,
+        max_iters_per_case=1,
+        start_from_scratch=True,
+        judge_provider="openai",
     )
 
     orch = ClosedLoopOrchestrator(project_root)
     feedbacks = orch.run(cfg)
-    assert len(feedbacks) == 1
+    # per-case mode returns one Feedback per case (iter_0001 each)
+    assert len(feedbacks) == 3
 
     run_dir = out_root / "run_dryrun"
-    iter_dir = run_dir / "iterations" / "iter_0001"
+    iter_dir = run_dir / "case_01" / "iterations" / "iter_0001"
 
     expected = [
-        iter_dir / "ckg" / "candidate_ckg_iter_0001.json",
-        iter_dir / "ckg" / "augmentation_diff_iter_0001.json",
+        iter_dir / "ckg" / "candidate_ckg_iter_0001_case_01.json",
+        iter_dir / "ckg" / "augmentation_diff_iter_0001_case_01.json",
         iter_dir / "agent" / "agent_report_iter_0001_case_01.md",
-        iter_dir / "agent" / "agent_report_iter_0001_case_02.md",
-        iter_dir / "agent" / "agent_report_iter_0001_case_03.md",
-        iter_dir / "agent" / "production_comparison_iter_0001.json",
-        iter_dir / "judge" / "judge_qa_report_iter_0001.json",
-        iter_dir / "judge" / "judge_qa_summary_iter_0001.json",
-        iter_dir / "feedback" / "feedback_iter_0001.json",
+        iter_dir / "agent" / "production_comparison_iter_0001_case_01.json",
+        iter_dir / "judge" / "judge_qa_report_iter_0001_case_01.json",
+        iter_dir / "judge" / "judge_qa_summary_iter_0001_case_01.json",
+        iter_dir / "feedback" / "feedback_iter_0001_case_01.json",
         run_dir / "run_summary.json",
     ]
 

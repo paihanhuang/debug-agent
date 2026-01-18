@@ -29,6 +29,10 @@ class RunConfig:
     base_ckg_path: Path
     stop: StopCriteria
     cases: list[CaseSpec]
+    per_case: bool = False
+    max_iters_per_case: int | None = None
+    start_from_scratch: bool = False
+    judge_provider: str = "openai"
 
 
 @dataclass(frozen=True)

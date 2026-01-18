@@ -29,3 +29,11 @@ SW_REQ2代表CM相關，SW_REQ3代表跟 PowerHal相關.但都與CPU使用機制
 有高的使用率．可以確認是CM拉檔造
 
 成.這部分與調控策略相關
+
+---
+E2E Test Query (judgement-free):
+VCORE 725mV usage is at 29.32%.
+DDR5460 at 3.54%, DDR6370 at 26.13%. Total DDR at 29.67%.
+MMDVFS is at OPP4.
+CPU shows various frequencies.
+DDR voting shows SW_REQ2 and SW_REQ3 activity.

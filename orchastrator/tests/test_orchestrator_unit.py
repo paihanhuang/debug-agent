@@ -44,24 +44,28 @@ def test_creates_run_bundle_and_stops_on_threshold(tmp_path: Path) -> None:
         base_ckg_path=base_ckg,
         stop=StopCriteria(min_accuracy=9.0, min_overall=8.0),
         cases=cases,
+        per_case=True,
+        max_iters_per_case=3,
+        start_from_scratch=True,
+        judge_provider="openai",
     )
 
     orch = ClosedLoopOrchestrator(project_root)
     feedbacks = orch.run(cfg)
 
-    # Dry-run judge data uses accuracy=9 and overall=8.5 => should stop after iter_0001
-    assert len(feedbacks) == 1
-    assert feedbacks[0].stop_reached is True
+    # Per-case dry-run judge data uses accuracy=9 and overall=8.5 => each case should stop after iter_0001
+    assert len(feedbacks) == 3
+    assert all(f.stop_reached for f in feedbacks)
 
     run_dir = out_root / "run_unit_run"
     assert run_dir.exists()
 
-    # Key artifacts with naming contract
-    iter_dir = run_dir / "iterations" / "iter_0001"
-    assert (iter_dir / "ckg" / "candidate_ckg_iter_0001.json").exists()
+    # Key artifacts with per-case naming contract (check case_01 only)
+    iter_dir = run_dir / "case_01" / "iterations" / "iter_0001"
+    assert (iter_dir / "ckg" / "candidate_ckg_iter_0001_case_01.json").exists()
     assert (iter_dir / "agent" / "agent_report_iter_0001_case_01.md").exists()
-    assert (iter_dir / "judge" / "judge_qa_report_iter_0001.json").exists()
-    assert (iter_dir / "feedback" / "feedback_iter_0001.json").exists()
+    assert (iter_dir / "judge" / "judge_qa_report_iter_0001_case_01.json").exists()
+    assert (iter_dir / "feedback" / "feedback_iter_0001_case_01.json").exists()
 
 
 def test_does_not_overwrite_existing_run(tmp_path: Path) -> None:
@@ -88,6 +92,10 @@ def test_does_not_overwrite_existing_run(tmp_path: Path) -> None:
         base_ckg_path=base_ckg,
         stop=StopCriteria(min_accuracy=9.0, min_overall=8.0),
         cases=cases,
+        per_case=True,
+        max_iters_per_case=1,
+        start_from_scratch=True,
+        judge_provider="openai",
     )
 
     orch = ClosedLoopOrchestrator(project_root)

@@ -47,10 +47,10 @@ TEST_CASES = [
     TestCase(
         name="Case 1 (first report)",
         query="""
-VCORE 725mV usage is at 82.6%, exceeding the 10% threshold.
+VCORE 725mV usage is at 82.6%.
 DDR5460 and DDR6370 combined usage is 82.6%.
 MMDVFS is at OPP4.
-CPU 大核 at 2700MHz, 中核 at 2500MHz, 小核 at 2100MHz - all at ceiling.
+CPU 大核 at 2700MHz, 中核 at 2500MHz, 小核 at 2100MHz.
 DDR voting shows SW_REQ2 activity.
 """,
         expected_root_cause=["CM", "CPU"],
@@ -64,10 +64,10 @@ MMDVFS ruled out (stays at OPP4).
     TestCase(
         name="Case 2 (second report)",
         query="""
-VCORE 725mV usage is at 29.32%, exceeding the 10% threshold.
+VCORE 725mV usage is at 29.32%.
 DDR5460 at 3.54%, DDR6370 at 26.13%. Total DDR at 29.67%.
 MMDVFS is at OPP4.
-CPU shows various frequencies with high usage.
+CPU shows various frequencies.
 DDR voting shows SW_REQ2 and SW_REQ3 activity.
 """,
         expected_root_cause=["CM", "PowerHal"],
@@ -82,12 +82,12 @@ Related to control policy (調控策略).
     TestCase(
         name="Case 3 (third report)",
         query="""
-VCORE 725mV usage is at 52.51%, exceeding the 10% threshold.
-VCORE 600mV is the floor (should be 575mV).
+VCORE 725mV usage is at 52.51%.
+VCORE floor is 600mV.
 MMDVFS is at OPP3 with 100% usage.
 DDR5460 at 23.37%, DDR6370 at 30.77%. Total DDR at 54.14%.
-CPU 大核 at 2700MHz, 中核 at 2500MHz, 小核 at 2100MHz - high usage.
-No DDR voting data available, suspected CM related.
+CPU 大核 at 2700MHz, 中核 at 2500MHz, 小核 at 2100MHz.
+No DDR voting data available.
 """,
         expected_root_cause=["CM", "MMDVFS"],
         expected_causal_elements=["DDR", "VCORE", "600", "725", "OPP3"],
@@ -206,7 +206,7 @@ def run_production_test():
     print("=" * 70)
     
     # Paths
-    ckg_path = _project_root / "output" / "full_ckg.json"
+    ckg_path = Path(os.getenv("CKG_JSON_PATH", str(_project_root / "output" / "full_ckg.json")))
     output_dir = _project_root / "output" / "e2e_production"
     output_dir.mkdir(parents=True, exist_ok=True)
     
