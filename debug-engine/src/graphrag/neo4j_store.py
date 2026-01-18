@@ -25,6 +25,7 @@ class RelationEdge:
     type: str
     strength: float = 1.0
     mechanism: str = ""
+    is_causal: bool = True
 
 
 class Neo4jStore:
@@ -98,7 +99,8 @@ class Neo4jStore:
         MATCH (t:Entity {id: $target_id})
         MERGE (s)-[r:RELATION {type: $type}]->(t)
         SET r.strength = $strength,
-            r.mechanism = $mechanism
+            r.mechanism = $mechanism,
+            r.is_causal = $is_causal
         """
         with self._driver.session() as session:
             session.run(
@@ -108,6 +110,7 @@ class Neo4jStore:
                 type=relation.type,
                 strength=relation.strength,
                 mechanism=relation.mechanism,
+                is_causal=bool(relation.is_causal),
             )
     
     def load_ckg_from_dict(self, ckg_data: dict[str, Any]) -> None:
@@ -130,6 +133,7 @@ class Neo4jStore:
                 type=rel["type"],
                 strength=causal_effect.get("strength", 1.0),
                 mechanism=causal_effect.get("mechanism", ""),
+                is_causal=bool(rel.get("is_causal", rel.get("type") == "CAUSES")),
             ))
     
     def clear_all(self) -> None:
@@ -204,9 +208,12 @@ class Neo4jStore:
         Returns:
             List of upstream entities (causes)
         """
+        # Only traverse *causal* edges. This prevents weak/non-causal links
+        # (e.g. INDICATES autolinks) from polluting root cause retrieval.
         query = f"""
         MATCH (target:Entity {{id: $id}})
-        MATCH path = (cause:Entity)-[:RELATION*1..{max_hops}]->(target)
+        MATCH path = (cause:Entity)-[rels:RELATION*1..{max_hops}]->(target)
+        WHERE ALL(r IN rels WHERE coalesce(r.is_causal, false) = true)
         RETURN DISTINCT cause
         """
         entities = []
@@ -237,10 +244,12 @@ class Neo4jStore:
         Returns:
             List of entities in the chain, in order
         """
+        # Only consider paths composed entirely of causal edges.
         query = """
         MATCH path = shortestPath(
-            (source:Entity {id: $from_id})-[:RELATION*]->(target:Entity {id: $to_id})
+            (source:Entity {id: $from_id})-[rels:RELATION*]->(target:Entity {id: $to_id})
         )
+        WHERE ALL(r IN relationships(path) WHERE coalesce(r.is_causal, false) = true)
         RETURN nodes(path) as chain
         """
         with self._driver.session() as session:

@@ -140,7 +140,83 @@ class CkgAugmenter:
             missing = extract_missing_elements(feedback, case_filter=case_filter)
             self._ensure_missing_entities(base_ckg, missing, report_id=report_id, diff=diff)
 
+        # Phase C: deterministic autolink pass to reduce isolated metric/component nodes.
+        # This adds ONLY non-causal, low-confidence evidential edges (Metric -> Component via INDICATES).
+        self._autolink_metrics_to_components(base_ckg, report_id=report_id, diff=diff)
+
         return base_ckg, diff
+
+    def _autolink_metrics_to_components(self, graph: CausalGraph, report_id: str, diff: AugmentDiff) -> None:
+        """Add weak evidential edges to connect metric nodes to their component.
+
+        Rationale:
+        - Some extractors produce entities without relations, leaving "dead" nodes.
+        - We only add INDICATES edges with low confidence and is_causal=false,
+          so traversal-based root-cause reasoning can safely ignore them.
+        """
+        # Index components by normalized label for quick lookup.
+        components: dict[str, str] = {}
+        for e in graph.get_entities():
+            if e.entity_type == EntityType.COMPONENT:
+                norm = self._normalize_label(e.label)
+                if norm:
+                    components[norm] = e.id
+
+        if not components:
+            return
+
+        existing_relation_keys = self._relation_keys(graph.get_relations())
+
+        def _choose_component(metric: Entity) -> str | None:
+            hay = f"{metric.label} {metric.source_text}".lower()
+            # Heuristics for v1: map common metric prefixes to core components.
+            if "vcore" in hay and "vcore" in components:
+                return components["vcore"]
+            if "ddr" in hay and "ddr" in components:
+                return components["ddr"]
+            if "cpu" in hay and "cpu" in components:
+                return components["cpu"]
+            if "mmdvfs" in hay and "mmdvfs" in components:
+                return components["mmdvfs"]
+            return None
+
+        for e in graph.get_entities():
+            if e.entity_type != EntityType.METRIC:
+                continue
+
+            target_component_id = _choose_component(e)
+            if not target_component_id:
+                continue
+
+            key = (e.id, RelationType.INDICATES.value, target_component_id)
+            if key in existing_relation_keys:
+                continue
+
+            rel = Relation(
+                source_id=e.id,
+                target_id=target_component_id,
+                relation_type=RelationType.INDICATES,
+                confidence=0.3,
+                evidence="autolink_rule: metric indicates component",
+                causal_effect=None,
+                attributes={
+                    "provenance": [
+                        {
+                            "source": "autolink_rule",
+                            "report_id": report_id,
+                            "reason": "connect_isolated_metric_to_component",
+                        }
+                    ]
+                },
+            )
+            try:
+                graph.add_relation(rel, validate_dag=False)
+                existing_relation_keys.add(key)
+                diff.added_relations.append(
+                    {"source": e.id, "target": target_component_id, "type": RelationType.INDICATES.value}
+                )
+            except Exception as exc:
+                diff.conflicts.append(str(exc))
 
     def _ensure_missing_entities(
         self,
