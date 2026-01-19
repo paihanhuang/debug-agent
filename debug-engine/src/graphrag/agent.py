@@ -63,6 +63,36 @@ Response format:
 [List all relevant fixes without ranking - do NOT copy their metrics to your analysis]
 """
 
+STRUCTURED_SYSTEM_PROMPT = """You are an expert power debugging assistant for mobile devices.
+
+You MUST return ONLY valid JSON (no markdown, no extra text).
+
+Your output must separate:
+- Observations: facts copied verbatim from the user input (no invented numbers)
+- CKG-grounded facts: statements supported by CKG traversal nodes / causal chain context
+- Hypotheses: explicitly marked as unverified, and must not invent new metrics
+- Conclusion: root cause + confidence, justified only by observations + CKG-grounded facts
+
+Do not fabricate metrics or thresholds. Treat Chinese/English as equivalent (拉檔 = frequency throttling).
+"""
+
+STRUCTURED_RESPONSE_SCHEMA_PROMPT = """Given the following user observation and CKG context, produce a JSON object with this structure:
+
+{{
+  "observations": [{{"text": "verbatim fact", "source": "input"}}],
+  "ckg_grounded_facts": [{{"text": "fact", "source": "ckg", "nodes": ["node_label_1", "node_label_2"]}}],
+  "hypotheses": [{{"text": "hypothesis", "confidence": "low|medium|high", "why": ["..."], "what_would_confirm": ["..."]}}],
+  "conclusion": {{"root_cause": "CM|PowerHal|MMDVFS|UNKNOWN|...", "confidence": "low|medium|high", "justification": ["..."]}},
+  "next_steps": ["..."],
+  "historical_fixes": [{{"case_id": "id", "fix": "fix text"}}]
+}}
+
+Rules:
+- Observations MUST be grounded in the input_text (no new numbers).
+- If CKG traversal nodes are provided, ckg_grounded_facts MUST reference them via the nodes field.
+- If CKG grounding is weak, set conclusion.root_cause to UNKNOWN and confidence to low.
+"""
+
 POSTPROCESS_SYSTEM_PROMPT = """You are a precise technical editor.
 Ensure the report includes all required CKG traversal node labels.
 If any are missing, revise the report to include them without changing metrics.
@@ -205,6 +235,10 @@ class DebugAgent:
                     raw_response=raw,
                     context=context,
                 )
+
+        # Optional: structured output mode to separate Observations vs Hypotheses.
+        if self._obs_hyp_schema_enabled():
+            return self._diagnose_structured(input_text=input_text, context=context)
         
         # Step 2: Build prompt
         prompt = self._build_prompt(input_text, context)
@@ -225,6 +259,213 @@ class DebugAgent:
         
         # Step 4: Parse response
         return self._parse_response(raw_response, context)
+
+    def _obs_hyp_schema_enabled(self) -> bool:
+        v = os.getenv("ENABLE_OBS_HYP_SCHEMA")
+        if v is None:
+            return False  # default OFF to preserve current behavior
+        return v.strip().lower() not in {"0", "false", "no", "off"}
+
+    def _diagnose_structured(self, *, input_text: str, context: DiagnosisContext) -> DiagnosisResult:
+        prompt = self._build_structured_prompt(input_text=input_text, context=context)
+        try:
+            resp = self._llm_client.chat.completions.create(
+                model=self._llm_model,
+                messages=[
+                    {"role": "system", "content": STRUCTURED_SYSTEM_PROMPT},
+                    {"role": "user", "content": prompt},
+                ],
+                temperature=0.1,
+                response_format={"type": "json_object"},
+            )
+            raw_json = resp.choices[0].message.content or "{}"
+            obj = json.loads(raw_json)
+        except Exception:
+            # Fallback to legacy flow if structured mode fails for any reason.
+            legacy = self._llm_client.chat.completions.create(
+                model=self._llm_model,
+                messages=[
+                    {"role": "system", "content": SYSTEM_PROMPT},
+                    {"role": "user", "content": self._build_prompt(input_text, context)},
+                ],
+                temperature=0.1,
+            )
+            raw = legacy.choices[0].message.content
+            raw = self._ensure_traversal_nodes(raw, context)
+            raw = self._rewrite_report_to_include_required_metrics(raw, context.metrics)
+            return self._parse_response(raw, context)
+
+        # Validate minimum structure
+        observations = obj.get("observations", []) or []
+        hypotheses = obj.get("hypotheses", []) or []
+        conclusion = obj.get("conclusion", {}) or {}
+        ckg_facts = obj.get("ckg_grounded_facts", []) or []
+        next_steps = obj.get("next_steps", []) or []
+        historical = obj.get("historical_fixes", []) or []
+
+        md = self._render_structured_markdown(
+            observations=observations,
+            ckg_grounded_facts=ckg_facts,
+            hypotheses=hypotheses,
+            conclusion=conclusion,
+            next_steps=next_steps,
+            historical_fixes=historical,
+        )
+
+        md = self._ensure_traversal_nodes(md, context)
+        md = self._rewrite_report_to_include_required_metrics(md, context.metrics)
+
+        root_cause = str(conclusion.get("root_cause", "")).strip() or "UNKNOWN"
+        diagnosis = "\n".join([str(x) for x in conclusion.get("justification", []) or []]).strip()
+        causal_chain = "\n".join([str(x.get("text", "")) for x in ckg_facts if isinstance(x, dict)]).strip()
+        hist_lines: list[str] = []
+        for h in historical:
+            if isinstance(h, dict):
+                txt = h.get("fix") or ""
+                cid = h.get("case_id") or ""
+                if cid and txt:
+                    hist_lines.append(f"Case {cid}: {txt}")
+                elif txt:
+                    hist_lines.append(str(txt))
+            elif isinstance(h, str):
+                hist_lines.append(h)
+
+        return DiagnosisResult(
+            root_cause=root_cause,
+            causal_chain=causal_chain,
+            diagnosis=diagnosis,
+            historical_fixes=hist_lines,
+            raw_response=md,
+            context=context,
+        )
+
+    def _build_structured_prompt(self, *, input_text: str, context: DiagnosisContext) -> str:
+        lines = [
+            STRUCTURED_RESPONSE_SCHEMA_PROMPT,
+            "",
+            "input_text:",
+            input_text,
+            "",
+            "ckg_context:",
+            context.to_prompt_context(),
+        ]
+        return "\n".join(lines)
+
+    def _render_structured_markdown(
+        self,
+        *,
+        observations: list[Any],
+        ckg_grounded_facts: list[Any],
+        hypotheses: list[Any],
+        conclusion: dict[str, Any],
+        next_steps: list[Any],
+        historical_fixes: list[Any],
+    ) -> str:
+        lines: list[str] = []
+
+        # Explicit separation sections
+        lines.append("## Observations")
+        if observations:
+            for o in observations:
+                if isinstance(o, dict):
+                    t = str(o.get("text", "")).strip()
+                else:
+                    t = str(o).strip()
+                if t:
+                    lines.append(f"- {t}")
+        else:
+            lines.append("- (none)")
+        lines.append("")
+
+        lines.append("## CKG-Grounded Facts")
+        if ckg_grounded_facts:
+            for f in ckg_grounded_facts:
+                if isinstance(f, dict):
+                    t = str(f.get("text", "")).strip()
+                    nodes = f.get("nodes") if isinstance(f.get("nodes"), list) else []
+                    if nodes:
+                        t = f"{t} (nodes: {', '.join(str(n) for n in nodes)})"
+                else:
+                    t = str(f).strip()
+                if t:
+                    lines.append(f"- {t}")
+        else:
+            lines.append("- (none)")
+        lines.append("")
+
+        lines.append("## Hypotheses (Unverified)")
+        if hypotheses:
+            for h in hypotheses:
+                if isinstance(h, dict):
+                    t = str(h.get("text", "")).strip()
+                    conf = str(h.get("confidence", "")).strip()
+                    if conf:
+                        t = f"[{conf}] {t}"
+                else:
+                    t = str(h).strip()
+                if t:
+                    lines.append(f"- {t}")
+        else:
+            lines.append("- (none)")
+        lines.append("")
+
+        # Preserve legacy headings for downstream consumers
+        lines.append("## Root Cause")
+        rc = str(conclusion.get("root_cause", "")).strip() or "UNKNOWN"
+        conf = str(conclusion.get("confidence", "")).strip()
+        lines.append(f"- {rc}" + (f" (confidence: {conf})" if conf else ""))
+        lines.append("")
+
+        lines.append("## Causal Chain")
+        if ckg_grounded_facts:
+            for f in ckg_grounded_facts:
+                if isinstance(f, dict):
+                    t = str(f.get("text", "")).strip()
+                else:
+                    t = str(f).strip()
+                if t:
+                    lines.append(f"- {t}")
+        else:
+            lines.append("- (none)")
+        lines.append("")
+
+        lines.append("## Diagnosis")
+        just = conclusion.get("justification", []) or []
+        if isinstance(just, list) and just:
+            for j in just:
+                lines.append(f"- {str(j).strip()}")
+        else:
+            lines.append("- (none)")
+        lines.append("")
+
+        lines.append("## Next Steps")
+        if next_steps:
+            for s in next_steps:
+                st = str(s).strip()
+                if st:
+                    lines.append(f"- {st}")
+        else:
+            lines.append("- (none)")
+        lines.append("")
+
+        lines.append("## Historical Fixes (for reference)")
+        if historical_fixes:
+            for h in historical_fixes:
+                if isinstance(h, dict):
+                    cid = str(h.get("case_id", "")).strip()
+                    fx = str(h.get("fix", "")).strip()
+                    if cid and fx:
+                        lines.append(f"- Case {cid}: {fx}")
+                    elif fx:
+                        lines.append(f"- {fx}")
+                else:
+                    ht = str(h).strip()
+                    if ht:
+                        lines.append(f"- {ht}")
+        else:
+            lines.append("- No relevant historical fixes found")
+
+        return "\n".join(lines).strip() + "\n"
 
     def _abstain_gate_enabled(self) -> bool:
         v = os.getenv("ENABLE_ABSTAIN_GATE")
