@@ -197,6 +197,9 @@ def run_case_loop(cfg: CaseLoopConfig) -> Path:
         # ----------------------------
         # 1) ckg-augment: base is previous candidate (or provided base for iter_0001)
         ckg_cmd = [str(Path(sys_exe())), "-m", "ckg_augment.cli", "--report", str(cfg.data_path)]
+        # Ensure the exact raw query (what DebugAgent receives) is archived by ckg-augment.
+        ckg_cmd += ["--debug-query", str(inputs_dir / f"prompt_{case_tag}.txt")]
+        ckg_cmd += ["--run-id", cfg.run_id, "--case-num", str(cfg.case_num), "--iter-num", str(iter_num)]
         if prev_ckg_path is None:
             ckg_cmd += ["--init-empty"]
         else:
