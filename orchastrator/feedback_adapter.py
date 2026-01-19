@@ -49,6 +49,7 @@ def judge_result_to_feedback(
     case_id: str,
     stop_accuracy: float,
     stop_overall: float,
+    stop_chain_completeness: float = 0.0,
 ) -> dict[str, Any]:
     """Convert `judge.cli run` JSON into the feedback schema consumed by `ckg-augment`.
 
@@ -60,13 +61,19 @@ def judge_result_to_feedback(
     dims_in = judge_result.get("dimensions", []) or []
 
     accuracy = 0.0
+    chain = 0.0
     for d in dims_in:
         if d.get("name") == "Root Cause Accuracy":
             accuracy = float(d.get("score", 0.0))
-            break
+        if d.get("name") == "Causal Chain Completeness":
+            chain = float(d.get("score", 0.0))
 
     # Use user-specified semantics: overall >= threshold.
-    stop_reached = (accuracy >= stop_accuracy) and (composite >= stop_overall)
+    stop_reached = (
+        (accuracy >= stop_accuracy)
+        and (composite >= stop_overall)
+        and (chain >= float(stop_chain_completeness))
+    )
 
     dims_out: list[dict[str, Any]] = []
     for d in dims_in:
@@ -104,7 +111,11 @@ def judge_result_to_feedback(
             }
         },
         "stop_reached": bool(stop_reached),
-        "stop": {"min_accuracy": float(stop_accuracy), "min_overall": float(stop_overall)},
+        "stop": {
+            "min_accuracy": float(stop_accuracy),
+            "min_overall": float(stop_overall),
+            "min_causal_chain_completeness": float(stop_chain_completeness),
+        },
         "source": {"type": "judge_cli_run", "case_name": judge_result.get("case_name", ""), "timestamp": judge_result.get("timestamp", "")},
     }
 
@@ -118,6 +129,7 @@ def main() -> int:
     p.add_argument("--run-id", default=None, help="Run id (default: timestamp)")
     p.add_argument("--stop-accuracy", type=float, default=9.0)
     p.add_argument("--stop-overall", type=float, default=8.0)
+    p.add_argument("--stop-chain", type=float, default=0.0, help="Minimum Causal Chain Completeness score to stop (default: 0)")
     args = p.parse_args()
 
     judge_path = Path(args.judge)
@@ -132,6 +144,7 @@ def main() -> int:
         case_id=str(args.case_id),
         stop_accuracy=float(args.stop_accuracy),
         stop_overall=float(args.stop_overall),
+        stop_chain_completeness=float(args.stop_chain),
     )
 
     out_path.parent.mkdir(parents=True, exist_ok=True)

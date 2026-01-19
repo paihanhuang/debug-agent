@@ -22,6 +22,7 @@ class CaseLoopConfig:
     max_iters: int
     stop_accuracy: float
     stop_overall: float
+    stop_chain: float
     judge_provider: str
 
     # Start mode
@@ -167,6 +168,15 @@ def run_case_loop(cfg: CaseLoopConfig) -> Path:
                         "matched_elements": [],
                         "missing_elements": [],
                     }
+                    ,
+                    {
+                        "name": "Causal Chain Completeness",
+                        "score": int(round(cfg.stop_chain if reached else max(0.0, cfg.stop_chain - 1.0))),
+                        "weight": 0.2,
+                        "explanation": "synthetic",
+                        "matched_elements": [],
+                        "missing_elements": [],
+                    },
                 ],
                 "human_report_path": str(inputs_dir / f"human_report_{case_tag}.txt"),
                 "agent_report_path": str(agent_report),
@@ -181,6 +191,7 @@ def run_case_loop(cfg: CaseLoopConfig) -> Path:
                 case_id=cfg.case_id,
                 stop_accuracy=float(cfg.stop_accuracy),
                 stop_overall=float(cfg.stop_overall),
+                stop_chain_completeness=float(cfg.stop_chain),
             )
             _write_json(feedback_path, feedback)
 
@@ -249,6 +260,7 @@ def run_case_loop(cfg: CaseLoopConfig) -> Path:
             case_id=cfg.case_id,
             stop_accuracy=float(cfg.stop_accuracy),
             stop_overall=float(cfg.stop_overall),
+            stop_chain_completeness=float(cfg.stop_chain),
         )
         _write_json(feedback_path, fb)
 
@@ -450,6 +462,7 @@ def main() -> int:
     p.add_argument("--max-iters", type=int, default=5)
     p.add_argument("--stop-accuracy", type=float, default=9.0)
     p.add_argument("--stop-overall", type=float, default=8.0)
+    p.add_argument("--stop-chain", type=float, default=0.0, help="Minimum Causal Chain Completeness score to stop (default: 0)")
     p.add_argument("--judge-provider", choices=["openai", "anthropic"], default="openai")
 
     start = p.add_mutually_exclusive_group(required=True)
@@ -474,6 +487,7 @@ def main() -> int:
         max_iters=int(args.max_iters),
         stop_accuracy=float(args.stop_accuracy),
         stop_overall=float(args.stop_overall),
+        stop_chain=float(args.stop_chain),
         judge_provider=str(args.judge_provider),
         start_from_scratch=bool(args.start_from_scratch),
         base_ckg_path=(Path(args.base_ckg) if args.base_ckg else None),

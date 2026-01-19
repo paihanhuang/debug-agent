@@ -802,15 +802,34 @@ Draft Report:
     
     def _build_prompt(self, input_text: str, context: DiagnosisContext) -> str:
         """Build the prompt for LLM."""
+        # Extract DDR voting signals explicitly so the LLM is less likely to omit them.
+        voting = self._extract_ddr_voting_signals(input_text)
         lines = [
             "## User Observation",
             input_text,
+            "",
+            "## DDR Voting Signals (from user input)",
+            voting or "No DDR voting data available.",
             "",
             context.to_prompt_context(),
             "",
             "Please analyze this power issue and provide your diagnosis.",
         ]
         return "\n".join(lines)
+
+    @staticmethod
+    def _extract_ddr_voting_signals(text: str) -> str:
+        import re
+
+        t = text or ""
+        hits = sorted(set(re.findall(r"SW_REQ\\d+", t, flags=re.IGNORECASE)))
+        if hits:
+            return "Detected: " + ", ".join(hits)
+        # Try to detect explicit absence statements
+        low = t.lower()
+        if "no ddr voting" in low or "no ddr voting data" in low:
+            return "No DDR voting data available."
+        return ""
     
     def _parse_response(
         self,

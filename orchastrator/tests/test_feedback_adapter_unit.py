@@ -42,6 +42,7 @@ def test_judge_result_to_feedback_basic_mapping() -> None:
         case_id="case2",
         stop_accuracy=9.0,
         stop_overall=8.0,
+        stop_chain_completeness=8.0,
     )
 
     assert fb["run_id"] == "r1"
@@ -63,7 +64,8 @@ def test_judge_result_to_feedback_stop_criteria_overall_is_gte() -> None:
         "composite_score": 8.0,
         "grade": "A",
         "dimensions": [
-            {"name": "Root Cause Accuracy", "score": 9, "weight": 0.5, "missing_elements": [], "matched_elements": []}
+            {"name": "Root Cause Accuracy", "score": 9, "weight": 0.5, "missing_elements": [], "matched_elements": []},
+            {"name": "Causal Chain Completeness", "score": 8, "weight": 0.2, "missing_elements": [], "matched_elements": []},
         ],
     }
     fb = judge_result_to_feedback(
@@ -73,6 +75,7 @@ def test_judge_result_to_feedback_stop_criteria_overall_is_gte() -> None:
         case_id="case2",
         stop_accuracy=9.0,
         stop_overall=8.0,
+        stop_chain_completeness=8.0,
     )
     assert fb["stop_reached"] is True
 
