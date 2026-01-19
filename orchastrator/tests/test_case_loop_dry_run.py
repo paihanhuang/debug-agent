@@ -148,3 +148,48 @@ def test_case_loop_base_ckg_snapshot_written(tmp_path: Path) -> None:
     snap = json.loads((run_dir / "inputs" / "base_ckg_snapshot.json").read_text(encoding="utf-8"))
     assert snap.get("metadata", {}).get("x") == 1
 
+
+def test_case_loop_selects_best_iter_by_accuracy_then_overall_then_chain(tmp_path: Path) -> None:
+    """Best iteration should be chosen lexicographically by (accuracy, overall, chain)."""
+    from orchastrator.case_loop import CaseLoopConfig, run_case_loop
+
+    data = tmp_path / "data_case2.txt"
+    data.write_text(
+        "human report line\n---\nE2E Test Query (judgement-free):\nVCORE 725mV usage is at 29.32%.\n",
+        encoding="utf-8",
+    )
+
+    # Ensure stop criteria is unreachable so we run full max_iters.
+    cfg = CaseLoopConfig(
+        run_id="t_run_best",
+        case_id="case2",
+        case_num=2,
+        data_path=data,
+        output_root=tmp_path / "out",
+        max_iters=3,
+        stop_accuracy=10.0,
+        stop_overall=10.0,
+        stop_chain=10.0,
+        judge_provider="openai",
+        start_from_scratch=True,
+        base_ckg_path=None,
+        base_fix_db_path=None,
+        dry_run=True,
+        dry_run_stop_iter=99,
+        dry_run_judge_scores=[
+            {"accuracy": 9, "overall": 8.0, "chain": 7},  # best on overall among acc=9 candidates
+            {"accuracy": 8, "overall": 9.5, "chain": 9},  # worse due to lower accuracy
+            {"accuracy": 9, "overall": 7.9, "chain": 9},  # worse due to lower overall
+        ],
+        select_best=True,
+    )
+
+    run_dir = run_case_loop(cfg)
+    best_json = run_dir / "case_02" / "best" / "best.json"
+    assert best_json.exists()
+    best = json.loads(best_json.read_text(encoding="utf-8"))
+    assert best["best_iter"] == 1
+
+    best_ckg = Path(best["paths"]["ckg"])
+    assert best_ckg.exists()
+

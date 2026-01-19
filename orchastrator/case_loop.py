@@ -4,6 +4,7 @@ import argparse
 import json
 import os
 import subprocess
+import shutil
 from dataclasses import dataclass
 from datetime import datetime
 from pathlib import Path
@@ -33,6 +34,32 @@ class CaseLoopConfig:
     # Testability
     dry_run: bool = False
     dry_run_stop_iter: int = 1
+    dry_run_judge_scores: list[dict[str, float]] | None = None
+
+    # Best-of-iterations selection
+    select_best: bool = True
+    best_tiebreak_prefer_earlier_iter: bool = True
+    best_tiebreak_prefer_smaller_diff: bool = True
+
+
+@dataclass(frozen=True)
+class _BestCandidate:
+    iter_num: int
+    accuracy: float
+    overall: float
+    chain: float
+    diff_size: int
+    ckg_path: Path
+    diff_path: Path
+    fix_db_path: Path
+    fix_db_diff_path: Path
+    agent_report_path: Path
+    judge_result_path: Path
+    feedback_path: Path
+
+    @property
+    def rank_key(self) -> tuple[float, float, float]:
+        return (float(self.accuracy), float(self.overall), float(self.chain))
 
 
 def _ensure_dir(p: Path) -> None:
@@ -48,6 +75,110 @@ def _write_json(path: Path, data: Any) -> None:
     path.parent.mkdir(parents=True, exist_ok=True)
     path.write_text(json.dumps(data, indent=2, ensure_ascii=False), encoding="utf-8")
 
+
+def _score_from_judge(judge_obj: dict[str, Any], dim_name: str) -> float:
+    for d in judge_obj.get("dimensions", []) or []:
+        if d.get("name") == dim_name:
+            try:
+                return float(d.get("score", 0.0))
+            except Exception:
+                return 0.0
+    return 0.0
+
+
+def _diff_size(diff_obj: dict[str, Any]) -> int:
+    added_entities = diff_obj.get("added_entities", []) or []
+    added_relations = diff_obj.get("added_relations", []) or []
+    if isinstance(added_entities, list) and isinstance(added_relations, list):
+        return int(len(added_entities) + len(added_relations))
+    return 10**9
+
+
+def _choose_better_best(
+    a: _BestCandidate | None,
+    b: _BestCandidate,
+    *,
+    prefer_earlier_iter: bool,
+    prefer_smaller_diff: bool,
+) -> _BestCandidate:
+    if a is None:
+        return b
+
+    # Primary ordering: accuracy → overall → chain
+    if b.rank_key > a.rank_key:
+        return b
+    if b.rank_key < a.rank_key:
+        return a
+
+    # Tie-break 1: earlier iter wins (reduce churn)
+    if prefer_earlier_iter and b.iter_num != a.iter_num:
+        return b if b.iter_num < a.iter_num else a
+
+    # Tie-break 2: smaller diff wins (stability)
+    if prefer_smaller_diff and b.diff_size != a.diff_size:
+        return b if b.diff_size < a.diff_size else a
+
+    # Final deterministic: earlier iter
+    return b if b.iter_num < a.iter_num else a
+
+
+def _persist_best_bundle(
+    *,
+    case_dir: Path,
+    best: _BestCandidate,
+    case_tag: str,
+    tie_break: dict[str, bool],
+) -> Path:
+    """Copy best iteration artifacts under case_dir/best/... and write best.json."""
+    best_root = case_dir / "best"
+    if best_root.exists():
+        raise FileExistsError(f"Best folder already exists: {best_root}")
+
+    best_iter_tag = f"iter_{best.iter_num:04d}"
+    best_iter_dir = best_root / best_iter_tag
+    ckg_dir = best_iter_dir / "ckg"
+    agent_dir = best_iter_dir / "agent"
+    judge_dir = best_iter_dir / "judge"
+    feedback_dir = best_iter_dir / "feedback"
+    fix_dir = best_iter_dir / "fix"
+    meta_dir = best_iter_dir / "meta"
+    for d in (ckg_dir, agent_dir, judge_dir, feedback_dir, fix_dir, meta_dir):
+        _ensure_dir(d)
+
+    out_ckg = ckg_dir / "best_ckg.json"
+    out_diff = ckg_dir / "best_augmentation_diff.json"
+    out_agent = agent_dir / "best_agent_report.md"
+    out_judge = judge_dir / "best_judge.json"
+    out_feedback = feedback_dir / "best_feedback.json"
+    out_fixdb = fix_dir / "best_fixdb.db"
+    out_fixdb_diff = fix_dir / "best_fixdb_diff.json"
+
+    shutil.copy2(best.ckg_path, out_ckg)
+    shutil.copy2(best.diff_path, out_diff)
+    shutil.copy2(best.agent_report_path, out_agent)
+    shutil.copy2(best.judge_result_path, out_judge)
+    shutil.copy2(best.feedback_path, out_feedback)
+    shutil.copy2(best.fix_db_path, out_fixdb)
+    shutil.copy2(best.fix_db_diff_path, out_fixdb_diff)
+
+    pointer = {
+        "case": case_tag,
+        "best_iter": int(best.iter_num),
+        "ranking": {"accuracy": best.accuracy, "overall": best.overall, "causal_chain_completeness": best.chain},
+        "tie_break": tie_break,
+        "paths": {
+            "ckg": str(out_ckg),
+            "ckg_diff": str(out_diff),
+            "fix_db": str(out_fixdb),
+            "fix_db_diff": str(out_fixdb_diff),
+            "judge": str(out_judge),
+            "feedback": str(out_feedback),
+            "agent_report": str(out_agent),
+        },
+    }
+    _write_json(best_root / "best.json", pointer)
+    _write_json(meta_dir / "best_summary.json", pointer)
+    return out_ckg
 
 def _extract_prompt_and_human_report(data_path: Path) -> tuple[str, str]:
     raw = data_path.read_text(encoding="utf-8")
@@ -115,6 +246,8 @@ def run_case_loop(cfg: CaseLoopConfig) -> Path:
     prev_ckg_path: Path | None = base_ckg_path
     prev_fix_db_path: Path | None = base_fix_db_path
 
+    best: _BestCandidate | None = None
+
     for iter_num in range(1, cfg.max_iters + 1):
         iter_tag = f"iter_{iter_num:04d}"
         iter_dir = iters_dir / iter_tag
@@ -145,15 +278,25 @@ def run_case_loop(cfg: CaseLoopConfig) -> Path:
                     "metadata": {"mode": "dry_run", "iter": iter_tag, "case": cfg.case_id},
                 },
             )
-            _write_json(diff_path, {"mode": "dry_run", "iter": iter_tag, "case": cfg.case_id})
+            _write_json(diff_path, {"mode": "dry_run", "iter": iter_tag, "case": cfg.case_id, "added_entities": [], "added_relations": []})
             _write_text(agent_report, f"# Agent Report (dry-run)\n\n- iter: {iter_tag}\n- case: {cfg.case_id}\n")
             _init_empty_fix_db(fix_db_path)
             _write_json(fix_db_diff, {"mode": "dry_run", "iter": iter_tag, "case": cfg.case_id})
 
-            # Synthetic judge result: below threshold until dry_run_stop_iter
-            reached = iter_num >= int(cfg.dry_run_stop_iter)
-            acc = cfg.stop_accuracy if reached else max(0.0, cfg.stop_accuracy - 1.0)
-            overall = cfg.stop_overall if reached else max(0.0, cfg.stop_overall - 1.0)
+            # Synthetic judge result:
+            # - if dry_run_judge_scores provided, use that per-iteration score table
+            # - otherwise: below threshold until dry_run_stop_iter
+            if cfg.dry_run_judge_scores and iter_num <= len(cfg.dry_run_judge_scores):
+                row = cfg.dry_run_judge_scores[iter_num - 1]
+                acc = float(row.get("accuracy", 0.0))
+                overall = float(row.get("overall", 0.0))
+                chain = float(row.get("chain", 0.0))
+                reached = False
+            else:
+                reached = iter_num >= int(cfg.dry_run_stop_iter)
+                acc = cfg.stop_accuracy if reached else max(0.0, cfg.stop_accuracy - 1.0)
+                overall = cfg.stop_overall if reached else max(0.0, cfg.stop_overall - 1.0)
+                chain = cfg.stop_chain if reached else max(0.0, cfg.stop_chain - 1.0)
             judge_payload = {
                 "case_name": f"{cfg.case_id}_{iter_tag}",
                 "composite_score": round(float(overall), 2),
@@ -171,7 +314,7 @@ def run_case_loop(cfg: CaseLoopConfig) -> Path:
                     ,
                     {
                         "name": "Causal Chain Completeness",
-                        "score": int(round(cfg.stop_chain if reached else max(0.0, cfg.stop_chain - 1.0))),
+                        "score": int(round(chain)),
                         "weight": 0.2,
                         "explanation": "synthetic",
                         "matched_elements": [],
@@ -194,6 +337,29 @@ def run_case_loop(cfg: CaseLoopConfig) -> Path:
                 stop_chain_completeness=float(cfg.stop_chain),
             )
             _write_json(feedback_path, feedback)
+
+            # Best-of-iterations tracking
+            diff_obj = json.loads(diff_path.read_text(encoding="utf-8"))
+            b = _BestCandidate(
+                iter_num=iter_num,
+                accuracy=float(_score_from_judge(judge_payload, "Root Cause Accuracy")),
+                overall=float(judge_payload.get("composite_score", 0.0)),
+                chain=float(_score_from_judge(judge_payload, "Causal Chain Completeness")),
+                diff_size=_diff_size(diff_obj),
+                ckg_path=candidate_ckg,
+                diff_path=diff_path,
+                fix_db_path=fix_db_path,
+                fix_db_diff_path=fix_db_diff,
+                agent_report_path=agent_report,
+                judge_result_path=judge_result,
+                feedback_path=feedback_path,
+            )
+            best = _choose_better_best(
+                best,
+                b,
+                prefer_earlier_iter=bool(cfg.best_tiebreak_prefer_earlier_iter),
+                prefer_smaller_diff=bool(cfg.best_tiebreak_prefer_smaller_diff),
+            )
 
             prev_feedback_path = feedback_path
             prev_ckg_path = candidate_ckg
@@ -264,6 +430,29 @@ def run_case_loop(cfg: CaseLoopConfig) -> Path:
         )
         _write_json(feedback_path, fb)
 
+        # Best-of-iterations tracking
+        diff_obj = json.loads(diff_path.read_text(encoding="utf-8"))
+        b = _BestCandidate(
+            iter_num=iter_num,
+            accuracy=float(_score_from_judge(judge_obj, "Root Cause Accuracy")),
+            overall=float(judge_obj.get("composite_score", 0.0)),
+            chain=float(_score_from_judge(judge_obj, "Causal Chain Completeness")),
+            diff_size=_diff_size(diff_obj),
+            ckg_path=candidate_ckg,
+            diff_path=diff_path,
+            fix_db_path=fix_db_path,
+            fix_db_diff_path=fix_db_diff,
+            agent_report_path=agent_report,
+            judge_result_path=judge_result,
+            feedback_path=feedback_path,
+        )
+        best = _choose_better_best(
+            best,
+            b,
+            prefer_earlier_iter=bool(cfg.best_tiebreak_prefer_earlier_iter),
+            prefer_smaller_diff=bool(cfg.best_tiebreak_prefer_smaller_diff),
+        )
+
         prev_feedback_path = feedback_path
         prev_ckg_path = candidate_ckg
         prev_fix_db_path = fix_db_path
@@ -271,12 +460,30 @@ def run_case_loop(cfg: CaseLoopConfig) -> Path:
         if fb["stop_reached"]:
             break
 
-    # Always visualize the final candidate CKG for convenience (HTML, vis-network).
+    # Persist best-of-iterations bundle (used as "final" for carry-forward).
+    selected_ckg: Path | None = None
+    if cfg.select_best and best is not None:
+        selected_ckg = _persist_best_bundle(
+            case_dir=run_dir / case_tag,
+            best=best,
+            case_tag=case_tag,
+            tie_break={
+                "prefer_earlier_iter": bool(cfg.best_tiebreak_prefer_earlier_iter),
+                "prefer_smaller_diff": bool(cfg.best_tiebreak_prefer_smaller_diff),
+            },
+        )
+
+    # Visualize the selected CKG (best if enabled; else last iter) for convenience (HTML, vis-network).
     try:
-        last_iter = sorted(iters_dir.glob("iter_*"))[-1]
-        last_ckg = next((last_iter / "ckg").glob("candidate_ckg_*.json"))
-        out_html = last_iter / "ckg" / f"ckg_visualization_{last_iter.name}_{case_tag}.html"
-        _write_ckg_visualization(last_ckg, out_html, title=f"CKG Visualization ({cfg.case_id} {last_iter.name})")
+        if selected_ckg is None:
+            last_iter = sorted(iters_dir.glob("iter_*"))[-1]
+            selected_ckg = next((last_iter / "ckg").glob("candidate_ckg_*.json"))
+            out_html = last_iter / "ckg" / f"ckg_visualization_{last_iter.name}_{case_tag}.html"
+            title = f"CKG Visualization ({cfg.case_id} {last_iter.name})"
+        else:
+            out_html = (run_dir / case_tag / "best") / f"ckg_visualization_best_{case_tag}.html"
+            title = f"CKG Visualization (best {cfg.case_id})"
+        _write_ckg_visualization(selected_ckg, out_html, title=title)
     except Exception:
         pass
 
@@ -472,6 +679,7 @@ def main() -> int:
 
     p.add_argument("--dry-run", action="store_true")
     p.add_argument("--dry-run-stop-iter", type=int, default=1)
+    p.add_argument("--no-select-best", action="store_true", help="Disable best-of-iterations selection (default: enabled)")
     args = p.parse_args()
 
     project_root = Path(__file__).resolve().parents[1]
@@ -494,6 +702,7 @@ def main() -> int:
         base_fix_db_path=(Path(args.base_fix_db) if args.base_fix_db else None),
         dry_run=bool(args.dry_run),
         dry_run_stop_iter=int(args.dry_run_stop_iter),
+        select_best=(not bool(args.no_select_best)),
     )
 
     run_dir = run_case_loop(cfg)
