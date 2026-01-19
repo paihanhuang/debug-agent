@@ -253,3 +253,41 @@ def test_feedback_chain_phrase_adds_leads_to_idempotent():
     )
     # No duplicates added on second pass
     assert d2.feedback_added_relations is not None and len(d2.feedback_added_relations) == 0
+
+
+def test_metric_label_normalization_merges_percent_variants() -> None:
+    """Ensure metric labels don't fragment by embedding volatile percent values."""
+    base = CausalGraph()
+    augmenter = CkgAugmenter(
+        entity_extractor=FakeEntityExtractor(
+            [
+                Entity(id="m1", entity_type=EntityType.METRIC, label="VCORE usage 82.6%"),
+            ]
+        ),
+        relation_extractor=FakeRelationExtractor([]),
+        fuzzy_match=False,  # rely on exact normalized match
+    )
+
+    g1, d1 = augmenter.augment(report_text="r1", base_ckg=base, report_id="first")
+    assert len(d1.added_entities) == 1
+    metrics1 = [e for e in g1.get_entities() if e.entity_type == EntityType.METRIC]
+    assert len(metrics1) == 1
+    assert metrics1[0].label == "VCORE usage"
+    assert metrics1[0].attributes.get("raw_label") == "VCORE usage 82.6%"
+    assert metrics1[0].attributes.get("metric_values")[0]["value"] == "82.6%"
+
+    # Second pass introduces different percent value but should merge into same metric node.
+    augmenter2 = CkgAugmenter(
+        entity_extractor=FakeEntityExtractor(
+            [
+                Entity(id="m2", entity_type=EntityType.METRIC, label="VCORE usage 29.32%"),
+            ]
+        ),
+        relation_extractor=FakeRelationExtractor([]),
+        fuzzy_match=False,
+    )
+    g2, d2 = augmenter2.augment(report_text="r2", base_ckg=g1, report_id="second")
+    assert len(d2.added_entities) == 0  # merged, not duplicated
+    metrics2 = [e for e in g2.get_entities() if e.entity_type == EntityType.METRIC]
+    assert len(metrics2) == 1
+    assert metrics2[0].label == "VCORE usage"

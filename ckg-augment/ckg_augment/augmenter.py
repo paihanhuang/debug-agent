@@ -3,6 +3,7 @@
 from __future__ import annotations
 from dataclasses import dataclass
 import hashlib
+import re
 from difflib import SequenceMatcher
 from pathlib import Path
 from typing import Any
@@ -88,6 +89,17 @@ class CkgAugmenter:
 
         id_map: dict[str, str] = {}
         for entity in extracted_entities:
+            # Normalize metric labels to avoid overfitting to specific numeric values.
+            # This improves cross-case reuse/matching (e.g., "VCORE usage 82.6%" vs "VCORE usage 29.32%").
+            if entity.entity_type == EntityType.METRIC:
+                canon_label, metric_attrs = self._canonicalize_metric_label(entity.label)
+                if canon_label:
+                    entity.label = canon_label
+                # Store extracted metric values on the extracted entity so they can be carried into base CKG.
+                # (EntityExtractor usually doesn't populate attributes for entities.)
+                if metric_attrs:
+                    entity.attributes = {**(entity.attributes or {}), **metric_attrs}
+
             matched_id = self._match_entity(entity, entity_index, existing_entities)
             if matched_id:
                 id_map[entity.id] = matched_id
@@ -95,12 +107,18 @@ class CkgAugmenter:
             else:
                 new_id = self._generate_entity_id(entity, report_id)
                 id_map[entity.id] = new_id
+                # Carry metric normalization attrs (raw label + extracted values) into stored entity attributes.
+                extra_attrs: dict[str, Any] = {}
+                if entity.entity_type == EntityType.METRIC and (entity.attributes or {}):
+                    for k in ("raw_label", "metric_values"):
+                        if k in entity.attributes:
+                            extra_attrs[k] = entity.attributes[k]
                 new_entity = Entity(
                     id=new_id,
                     entity_type=entity.entity_type,
                     label=entity.label,
                     description=entity.description,
-                    attributes=self._build_provenance(report_id, entity.source_text),
+                    attributes={**self._build_provenance(report_id, entity.source_text), **extra_attrs},
                     confidence=entity.confidence,
                     source_text=entity.source_text,
                 )
@@ -273,19 +291,23 @@ class CkgAugmenter:
             return eid
 
         def _ensure_metric(label: str) -> str:
-            norm = self._normalize_label(label)
+            canon_label, metric_attrs = self._canonicalize_metric_label(label)
+            norm = self._normalize_label(canon_label)
             if norm in by_norm:
                 return by_norm[norm]
-            eid = generate_feedback_entity_id(EntityType.METRIC, label)
+            eid = generate_feedback_entity_id(EntityType.METRIC, canon_label)
             if graph.get_entity(eid) is not None:
-                eid = generate_feedback_entity_id(EntityType.METRIC, f"{label}:{report_id}")
+                eid = generate_feedback_entity_id(EntityType.METRIC, f"{canon_label}:{report_id}")
             graph.add_entity(
                 Entity(
                     id=eid,
                     entity_type=EntityType.METRIC,
-                    label=label,
+                    label=canon_label,
                     description="",
-                    attributes={"provenance": [{"source": "closed_loop_feedback", "report_id": report_id, "reason": "missing_metric"}]},
+                    attributes={
+                        "provenance": [{"source": "closed_loop_feedback", "report_id": report_id, "reason": "missing_metric"}],
+                        **(metric_attrs or {}),
+                    },
                     confidence=1.0,
                     source_text="",
                 )
@@ -618,6 +640,9 @@ class CkgAugmenter:
         }
         for src, dst in replacements.items():
             text = text.replace(src, dst)
+        # Drop embedded percent values so metric nodes don't fragment across cases.
+        # Examples: "vcore usage 82.6%" -> "vcore usage"
+        text = re.sub(r"(?<![a-z0-9_])\d+(?:\.\d+)?\s*%(?![a-z0-9_])", " ", text)
         return " ".join(text.split())
 
     def _similarity(self, a: str, b: str) -> float:
@@ -628,6 +653,35 @@ class CkgAugmenter:
             "report_id": report_id,
             "source_text": source_text or "",
         }
+
+    @staticmethod
+    def _canonicalize_metric_label(label: str) -> tuple[str, dict[str, Any]]:
+        """Canonicalize metric labels by stripping volatile numeric percent values.
+
+        Returns:
+          (canonical_label, extra_attrs)
+        """
+        raw = (label or "").strip()
+        if not raw:
+            return "", {}
+
+        # Extract percent-like numeric values (including long float strings).
+        values: list[dict[str, str]] = []
+        for m in re.finditer(r"(?P<num>\d+(?:\.\d+)?)(?P<unit>\s*%)", raw):
+            num = m.group("num")
+            unit = m.group("unit").strip() or "%"
+            values.append({"value": f"{num}{unit}", "num": num, "unit": unit})
+
+        # Remove only percent tokens; keep things like "725mV" intact.
+        canon = re.sub(r"(?<![A-Za-z0-9_])\d+(?:\.\d+)?\s*%(?![A-Za-z0-9_])", " ", raw)
+        canon = " ".join(canon.split()).strip(" -:;")
+        # Cleanup dangling prepositions when % was removed.
+        canon = re.sub(r"\b(at|of)\b\s*$", "", canon, flags=re.IGNORECASE).strip()
+
+        extra: dict[str, Any] = {"raw_label": raw}
+        if values:
+            extra["metric_values"] = values
+        return canon or raw, extra
 
 
 def load_ckg(path: str | Path) -> CausalGraph:
