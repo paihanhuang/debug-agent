@@ -109,6 +109,25 @@ CRITICAL RULES (MUST FOLLOW):
 4. Preserve the report structure and tone. Make minimal edits.
 5. Return ONLY the revised report text (no markdown fences, no commentary)."""
 
+LOW_COVERAGE_VERIFIER_SYSTEM_PROMPT = """You are a strict verifier for power debugging reports.
+
+Your task:
+- Check whether the report makes claims not supported by (1) the user's observations or (2) the provided CKG context.
+- If unsupported claims exist, either rewrite to remove/downgrade them, or return ABSTAIN when a grounded diagnosis isn't possible.
+
+Rules:
+- Do NOT invent metrics, thresholds, or new facts.
+- If the report asserts a specific root cause but coverage indicates no grounded root causes/chains, you MUST set status=ABSTAIN or rewrite conclusion to UNKNOWN + hypotheses.
+- Return ONLY valid JSON (no markdown).
+
+Output JSON schema:
+{
+  "status": "OK|NEEDS_REWRITE|ABSTAIN",
+  "problems": [{"type":"...", "detail":"..."}],
+  "rewritten_report": "..."   // required when status=NEEDS_REWRITE
+}
+"""
+
 
 @dataclass
 class DiagnosisResult:
@@ -235,10 +254,14 @@ class DebugAgent:
                     raw_response=raw,
                     context=context,
                 )
+        else:
+            coverage = None
 
         # Optional: structured output mode to separate Observations vs Hypotheses.
         if self._obs_hyp_schema_enabled():
-            return self._diagnose_structured(input_text=input_text, context=context)
+            res = self._diagnose_structured(input_text=input_text, context=context)
+            cov = coverage or self._compute_coverage(context)
+            return self._maybe_verify_low_coverage(input_text=input_text, context=context, coverage=cov, result=res)
         
         # Step 2: Build prompt
         prompt = self._build_prompt(input_text, context)
@@ -256,6 +279,26 @@ class DebugAgent:
         raw_response = response.choices[0].message.content
         raw_response = self._ensure_traversal_nodes(raw_response, context)
         raw_response = self._rewrite_report_to_include_required_metrics(raw_response, context.metrics)
+
+        # Optional verifier pass only when coverage is low.
+        cov = coverage or self._compute_coverage(context)
+        raw_response = self._maybe_verify_low_coverage_raw(
+            input_text=input_text,
+            context=context,
+            coverage=cov,
+            report=raw_response,
+        )
+
+        # If verifier converted the report into an abstain response, return immediately.
+        if raw_response.lstrip().startswith("## Mode") and "\nABSTAIN" in raw_response[:80]:
+            return DiagnosisResult(
+                root_cause="ABSTAIN",
+                causal_chain="",
+                diagnosis="",
+                historical_fixes=[],
+                raw_response=raw_response,
+                context=context,
+            )
         
         # Step 4: Parse response
         return self._parse_response(raw_response, context)
@@ -473,6 +516,12 @@ class DebugAgent:
             return False  # default OFF to preserve current behavior
         return v.strip().lower() not in {"0", "false", "no", "off"}
 
+    def _low_coverage_verifier_enabled(self) -> bool:
+        v = os.getenv("ENABLE_LOW_COVERAGE_VERIFIER")
+        if v is None:
+            return False  # default OFF to preserve current behavior
+        return v.strip().lower() not in {"0", "false", "no", "off"}
+
     @dataclass(frozen=True)
     class CoverageReport:
         matched_entities_count: int
@@ -512,6 +561,121 @@ class DebugAgent:
         if cov.causal_chains_count < min_chains:
             return True
         return False
+
+    def _is_low_coverage(self, cov: "DebugAgent.CoverageReport") -> bool:
+        # Default trigger conditions (configurable via env)
+        min_required_nodes = int(os.getenv("MIN_REQUIRED_NODES", "3"))
+        if cov.root_causes_count == 0:
+            return True
+        if cov.causal_chains_count == 0:
+            return True
+        if cov.matched_entities_count == 0:
+            return True
+        if cov.required_nodes_count < min_required_nodes:
+            return True
+        return False
+
+    def _maybe_verify_low_coverage_raw(
+        self,
+        *,
+        input_text: str,
+        context: DiagnosisContext,
+        coverage: "DebugAgent.CoverageReport",
+        report: str,
+    ) -> str:
+        if not self._low_coverage_verifier_enabled():
+            return report
+        if not self._is_low_coverage(coverage):
+            return report
+
+        payload = self._run_low_coverage_verifier(input_text=input_text, context=context, coverage=coverage, report=report)
+        status = str(payload.get("status", "")).strip().upper()
+        if status == "OK":
+            return report
+        if status == "ABSTAIN":
+            return self._format_abstain_report(input_text=input_text, context=context, coverage=coverage)
+        if status == "NEEDS_REWRITE":
+            rewritten = str(payload.get("rewritten_report", "") or "").strip()
+            if not rewritten:
+                return report
+            # Re-apply invariants
+            rewritten = self._ensure_traversal_nodes(rewritten, context)
+            rewritten = self._rewrite_report_to_include_required_metrics(rewritten, context.metrics)
+            return rewritten
+        return report
+
+    def _maybe_verify_low_coverage(
+        self,
+        *,
+        input_text: str,
+        context: DiagnosisContext,
+        coverage: "DebugAgent.CoverageReport",
+        result: DiagnosisResult,
+    ) -> DiagnosisResult:
+        """Verifier wrapper for already-parsed DiagnosisResult (structured mode path)."""
+        verified_raw = self._maybe_verify_low_coverage_raw(
+            input_text=input_text,
+            context=context,
+            coverage=coverage,
+            report=result.raw_response,
+        )
+        if verified_raw == result.raw_response:
+            return result
+        # If verifier produced ABSTAIN markdown, convert to ABSTAIN result
+        if "## Mode" in verified_raw and "\nABSTAIN" in verified_raw:
+            return DiagnosisResult(
+                root_cause="ABSTAIN",
+                causal_chain="",
+                diagnosis="",
+                historical_fixes=[],
+                raw_response=verified_raw,
+                context=context,
+            )
+        return self._parse_response(verified_raw, context)
+
+    def _run_low_coverage_verifier(
+        self,
+        *,
+        input_text: str,
+        context: DiagnosisContext,
+        coverage: "DebugAgent.CoverageReport",
+        report: str,
+    ) -> dict[str, Any]:
+        required_nodes = self._collect_required_nodes(context)
+        prompt = "\n".join(
+            [
+                "User observations (verbatim):",
+                input_text.strip(),
+                "",
+                "Coverage:",
+                json.dumps(coverage.to_dict(), indent=2, ensure_ascii=False),
+                "",
+                "CKG traversal nodes:",
+                "\n".join(f"- {n}" for n in required_nodes) if required_nodes else "- (none)",
+                "",
+                "CKG context summary:",
+                context.to_prompt_context(),
+                "",
+                "Draft report to verify:",
+                report.strip(),
+            ]
+        )
+
+        try:
+            resp = self._llm_client.chat.completions.create(
+                model=self._llm_model,
+                messages=[
+                    {"role": "system", "content": LOW_COVERAGE_VERIFIER_SYSTEM_PROMPT},
+                    {"role": "user", "content": prompt},
+                ],
+                temperature=0.0,
+                response_format={"type": "json_object"},
+            )
+            content = resp.choices[0].message.content or "{}"
+            obj = json.loads(content)
+            return obj if isinstance(obj, dict) else {}
+        except Exception:
+            return {}
 
     def _format_abstain_report(
         self,
