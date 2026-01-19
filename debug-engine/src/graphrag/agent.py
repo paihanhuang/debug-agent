@@ -6,6 +6,7 @@ from dataclasses import dataclass
 from typing import Any
 
 from openai import OpenAI
+import json
 
 from .retriever import Retriever, DiagnosisContext
 from .vector_store import VectorStore
@@ -190,6 +191,20 @@ class DebugAgent:
         """
         # Step 1: Retrieve context
         context = self._retriever.retrieve(input_text)
+
+        # Optional: abstain gate to prevent hallucination when CKG coverage is insufficient.
+        if self._abstain_gate_enabled():
+            coverage = self._compute_coverage(context)
+            if self._should_abstain(coverage):
+                raw = self._format_abstain_report(input_text=input_text, context=context, coverage=coverage)
+                return DiagnosisResult(
+                    root_cause="ABSTAIN",
+                    causal_chain="",
+                    diagnosis="",
+                    historical_fixes=[],
+                    raw_response=raw,
+                    context=context,
+                )
         
         # Step 2: Build prompt
         prompt = self._build_prompt(input_text, context)
@@ -210,6 +225,108 @@ class DebugAgent:
         
         # Step 4: Parse response
         return self._parse_response(raw_response, context)
+
+    def _abstain_gate_enabled(self) -> bool:
+        v = os.getenv("ENABLE_ABSTAIN_GATE")
+        if v is None:
+            return False  # default OFF to preserve current behavior
+        return v.strip().lower() not in {"0", "false", "no", "off"}
+
+    @dataclass(frozen=True)
+    class CoverageReport:
+        matched_entities_count: int
+        root_causes_count: int
+        causal_chains_count: int
+        relevant_fixes_count: int
+        required_nodes_count: int
+
+        def to_dict(self) -> dict[str, Any]:
+            return {
+                "matched_entities_count": self.matched_entities_count,
+                "root_causes_count": self.root_causes_count,
+                "causal_chains_count": self.causal_chains_count,
+                "relevant_fixes_count": self.relevant_fixes_count,
+                "required_nodes_count": self.required_nodes_count,
+            }
+
+    def _compute_coverage(self, context: DiagnosisContext) -> "DebugAgent.CoverageReport":
+        required_nodes: list[str] = []
+        for chain in context.causal_chains or []:
+            for node in chain:
+                if node.label not in required_nodes:
+                    required_nodes.append(node.label)
+        return DebugAgent.CoverageReport(
+            matched_entities_count=len(context.matched_entities or []),
+            root_causes_count=len(context.root_causes or []),
+            causal_chains_count=len(context.causal_chains or []),
+            relevant_fixes_count=len(context.relevant_fixes or []),
+            required_nodes_count=len(required_nodes),
+        )
+
+    def _should_abstain(self, cov: "DebugAgent.CoverageReport") -> bool:
+        min_rc = int(os.getenv("ABSTAIN_MIN_ROOT_CAUSES", "1"))
+        min_chains = int(os.getenv("ABSTAIN_MIN_CHAINS", "1"))
+        if cov.root_causes_count < min_rc:
+            return True
+        if cov.causal_chains_count < min_chains:
+            return True
+        return False
+
+    def _format_abstain_report(
+        self,
+        *,
+        input_text: str,
+        context: DiagnosisContext,
+        coverage: "DebugAgent.CoverageReport",
+    ) -> str:
+        # Keep this human-readable but also machine-parsable.
+        payload = {
+            "mode": "ABSTAIN",
+            "reason": "Insufficient CKG coverage to support grounded diagnosis",
+            "coverage": coverage.to_dict(),
+            "observations": (input_text or "").strip().splitlines(),
+            "missing_knowledge": [
+                "CKG grounding missing: root causes and/or causal chains were not found for this input.",
+                "Provide DDR voting signals (SW_REQ2/SW_REQ3) for the same window if available.",
+                "Provide CPU ceiling breakdown by cluster (big/mid/small) and their usage ratios.",
+                "Provide MMDVFS OPP level and its usage distribution.",
+            ],
+            "action": {
+                "next_step": "REQUEST_MORE_DATA_OR_AUGMENT_CKG",
+                "suggested_ckg_augment_inputs": ["raw_report", "raw_debug_query", "agent_output", "judge_feedback"],
+            },
+        }
+
+        # Also include any extracted metrics as a convenience.
+        try:
+            payload["parsed_metrics"] = context.metrics.to_query_string().splitlines()  # type: ignore[attr-defined]
+        except Exception:
+            pass
+
+        lines: list[str] = []
+        lines.append("## Mode")
+        lines.append("ABSTAIN")
+        lines.append("")
+        lines.append("## Reason")
+        lines.append(payload["reason"])
+        lines.append("")
+        lines.append("## Coverage")
+        lines.append(json.dumps(payload["coverage"], indent=2, ensure_ascii=False))
+        lines.append("")
+        lines.append("## Observations (verbatim input)")
+        if payload["observations"]:
+            for l in payload["observations"]:
+                lines.append(f"- {l}")
+        else:
+            lines.append("- (empty)")
+        lines.append("")
+        lines.append("## Missing Knowledge / Next Data Needed")
+        for item in payload["missing_knowledge"]:
+            lines.append(f"- {item}")
+        lines.append("")
+        lines.append("## Action")
+        lines.append(json.dumps(payload["action"], indent=2, ensure_ascii=False))
+        return "\n".join(lines).strip() + "\n"
 
     def _metric_rewrite_enabled(self) -> bool:
         v = os.getenv("ENABLE_REPORT_METRIC_REWRITE")
