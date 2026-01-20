@@ -1,0 +1,6 @@
+VCORE 725mV usage is at 52.51%.
+VCORE floor is 600mV.
+MMDVFS is at OPP3 with 100% usage.
+DDR5460 at 23.37%, DDR6370 at 30.77%. Total DDR at 54.14%.
+CPU 大核 at 2700MHz, 中核 at 2500MHz, 小核 at 2100MHz.
+No DDR voting data available.

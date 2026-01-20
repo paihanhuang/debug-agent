@@ -1,0 +1,101 @@
+[
+  {
+    "name": "Case 1 (first report)",
+    "root_cause_match": true,
+    "root_cause_found": [
+      "CM"
+    ],
+    "root_cause_expected": [
+      "CM",
+      "CPU"
+    ],
+    "causal_match": true,
+    "causal_found": [
+      "DDR",
+      "VCORE",
+      "725"
+    ],
+    "causal_expected": [
+      "DDR",
+      "CPU",
+      "VCORE",
+      "725"
+    ],
+    "agent_response": {
+      "root_cause": "1. DDR causing VCORE increase\n2. CM causing VCORE increase",
+      "causal_chain": "1. **DDR causing VCORE increase → High VCORE usage**\n   - The combined DDR usage of DDR5460 and DDR6370 is at 82.6%, which is contributing to the high VCORE 725mV usage of 82.6%. This indicates that the DDR activity is directly causing an increase in VCORE levels.\n\n2. **CM causing VCORE increase → High VCORE usage**\n   - The presence of SW_REQ2 activity in DDR voting suggests that CM (Configuration Manager) is actively influencing the VCORE level, leading to the high VCORE 725mV usage of 82.6%.",
+      "diagnosis": "- **DDR causing VCORE increase**: The high combined DDR usage (82.6%) is directly linked to the elevated VCORE 725mV usage. This is a clear indication that the DDR activity is a root cause of the increased VCORE levels.\n  \n- **CM causing VCORE increase**: The SW_REQ2 activity in DDR voting indicates that CM is actively contributing to the high VCORE 725mV usage. This is another independent root cause for the elevated VCORE levels.\n\n- **MMDVFS Status**: MMDVFS is at OPP4, which is normal operation. Therefore, MMDVFS is ruled out as a cause for the VCORE floor issue.",
+      "historical_fixes": [
+        "No relevant historical fixes found."
+      ]
+    },
+    "ground_truth": "Root cause: CM (CPU Manager) 拉檔 causing all CPU cores at ceiling frequencies.\nCausal chain: CM -> CPU at ceiling -> DDR voting SW_REQ2 -> DDR 82.6% -> VCORE 725mV @ 82.6%\nMMDVFS ruled out (stays at OPP4)."
+  },
+  {
+    "name": "Case 2 (second report)",
+    "root_cause_match": true,
+    "root_cause_found": [
+      "CM",
+      "PowerHal"
+    ],
+    "root_cause_expected": [
+      "CM",
+      "PowerHal"
+    ],
+    "causal_match": true,
+    "causal_found": [
+      "DDR",
+      "VCORE"
+    ],
+    "causal_expected": [
+      "DDR",
+      "VCORE",
+      "SW_REQ"
+    ],
+    "agent_response": {
+      "root_cause": "1. CM/PowerHal/DDR voting issue causing high VCORE 725mV usage.\n2. DDR activity contributing to VCORE increase.",
+      "causal_chain": "1. **CM/PowerHal/DDR Voting Issue:**\n   - VCORE 725mV usage is at 29.32% (exceeds the 10% threshold) → Indicates a CM/PowerHal/DDR voting issue → Leads to high VCORE usage.\n\n2. **DDR Activity:**\n   - DDR6370 usage is at 26.13% and total DDR usage is at 29.67% → High DDR activity → Causes VCORE level to rise → Contributes to high VCORE usage.\n\n3. **DDR causing VCORE increase:**\n   - The high DDR activity directly impacts VCORE levels, leading to an increase in VCORE usage.\n\n4. **High VCORE usage:**\n   - The combination of CM/PowerHal/DDR voting issues and DDR activity results in sustained high VCORE usage.\n\n5. **CM causing VCORE increase:**\n   - CM's role in the voting issue contributes to the increase in VCORE levels, further exacerbating the high VCORE usage.",
+      "diagnosis": "1. **CM/PowerHal/DDR Voting Issue:**\n   - The VCORE 725mV usage at 29.32% is significantly above the 10% threshold, indicating an issue with CM/PowerHal/DDR voting. This is a root cause for the high VCORE usage observed.\n\n2. **DDR Activity:**\n   - The high DDR6370 usage at 26.13% and total DDR usage at 29.67% suggest that DDR activity is contributing to the increase in VCORE levels. This aligns with the causal chain where DDR activity leads to increased VCORE usage.\n\n- **MMDVFS Status:**\n  - MMDVFS is at OPP4, which indicates normal operation. Therefore, MMDVFS is ruled out as a cause for the VCORE floor issue.",
+      "historical_fixes": [
+        "No relevant historical fixes found."
+      ]
+    },
+    "ground_truth": "Root cause: CM (via SW_REQ2) + PowerHal (via SW_REQ3) 拉檔.\nCausal chain: CM/PowerHal -> DDR voting -> DDR 29.67% -> VCORE 725mV @ 29.32%\nMMDVFS ruled out (stays at OPP4).\nRelated to control policy (調控策略)."
+  },
+  {
+    "name": "Case 3 (third report)",
+    "root_cause_match": true,
+    "root_cause_found": [
+      "CM",
+      "MMDVFS"
+    ],
+    "root_cause_expected": [
+      "CM",
+      "MMDVFS"
+    ],
+    "causal_match": true,
+    "causal_found": [
+      "DDR",
+      "VCORE",
+      "600",
+      "725",
+      "OPP3"
+    ],
+    "causal_expected": [
+      "DDR",
+      "VCORE",
+      "600",
+      "725",
+      "OPP3"
+    ],
+    "agent_response": {
+      "root_cause": "1. MMDVFS OPP3 issue causing VCORE floor to be at 600mV.\n2. CM/PowerHal/DDR voting issue causing VCORE 725mV usage to be at 52.51%.",
+      "causal_chain": "1. **MMDVFS OPP3 issue:**\n   - MMDVFS at OPP3 with 100% usage → VCORE floor set at 600mV (should be 575mV) → High VCORE floor contributes to increased power consumption.\n\n2. **CM/PowerHal/DDR voting issue:**\n   - VCORE 725mV usage at 52.51% (exceeds 10% threshold) → Indicates CM/PowerHal/DDR voting issue → High VCORE ceiling contributes to increased power consumption.\n\n3. **DDR causing VCORE increase:**\n   - DDR activity leads to increased VCORE demand → DDR causing VCORE increase contributes to higher power usage.\n\n4. **High VCORE usage:**\n   - Sustained high VCORE usage due to system demands → High VCORE usage results in elevated power consumption.\n\n5. **CM causing VCORE increase:**\n   - CM operations lead to increased VCORE levels → CM causing VCORE increase exacerbates power inefficiency.",
+      "diagnosis": "1. **MMDVFS OPP3 issue:**\n   - The VCORE floor is set at 600mV, which is above the normal threshold of 575mV. This is directly linked to the MMDVFS being at OPP3 with 100% usage, indicating that the system is not operating efficiently and is causing unnecessary power consumption.\n\n2. **CM/PowerHal/DDR voting issue:**\n   - The VCORE 725mV usage is significantly high at 52.51%, which is well above the 10% threshold. This suggests that there is a CM/PowerHal/DDR voting issue, leading to an elevated VCORE ceiling and contributing to excessive power usage.",
+      "historical_fixes": [
+        "No relevant historical fixes found."
+      ]
+    },
+    "ground_truth": "Two issues:\n1. VCORE 600mV floor caused by MMDVFS OPP3 at 100%.\n2. VCORE 725mV @ 52.51% caused by DDR 54.14% from CM 拉檔.\nRelated to control policy (調控策略)."
+  }
+]

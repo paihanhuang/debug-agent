@@ -1,0 +1,92 @@
+{
+  "added_entities": [
+    "aug_observation_574b2cd5",
+    "aug_conclusion_1d9490fe"
+  ],
+  "updated_entities": [
+    "aug_symptom_46d9d2c3",
+    "aug_metric_7c3fc48a",
+    "aug_component_291404fe",
+    "aug_metric_819c388d",
+    "aug_rootcause_88c610cb",
+    "aug_component_b27eb5ea",
+    "aug_component_1d7d8022"
+  ],
+  "added_relations": [
+    {
+      "source": "aug_conclusion_1d9490fe",
+      "target": "aug_symptom_46d9d2c3",
+      "type": "CAUSES"
+    },
+    {
+      "source": "aug_component_291404fe",
+      "target": "aug_symptom_46d9d2c3",
+      "type": "RULES_OUT"
+    },
+    {
+      "source": "aug_metric_819c388d",
+      "target": "aug_rootcause_88c610cb",
+      "type": "INDICATES"
+    },
+    {
+      "source": "aug_component_b27eb5ea",
+      "target": "aug_conclusion_1d9490fe",
+      "type": "INDICATES"
+    }
+  ],
+  "updated_relations": [
+    {
+      "source": "aug_rootcause_88c610cb",
+      "target": "aug_symptom_46d9d2c3",
+      "type": "CAUSES"
+    }
+  ],
+  "skipped_relations": [],
+  "conflicts": [],
+  "feedback_added_entities": [
+    "fb_observation_37f0a7c512",
+    "fb_observation_cea0a539cb"
+  ],
+  "feedback_skipped_existing": [
+    "fb_observation_0572b21720",
+    "aug_component_2a0bbd55",
+    "fb_observation_39e567cd0a",
+    "fb_metric_aecce8732e",
+    "fb_observation_0a4e218ff1",
+    "fb_observation_800596be04",
+    "fb_observation_fe0cf2a3f6"
+  ],
+  "feedback_added_relations": [],
+  "feedback_skipped_existing_relations": [
+    {
+      "source": "fb_observation_39e567cd0a",
+      "target": "fb_observation_0572b21720",
+      "type": "INDICATES"
+    },
+    {
+      "source": "fb_observation_0572b21720",
+      "target": "aug_component_c2311edd",
+      "type": "LEADS_TO"
+    },
+    {
+      "source": "aug_component_c2311edd",
+      "target": "aug_component_2a0bbd55",
+      "type": "LEADS_TO"
+    },
+    {
+      "source": "aug_component_2a0bbd55",
+      "target": "aug_component_38e081f4",
+      "type": "LEADS_TO"
+    },
+    {
+      "source": "fb_observation_0a4e218ff1",
+      "target": "fb_observation_0572b21720",
+      "type": "INDICATES"
+    },
+    {
+      "source": "fb_observation_800596be04",
+      "target": "fb_component_9a6aeeefa1",
+      "type": "INDICATES"
+    }
+  ]
+}

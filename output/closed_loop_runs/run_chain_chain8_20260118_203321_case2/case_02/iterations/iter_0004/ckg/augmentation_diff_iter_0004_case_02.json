@@ -1,0 +1,81 @@
+{
+  "added_entities": [
+    "aug_rootcause_e0c40d6d",
+    "aug_hypothesis_225742ca"
+  ],
+  "updated_entities": [
+    "aug_symptom_46d9d2c3",
+    "aug_component_38e081f4",
+    "aug_metric_3d10caba",
+    "aug_component_291404fe",
+    "aug_observation_911ac35a",
+    "aug_component_2a0bbd55",
+    "aug_metric_85d05592",
+    "aug_component_c2311edd",
+    "aug_observation_2f476ac4",
+    "aug_component_b27eb5ea"
+  ],
+  "added_relations": [
+    {
+      "source": "aug_component_2a0bbd55",
+      "target": "aug_rootcause_e0c40d6d",
+      "type": "CAUSES"
+    },
+    {
+      "source": "aug_rootcause_e0c40d6d",
+      "target": "aug_symptom_46d9d2c3",
+      "type": "CAUSES"
+    },
+    {
+      "source": "aug_observation_911ac35a",
+      "target": "aug_hypothesis_225742ca",
+      "type": "RULES_OUT"
+    },
+    {
+      "source": "aug_component_b27eb5ea",
+      "target": "aug_component_2a0bbd55",
+      "type": "ASSOCIATED_WITH"
+    },
+    {
+      "source": "aug_observation_2f476ac4",
+      "target": "aug_hypothesis_225742ca",
+      "type": "CONFIRMS"
+    }
+  ],
+  "updated_relations": [],
+  "skipped_relations": [],
+  "conflicts": [],
+  "feedback_added_entities": [
+    "fb_observation_03e751ba86",
+    "fb_observation_5091ccd4d3",
+    "fb_observation_5521ffebca"
+  ],
+  "feedback_skipped_existing": [
+    "fb_observation_39e567cd0a",
+    "fb_metric_2a0b5b7d75",
+    "fb_observation_fe0cf2a3f6"
+  ],
+  "feedback_added_relations": [],
+  "feedback_skipped_existing_relations": [
+    {
+      "source": "fb_observation_39e567cd0a",
+      "target": "aug_rootcause_88c610cb",
+      "type": "INDICATES"
+    },
+    {
+      "source": "aug_rootcause_88c610cb",
+      "target": "aug_component_c2311edd",
+      "type": "LEADS_TO"
+    },
+    {
+      "source": "aug_component_c2311edd",
+      "target": "aug_component_2a0bbd55",
+      "type": "LEADS_TO"
+    },
+    {
+      "source": "aug_component_2a0bbd55",
+      "target": "fb_metric_c39a41e456",
+      "type": "LEADS_TO"
+    }
+  ]
+}

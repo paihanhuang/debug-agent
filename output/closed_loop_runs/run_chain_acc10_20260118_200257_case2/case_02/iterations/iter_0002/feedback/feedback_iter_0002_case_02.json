@@ -1,0 +1,84 @@
+{
+  "run_id": "chain_acc10_20260118_200257_case2",
+  "iter_num": 2,
+  "average_score": 4.25,
+  "accuracy_score": 4.0,
+  "per_case": {
+    "case2": {
+      "composite_score": 4.25,
+      "grade": "F",
+      "dimensions": [
+        {
+          "name": "Root Cause Accuracy",
+          "score": 4,
+          "weight": 0.5,
+          "explanation": "The agent failed to identify the root cause related to CM and DDR causing VCORE frequency throttling.",
+          "matched_elements": [],
+          "missing_elements": [
+            "CM",
+            "DDR",
+            "拉檔"
+          ]
+        },
+        {
+          "name": "Causal Chain Completeness",
+          "score": 3,
+          "weight": 0.2,
+          "explanation": "The causal chain from CM to CPU to DDR to VCORE was not captured.",
+          "matched_elements": [],
+          "missing_elements": [
+            "CM → CPU → DDR → VCORE",
+            "SW_REQ2",
+            "SW_REQ3"
+          ]
+        },
+        {
+          "name": "Metric Precision",
+          "score": 6,
+          "weight": 0.15,
+          "explanation": "Some metrics like VCORE and DDR percentages were identified, but CPU frequencies were missing.",
+          "matched_elements": [
+            "VCORE 29.32%",
+            "DDR5460 3.54%",
+            "DDR6370 26.13%"
+          ],
+          "missing_elements": [
+            "CPU frequencies 2700MHz, 2500MHz, 2100MHz"
+          ]
+        },
+        {
+          "name": "Reasoning Quality",
+          "score": 5,
+          "weight": 0.1,
+          "explanation": "The reasoning was basic and lacked depth, failing to rule out or identify MMDVFS as a cause.",
+          "matched_elements": [
+            "MMDVFS at OPP4"
+          ],
+          "missing_elements": [
+            "Logical flow of explanation"
+          ]
+        },
+        {
+          "name": "Actionability",
+          "score": 5,
+          "weight": 0.05,
+          "explanation": "Suggested actions were generic and lacked specific historical fixes or recommendations.",
+          "matched_elements": [],
+          "missing_elements": [
+            "Relevant historical fixes"
+          ]
+        }
+      ]
+    }
+  },
+  "stop_reached": false,
+  "stop": {
+    "min_accuracy": 10.0,
+    "min_overall": 8.01
+  },
+  "source": {
+    "type": "judge_cli_run",
+    "case_name": "case2_iter_0002",
+    "timestamp": "2026-01-18T20:06:36.014046"
+  }
+}

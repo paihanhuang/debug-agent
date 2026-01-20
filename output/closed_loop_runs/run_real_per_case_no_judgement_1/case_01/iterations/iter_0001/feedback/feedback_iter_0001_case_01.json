@@ -1,0 +1,70 @@
+{
+  "run_id": "real_per_case_no_judgement_1",
+  "iter_num": 1,
+  "average_score": 8.3,
+  "accuracy_score": 9.0,
+  "stop_reached": true,
+  "per_case": {
+    "case1": {
+      "composite_score": 8.3,
+      "grade": "A",
+      "dimensions": [
+        {
+          "name": "Root Cause Accuracy",
+          "score": 9,
+          "weight": 0.5,
+          "missing_elements": [
+            "拉檔"
+          ],
+          "matched_elements": [
+            "CM",
+            "MMDVFS"
+          ]
+        },
+        {
+          "name": "Causal Chain Completeness",
+          "score": 8,
+          "weight": 0.2,
+          "missing_elements": [
+            "CPU"
+          ],
+          "matched_elements": [
+            "CM",
+            "DDR",
+            "VCORE"
+          ]
+        },
+        {
+          "name": "Metric Precision",
+          "score": 7,
+          "weight": 0.15,
+          "missing_elements": [
+            "CPU frequencies"
+          ],
+          "matched_elements": [
+            "VCORE 82.6%",
+            "DDR 82.6%"
+          ]
+        },
+        {
+          "name": "Reasoning Quality",
+          "score": 9,
+          "weight": 0.1,
+          "missing_elements": [],
+          "matched_elements": [
+            "MMDVFS ruled out"
+          ]
+        },
+        {
+          "name": "Actionability",
+          "score": 5,
+          "weight": 0.05,
+          "missing_elements": [
+            "historical fixes"
+          ],
+          "matched_elements": []
+        }
+      ]
+    }
+  }
+}

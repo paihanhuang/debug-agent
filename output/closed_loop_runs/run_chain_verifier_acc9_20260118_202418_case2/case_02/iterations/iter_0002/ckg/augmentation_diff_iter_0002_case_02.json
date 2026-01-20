@@ -1,0 +1,86 @@
+{
+  "added_entities": [
+    "aug_metric_1840275f",
+    "aug_metric_11521472",
+    "aug_hypothesis_9ae8373b"
+  ],
+  "updated_entities": [
+    "aug_symptom_525f8af8",
+    "aug_component_b47eee55",
+    "aug_component_291404fe",
+    "aug_observation_e531bcc3",
+    "aug_component_92ac70a3",
+    "aug_rootcause_88c610cb",
+    "aug_component_5c237e04",
+    "aug_observation_f4492893",
+    "aug_component_b27eb5ea",
+    "aug_observation_9c3537e4"
+  ],
+  "added_relations": [
+    {
+      "source": "aug_rootcause_88c610cb",
+      "target": "aug_metric_1840275f",
+      "type": "CAUSES"
+    },
+    {
+      "source": "aug_component_b27eb5ea",
+      "target": "aug_rootcause_88c610cb",
+      "type": "ENABLES"
+    },
+    {
+      "source": "aug_observation_f4492893",
+      "target": "aug_hypothesis_9ae8373b",
+      "type": "INDICATES"
+    },
+    {
+      "source": "aug_metric_1840275f",
+      "target": "aug_component_b47eee55",
+      "type": "INDICATES"
+    },
+    {
+      "source": "aug_metric_11521472",
+      "target": "aug_component_92ac70a3",
+      "type": "INDICATES"
+    }
+  ],
+  "updated_relations": [
+    {
+      "source": "aug_rootcause_88c610cb",
+      "target": "aug_symptom_525f8af8",
+      "type": "CAUSES"
+    },
+    {
+      "source": "aug_observation_9c3537e4",
+      "target": "aug_component_b27eb5ea",
+      "type": "INDICATES"
+    }
+  ],
+  "skipped_relations": [],
+  "conflicts": [],
+  "feedback_added_entities": [
+    "fb_observation_3c035e4274",
+    "fb_observation_0a4e218ff1",
+    "fb_observation_800596be04"
+  ],
+  "feedback_skipped_existing": [
+    "aug_component_1d7d8022"
+  ],
+  "feedback_added_relations": [
+    {
+      "source": "fb_observation_0a4e218ff1",
+      "target": "aug_rootcause_88c610cb",
+      "type": "INDICATES"
+    },
+    {
+      "source": "fb_observation_800596be04",
+      "target": "fb_observation_3c035e4274",
+      "type": "INDICATES"
+    },
+    {
+      "source": "aug_component_1d7d8022",
+      "target": "aug_component_5c237e04",
+      "type": "INDICATES"
+    }
+  ],
+  "feedback_skipped_existing_relations": []
+}

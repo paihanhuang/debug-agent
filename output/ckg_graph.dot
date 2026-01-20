@@ -1,0 +1,23 @@
+digraph CausalGraph {
+    rankdir=BT;
+    node [shape=box, style=rounded];
+
+    "e1" [label="Missing database index\n(RootCause)", fillcolor="red", style="filled,rounded"];
+    "e2" [label="user_sessions table\n(Component)", fillcolor="lightblue", style="filled,rounded"];
+    "e3" [label="Full table scans\n(Observation)", fillcolor="white", style="filled,rounded"];
+    "e4" [label="Slow queries (45s)\n(Metric)", fillcolor="lightgreen", style="filled,rounded"];
+    "e5" [label="Connection pool\n(Component)", fillcolor="lightblue", style="filled,rounded"];
+    "e6" [label="Connection exhaustion\n(Symptom)", fillcolor="orange", style="filled,rounded"];
+    "e7" [label="High memory (92%)\n(Metric)", fillcolor="lightgreen", style="filled,rounded"];
+    "e8" [label="503 errors\n(Symptom)", fillcolor="orange", style="filled,rounded"];
+    "e9" [label="Slow page loads\n(Symptom)", fillcolor="orange", style="filled,rounded"];
+    "e10" [label="Network congestion (ruled out)\n(Hypothesis)", fillcolor="yellow", style="filled,rounded"];
+
+    "e1" -> "e3" [label="CAUSES"];
+    "e3" -> "e4" [label="CAUSES"];
+    "e4" -> "e6" [label="CAUSES"];
+    "e6" -> "e7" [label="CAUSES"];
+    "e6" -> "e8" [label="CAUSES"];
+    "e8" -> "e9" [label="CAUSES"];
+    "e10" -> "e6" [label="RULES_OUT"];
+}

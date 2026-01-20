@@ -1,0 +1,88 @@
+{
+  "run_id": "case2_iterative_from_case1_autolink_20260118_133945",
+  "iter_num": 1,
+  "average_score": 7.35,
+  "accuracy_score": 8.0,
+  "per_case": {
+    "case2": {
+      "composite_score": 7.35,
+      "grade": "B",
+      "dimensions": [
+        {
+          "name": "Root Cause Accuracy",
+          "score": 8,
+          "weight": 0.5,
+          "explanation": "The agent correctly identified CM/PowerHal/DDR voting issue as the root cause but did not explicitly mention 拉檔 (frequency throttling).",
+          "matched_elements": [
+            "CM",
+            "PowerHal",
+            "DDR voting issue"
+          ],
+          "missing_elements": [
+            "拉檔"
+          ]
+        },
+        {
+          "name": "Causal Chain Completeness",
+          "score": 7,
+          "weight": 0.2,
+          "explanation": "The agent captured the CM causing VCORE increase but did not mention SW_REQ2/SW_REQ3 voting mechanisms.",
+          "matched_elements": [
+            "CM causing VCORE increase"
+          ],
+          "missing_elements": [
+            "SW_REQ2",
+            "SW_REQ3"
+          ]
+        },
+        {
+          "name": "Metric Precision",
+          "score": 6,
+          "weight": 0.15,
+          "explanation": "The agent correctly identified the VCORE 725mV usage at 29.32% but missed DDR percentages and specific CPU frequencies.",
+          "matched_elements": [
+            "VCORE 725mV usage at 29.32%"
+          ],
+          "missing_elements": [
+            "DDR5460 percentage",
+            "DDR6370 percentage",
+            "CPU frequencies"
+          ]
+        },
+        {
+          "name": "Reasoning Quality",
+          "score": 8,
+          "weight": 0.1,
+          "explanation": "The reasoning is logical and correctly rules out MMDVFS as a cause, but lacks detail on the CPU and DDR interactions.",
+          "matched_elements": [
+            "MMDVFS ruled out"
+          ],
+          "missing_elements": [
+            "CPU and DDR interactions"
+          ]
+        },
+        {
+          "name": "Actionability",
+          "score": 5,
+          "weight": 0.05,
+          "explanation": "No historical fixes or recommendations were provided, limiting actionability.",
+          "matched_elements": [],
+          "missing_elements": [
+            "historical fixes",
+            "recommendations"
+          ]
+        }
+      ]
+    }
+  },
+  "stop_reached": false,
+  "stop": {
+    "min_accuracy": 9.0,
+    "min_overall": 8.0
+  },
+  "source": {
+    "type": "judge_cli_run",
+    "case_name": "case2_iter_0001",
+    "timestamp": "2026-01-18T13:40:17.079589"
+  }
+}

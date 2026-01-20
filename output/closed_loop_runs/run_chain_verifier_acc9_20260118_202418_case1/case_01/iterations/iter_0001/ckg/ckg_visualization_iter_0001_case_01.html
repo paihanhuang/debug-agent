@@ -1,0 +1,40 @@
+<!doctype html>
+<html>
+<head>
+  <meta charset="utf-8"/>
+  <title>CKG Visualization (case1 iter_0001)</title>
+  <style>
+    body { margin: 0; font-family: Arial, sans-serif; }
+    #topbar { padding: 10px 14px; border-bottom: 1px solid #eee; }
+    #network { width: 100%; height: calc(100vh - 52px); }
+    .meta { color: #666; font-size: 12px; }
+  </style>
+  <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/vis-network/9.1.2/dist/vis-network.min.css" />
+  <script src="https://cdnjs.cloudflare.com/ajax/libs/vis-network/9.1.2/dist/vis-network.min.js"></script>
+</head>
+<body>
+  <div id="topbar">
+    <div><b>CKG Visualization (case1 iter_0001)</b></div>
+    <div class="meta">Source JSON: /home/etem/inference-engine/output/closed_loop_runs/run_chain_verifier_acc9_20260118_202418_case1/case_01/iterations/iter_0001/ckg/candidate_ckg_iter_0001_case_01.json</div>
+    <div class="meta">Nodes: 7 | Edges: 4 (dashed = non-causal / weak)</div>
+  </div>
+  <div id="network"></div>
+
+  <script>
+    const nodes = new vis.DataSet([{"id": "aug_metric_7c3fc48a", "label": "VCORE usage\n(Metric)", "group": "Metric", "color": "#69db7c", "title": "VCORE 725mV usage is at 82.6%, exceeding the expected 10% usage.\n\nsource_text: VCORE 725mV 超過預期的10%使用率在82.6%"}, {"id": "aug_component_291404fe", "label": "MMDVFS\n(Component)", "group": "Component", "color": "#74c0fc", "title": "MMDVFS is maintaining at OPP4, indicating it is not the cause of VCORE level increase.\n\nsource_text: MMDVFS的資料來看 都維持在OPP4代表主要不是從MMDVFS造成 VCORE檔位的拉升"}, {"id": "aug_metric_297bff61", "label": "DDR usage\n(Metric)", "group": "Metric", "color": "#69db7c", "title": "Combined usage of DDR5460 and DDR6370 is approximately 82.6%.\n\nsource_text: DDR5460跟DDR6370加起來的總使用率是達到82.6%左右"}, {"id": "aug_hypothesis_26ac64bf", "label": "DDR causing VCORE increase\n(Hypothesis)", "group": "Hypothesis", "color": "#ffd43b", "title": "It appears that DDR usage is causing the VCORE level increase.\n\nsource_text: 看起來是DDR造成 VCORE檔位拉升"}, {"id": "aug_observation_32a0adae", "label": "DDR voting mechanism\n(Observation)", "group": "Observation", "color": "#f1f3f5", "title": "DDR voting mechanism shows activity at SW_REQ2, related to CM.\n\nsource_text: 去看DDR 投票機制在DDR6370 有機會在SW_REQ2上.代表跟CM相關"}, {"id": "aug_component_1d7d8022", "label": "CPU frequencies\n(Component)", "group": "Component", "color": "#74c0fc", "title": "CPU frequencies are at their maximum settings: 大核 2700MHz, 中核 2500MHz, 小核 2100MHz.\n\nsource_text: 可以從CPU 的部份看到 大核2700MHz，中核2500MHz，小核 2100MHz 屬於都頂在天花板的設定上"}, {"id": "aug_rootcause_88c610cb", "label": "CM causing VCORE increase\n(RootCause)", "group": "RootCause", "color": "#ff6b6b", "title": "Confirmed that CM is causing the VCORE level increase.\n\nsource_text: 所以可以確認是因為CM造成拉檔的原因是確定的"}]);
+    const edges = new vis.DataSet([{"from": "aug_rootcause_88c610cb", "to": "aug_metric_7c3fc48a", "label": "CAUSES", "arrows": "to", "dashes": false}, {"from": "aug_observation_32a0adae", "to": "aug_rootcause_88c610cb", "label": "INDICATES", "arrows": "to", "dashes": true}, {"from": "aug_hypothesis_26ac64bf", "to": "aug_metric_7c3fc48a", "label": "LEADS_TO", "arrows": "to", "dashes": true}, {"from": "aug_component_291404fe", "to": "aug_metric_7c3fc48a", "label": "RULES_OUT", "arrows": "to", "dashes": true}]);
+
+    const container = document.getElementById('network');
+    const data = { nodes, edges };
+    const options = {
+      layout: { improvedLayout: true },
+      interaction: { hover: true, navigationButtons: true },
+      physics: { stabilization: true },
+      nodes: { shape: 'box', margin: 10, font: { multi: 'html', size: 13 } },
+      edges: { smooth: { type: 'dynamic' }, font: { align: 'middle' } }
+    };
+
+    new vis.Network(container, data, options);
+  </script>
+</body>
+</html>

@@ -1,0 +1,82 @@
+{
+  "added_entities": [
+    "aug_metric_7c3fc48a",
+    "aug_metric_297bff61",
+    "aug_component_1d7d8022"
+  ],
+  "updated_entities": [
+    "aug_component_291404fe",
+    "aug_hypothesis_26ac64bf",
+    "aug_observation_32a0adae",
+    "aug_rootcause_88c610cb"
+  ],
+  "added_relations": [
+    {
+      "source": "aug_rootcause_88c610cb",
+      "target": "aug_metric_7c3fc48a",
+      "type": "CAUSES"
+    },
+    {
+      "source": "aug_metric_297bff61",
+      "target": "aug_hypothesis_26ac64bf",
+      "type": "LEADS_TO"
+    },
+    {
+      "source": "aug_component_1d7d8022",
+      "target": "aug_rootcause_88c610cb",
+      "type": "CONFIRMS"
+    },
+    {
+      "source": "aug_component_291404fe",
+      "target": "aug_metric_7c3fc48a",
+      "type": "RULES_OUT"
+    },
+    {
+      "source": "aug_metric_7c3fc48a",
+      "target": "aug_component_38e081f4",
+      "type": "INDICATES"
+    },
+    {
+      "source": "aug_metric_297bff61",
+      "target": "aug_component_2a0bbd55",
+      "type": "INDICATES"
+    },
+    {
+      "source": "fb_metric_0fdb540a0d",
+      "target": "aug_component_38e081f4",
+      "type": "INDICATES"
+    }
+  ],
+  "updated_relations": [
+    {
+      "source": "aug_observation_32a0adae",
+      "target": "aug_rootcause_88c610cb",
+      "type": "INDICATES"
+    }
+  ],
+  "skipped_relations": [],
+  "conflicts": [],
+  "feedback_added_entities": [
+    "fb_metric_0fdb540a0d"
+  ],
+  "feedback_skipped_existing": [],
+  "feedback_added_relations": [
+    {
+      "source": "fb_metric_0fdb540a0d",
+      "target": "aug_component_c2311edd",
+      "type": "LEADS_TO"
+    }
+  ],
+  "feedback_skipped_existing_relations": [
+    {
+      "source": "aug_component_c2311edd",
+      "target": "aug_component_2a0bbd55",
+      "type": "LEADS_TO"
+    },
+    {
+      "source": "aug_component_2a0bbd55",
+      "target": "fb_metric_c39a41e456",
+      "type": "LEADS_TO"
+    }
+  ]
+}

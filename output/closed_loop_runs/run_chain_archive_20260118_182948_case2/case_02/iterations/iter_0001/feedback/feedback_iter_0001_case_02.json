@@ -1,0 +1,90 @@
+{
+  "run_id": "chain_archive_20260118_182948_case2",
+  "iter_num": 1,
+  "average_score": 8.4,
+  "accuracy_score": 9.0,
+  "per_case": {
+    "case2": {
+      "composite_score": 8.4,
+      "grade": "A",
+      "dimensions": [
+        {
+          "name": "Root Cause Accuracy",
+          "score": 9,
+          "weight": 0.5,
+          "explanation": "The agent correctly identified CM as the root cause and mentioned the CM/PowerHal/DDR voting issue.",
+          "matched_elements": [
+            "CM",
+            "PowerHal",
+            "DDR voting issue"
+          ],
+          "missing_elements": [
+            "拉檔"
+          ]
+        },
+        {
+          "name": "Causal Chain Completeness",
+          "score": 7,
+          "weight": 0.2,
+          "explanation": "The causal chain is mostly captured but lacks specific mention of SW_REQ2/SW_REQ3 voting mechanisms.",
+          "matched_elements": [
+            "CM → VCORE increase",
+            "DDR contribution"
+          ],
+          "missing_elements": [
+            "SW_REQ2",
+            "SW_REQ3"
+          ]
+        },
+        {
+          "name": "Metric Precision",
+          "score": 8,
+          "weight": 0.15,
+          "explanation": "Most metrics are correctly identified, but some specific CPU frequencies are missing.",
+          "matched_elements": [
+            "VCORE 29.32%",
+            "DDR5460 3.54%",
+            "DDR6370 26.13%"
+          ],
+          "missing_elements": [
+            "CPU frequencies 2700MHz, 2500MHz, 2100MHz"
+          ]
+        },
+        {
+          "name": "Reasoning Quality",
+          "score": 9,
+          "weight": 0.1,
+          "explanation": "The reasoning is logical and MMDVFS is correctly ruled out.",
+          "matched_elements": [
+            "MMDVFS ruled out",
+            "logical flow"
+          ],
+          "missing_elements": []
+        },
+        {
+          "name": "Actionability",
+          "score": 8,
+          "weight": 0.05,
+          "explanation": "The suggested fix is practical but lacks specific historical context.",
+          "matched_elements": [
+            "Verify CM voting",
+            "adjust CPU frequency settings"
+          ],
+          "missing_elements": [
+            "specific historical context"
+          ]
+        }
+      ]
+    }
+  },
+  "stop_reached": true,
+  "stop": {
+    "min_accuracy": 9.0,
+    "min_overall": 8.0
+  },
+  "source": {
+    "type": "judge_cli_run",
+    "case_name": "case2_iter_0001",
+    "timestamp": "2026-01-18T18:31:04.957395"
+  }
+}

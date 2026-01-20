@@ -1,0 +1,87 @@
+{
+  "run_id": "chain_acc10_20260118_200257_case3",
+  "iter_num": 1,
+  "average_score": 7.25,
+  "accuracy_score": 7.0,
+  "per_case": {
+    "case3": {
+      "composite_score": 7.25,
+      "grade": "B",
+      "dimensions": [
+        {
+          "name": "Root Cause Accuracy",
+          "score": 7,
+          "weight": 0.5,
+          "explanation": "The agent identified DDR and MMDVFS as root causes but missed the CM (CPU Manager) aspect.",
+          "matched_elements": [
+            "DDR",
+            "MMDVFS"
+          ],
+          "missing_elements": [
+            "CM"
+          ]
+        },
+        {
+          "name": "Causal Chain Completeness",
+          "score": 6,
+          "weight": 0.2,
+          "explanation": "The causal chain is partially captured, missing the CM to CPU link and SW_REQ2/SW_REQ3 voting mechanisms.",
+          "matched_elements": [
+            "DDR impact on VCORE"
+          ],
+          "missing_elements": [
+            "CM to CPU link",
+            "SW_REQ2/SW_REQ3 voting mechanisms"
+          ]
+        },
+        {
+          "name": "Metric Precision",
+          "score": 9,
+          "weight": 0.15,
+          "explanation": "Most metrics are correctly identified, with minor omissions.",
+          "matched_elements": [
+            "VCORE 52.51%",
+            "DDR5460 23.37%",
+            "DDR6370 30.77%",
+            "CPU frequencies"
+          ],
+          "missing_elements": []
+        },
+        {
+          "name": "Reasoning Quality",
+          "score": 8,
+          "weight": 0.1,
+          "explanation": "The reasoning is mostly logical but lacks clarity on ruling out MMDVFS.",
+          "matched_elements": [
+            "Logical flow",
+            "DDR impact"
+          ],
+          "missing_elements": [
+            "Clear ruling out of MMDVFS"
+          ]
+        },
+        {
+          "name": "Actionability",
+          "score": 8,
+          "weight": 0.05,
+          "explanation": "Suggested fixes are practical and relevant, with historical fixes referenced.",
+          "matched_elements": [
+            "Investigate DDR voting mechanisms",
+            "Check MMDVFS OPP3"
+          ],
+          "missing_elements": []
+        }
+      ]
+    }
+  },
+  "stop_reached": false,
+  "stop": {
+    "min_accuracy": 10.0,
+    "min_overall": 8.01
+  },
+  "source": {
+    "type": "judge_cli_run",
+    "case_name": "case3_iter_0001",
+    "timestamp": "2026-01-18T20:09:15.580644"
+  }
+}

@@ -1,0 +1,40 @@
+<!doctype html>
+<html>
+<head>
+  <meta charset="utf-8"/>
+  <title>CKG Visualization (case1 iter_0001)</title>
+  <style>
+    body { margin: 0; font-family: Arial, sans-serif; }
+    #topbar { padding: 10px 14px; border-bottom: 1px solid #eee; }
+    #network { width: 100%; height: calc(100vh - 52px); }
+    .meta { color: #666; font-size: 12px; }
+  </style>
+  <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/vis-network/9.1.2/dist/vis-network.min.css" />
+  <script src="https://cdnjs.cloudflare.com/ajax/libs/vis-network/9.1.2/dist/vis-network.min.js"></script>
+</head>
+<body>
+  <div id="topbar">
+    <div><b>CKG Visualization (case1 iter_0001)</b></div>
+    <div class="meta">Source JSON: /home/etem/inference-engine/output/closed_loop_runs/run_chain_acc9_20260118_201641_case1/case_01/iterations/iter_0001/ckg/candidate_ckg_iter_0001_case_01.json</div>
+    <div class="meta">Nodes: 12 | Edges: 6 (dashed = non-causal / weak)</div>
+  </div>
+  <div id="network"></div>
+
+  <script>
+    const nodes = new vis.DataSet([{"id": "aug_symptom_46d9d2c3", "label": "High VCORE usage\n(Symptom)", "group": "Symptom", "color": "#ffa94d", "title": "VCORE usage is higher than expected at 82.6%\n\nsource_text: VCORE 725mV 超過預期的10%使用率在82.6%"}, {"id": "aug_component_38e081f4", "label": "VCORE\n(Component)", "group": "Component", "color": "#74c0fc", "title": "Voltage core component\n\nsource_text: VCORE 725mV"}, {"id": "aug_metric_705f2088", "label": "VCORE usage 82.6%\n(Metric)", "group": "Metric", "color": "#69db7c", "title": "VCORE usage is at 82.6%\n\nsource_text: VCORE 725mV 超過預期的10%使用率在82.6%"}, {"id": "aug_component_291404fe", "label": "MMDVFS\n(Component)", "group": "Component", "color": "#74c0fc", "title": "Dynamic voltage and frequency scaling component\n\nsource_text: MMDVFS的資料來看 都維持在OPP4"}, {"id": "aug_observation_911ac35a", "label": "MMDVFS at OPP4\n(Observation)", "group": "Observation", "color": "#f1f3f5", "title": "MMDVFS maintained at OPP4, not causing VCORE increase\n\nsource_text: MMDVFS的資料來看 都維持在OPP4代表主要不是從MMDVFS造成 VCORE檔位的拉升"}, {"id": "aug_component_2a0bbd55", "label": "DDR\n(Component)", "group": "Component", "color": "#74c0fc", "title": "Double Data Rate memory\n\nsource_text: DDR5460跟DDR6370加起來的總使用率是達到82.6%左右"}, {"id": "aug_metric_85d05592", "label": "DDR usage 82.6%\n(Metric)", "group": "Metric", "color": "#69db7c", "title": "Combined DDR usage is at 82.6%\n\nsource_text: DDR5460跟DDR6370加起來的總使用率是達到82.6%左右"}, {"id": "aug_hypothesis_26ac64bf", "label": "DDR causing VCORE increase\n(Hypothesis)", "group": "Hypothesis", "color": "#ffd43b", "title": "DDR usage might be causing the VCORE increase\n\nsource_text: 看起來是DDR造成 VCORE檔位拉升"}, {"id": "aug_component_c2311edd", "label": "CPU\n(Component)", "group": "Component", "color": "#74c0fc", "title": "Central Processing Unit\n\nsource_text: 所以去看下CPU部分"}, {"id": "aug_observation_29682432", "label": "CPU frequencies\n(Observation)", "group": "Observation", "color": "#f1f3f5", "title": "CPU frequencies are at their maximum settings\n\nsource_text: 可以從CPU 的部份看到 大核2700MHz，中核2500MHz，小核 2100MHz 屬於都頂在天花板的設定上"}, {"id": "aug_rootcause_88c610cb", "label": "CM causing VCORE increase\n(RootCause)", "group": "RootCause", "color": "#ff6b6b", "title": "CM is confirmed to be causing the VCORE increase\n\nsource_text: 所以可以確認是因為CM造成拉檔的原因是確定的"}, {"id": "aug_observation_32a0adae", "label": "DDR voting mechanism\n(Observation)", "group": "Observation", "color": "#f1f3f5", "title": "DDR voting shows activity on SW_REQ2\n\nsource_text: DDR 投票機制在DDR6370 有機會在SW_REQ2上"}]);
+    const edges = new vis.DataSet([{"from": "aug_rootcause_88c610cb", "to": "aug_symptom_46d9d2c3", "label": "CAUSES", "arrows": "to", "dashes": false}, {"from": "aug_hypothesis_26ac64bf", "to": "aug_symptom_46d9d2c3", "label": "INDICATES", "arrows": "to", "dashes": true}, {"from": "aug_observation_911ac35a", "to": "aug_hypothesis_26ac64bf", "label": "RULES_OUT", "arrows": "to", "dashes": true}, {"from": "aug_observation_32a0adae", "to": "aug_rootcause_88c610cb", "label": "INDICATES", "arrows": "to", "dashes": true}, {"from": "aug_metric_705f2088", "to": "aug_component_38e081f4", "label": "INDICATES", "arrows": "to", "dashes": true}, {"from": "aug_metric_85d05592", "to": "aug_component_2a0bbd55", "label": "INDICATES", "arrows": "to", "dashes": true}]);
+
+    const container = document.getElementById('network');
+    const data = { nodes, edges };
+    const options = {
+      layout: { improvedLayout: true },
+      interaction: { hover: true, navigationButtons: true },
+      physics: { stabilization: true },
+      nodes: { shape: 'box', margin: 10, font: { multi: 'html', size: 13 } },
+      edges: { smooth: { type: 'dynamic' }, font: { align: 'middle' } }
+    };
+
+    new vis.Network(container, data, options);
+  </script>
+</body>
+</html>

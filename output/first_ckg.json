@@ -1,0 +1,256 @@
+{
+  "entities": [
+    {
+      "id": "rc1",
+      "type": "RootCause",
+      "label": "CM (CPU Manager) \u62c9\u6a94",
+      "description": "CPU cores at ceiling frequencies cause voltage uplift",
+      "attributes": {},
+      "confidence": 1.0,
+      "source_text": ""
+    },
+    {
+      "id": "c1",
+      "type": "Component",
+      "label": "CPU \u5927\u6838 2700MHz",
+      "description": "Large cores at max frequency",
+      "attributes": {},
+      "confidence": 1.0,
+      "source_text": ""
+    },
+    {
+      "id": "c2",
+      "type": "Component",
+      "label": "CPU \u4e2d\u6838 2500MHz",
+      "description": "Medium cores at max frequency",
+      "attributes": {},
+      "confidence": 1.0,
+      "source_text": ""
+    },
+    {
+      "id": "c3",
+      "type": "Component",
+      "label": "CPU \u5c0f\u6838 2100MHz",
+      "description": "Small cores at max frequency",
+      "attributes": {},
+      "confidence": 1.0,
+      "source_text": ""
+    },
+    {
+      "id": "c4",
+      "type": "Component",
+      "label": "DDR \u6295\u7968\u6a5f\u5236",
+      "description": "DDR voting mechanism SW_REQ2",
+      "attributes": {},
+      "confidence": 1.0,
+      "source_text": ""
+    },
+    {
+      "id": "m1",
+      "type": "Metric",
+      "label": "DDR \u4f7f\u7528\u7387 82.6%",
+      "description": "DDR5460 + DDR6370 combined usage",
+      "attributes": {},
+      "confidence": 1.0,
+      "source_text": ""
+    },
+    {
+      "id": "m2",
+      "type": "Observation",
+      "label": "DDR5460 \u9ad8\u4f7f\u7528\u7387",
+      "description": "High DDR5460 frequency usage",
+      "attributes": {},
+      "confidence": 1.0,
+      "source_text": ""
+    },
+    {
+      "id": "m3",
+      "type": "Observation",
+      "label": "DDR6370 \u9ad8\u4f7f\u7528\u7387",
+      "description": "High DDR6370 frequency usage",
+      "attributes": {},
+      "confidence": 1.0,
+      "source_text": ""
+    },
+    {
+      "id": "s1",
+      "type": "Symptom",
+      "label": "VCORE 725mV \u8d85\u6a19",
+      "description": "VCORE at 82.6% exceeds 10% threshold",
+      "attributes": {},
+      "confidence": 1.0,
+      "source_text": ""
+    },
+    {
+      "id": "h1",
+      "type": "Hypothesis",
+      "label": "MMDVFS \u9020\u6210",
+      "description": "MMDVFS maintained at OPP4 - ruled out",
+      "attributes": {},
+      "confidence": 1.0,
+      "source_text": ""
+    }
+  ],
+  "relations": [
+    {
+      "source": "rc1",
+      "target": "c1",
+      "type": "CAUSES",
+      "is_causal": true,
+      "confidence": 1.0,
+      "evidence": "",
+      "attributes": {},
+      "causal_effect": {
+        "strength": 0.95,
+        "is_direct": true,
+        "temporal_order": "immediate",
+        "mechanism": "CM forces CPU to ceiling frequency"
+      }
+    },
+    {
+      "source": "rc1",
+      "target": "c2",
+      "type": "CAUSES",
+      "is_causal": true,
+      "confidence": 1.0,
+      "evidence": "",
+      "attributes": {},
+      "causal_effect": {
+        "strength": 0.95,
+        "is_direct": true,
+        "temporal_order": "immediate",
+        "mechanism": "CM forces CPU to ceiling frequency"
+      }
+    },
+    {
+      "source": "rc1",
+      "target": "c3",
+      "type": "CAUSES",
+      "is_causal": true,
+      "confidence": 1.0,
+      "evidence": "",
+      "attributes": {},
+      "causal_effect": {
+        "strength": 0.95,
+        "is_direct": true,
+        "temporal_order": "immediate",
+        "mechanism": "CM forces CPU to ceiling frequency"
+      }
+    },
+    {
+      "source": "c1",
+      "target": "c4",
+      "type": "CAUSES",
+      "is_causal": true,
+      "confidence": 1.0,
+      "evidence": "",
+      "attributes": {},
+      "causal_effect": {
+        "strength": 0.9,
+        "is_direct": true,
+        "temporal_order": "immediate",
+        "mechanism": "High CPU freq triggers DDR SW_REQ2 vote"
+      }
+    },
+    {
+      "source": "c4",
+      "target": "m2",
+      "type": "CAUSES",
+      "is_causal": true,
+      "confidence": 1.0,
+      "evidence": "",
+      "attributes": {},
+      "causal_effect": {
+        "strength": 0.85,
+        "is_direct": true,
+        "temporal_order": "seconds",
+        "mechanism": "DDR voting elevates DDR5460"
+      }
+    },
+    {
+      "source": "c4",
+      "target": "m3",
+      "type": "CAUSES",
+      "is_causal": true,
+      "confidence": 1.0,
+      "evidence": "",
+      "attributes": {},
+      "causal_effect": {
+        "strength": 0.85,
+        "is_direct": true,
+        "temporal_order": "seconds",
+        "mechanism": "DDR voting elevates DDR6370"
+      }
+    },
+    {
+      "source": "m2",
+      "target": "m1",
+      "type": "CAUSES",
+      "is_causal": true,
+      "confidence": 1.0,
+      "evidence": "",
+      "attributes": {},
+      "causal_effect": {
+        "strength": 0.5,
+        "is_direct": true,
+        "temporal_order": "immediate",
+        "mechanism": "Contributes to total DDR usage"
+      }
+    },
+    {
+      "source": "m3",
+      "target": "m1",
+      "type": "CAUSES",
+      "is_causal": true,
+      "confidence": 1.0,
+      "evidence": "",
+      "attributes": {},
+      "causal_effect": {
+        "strength": 0.5,
+        "is_direct": true,
+        "temporal_order": "immediate",
+        "mechanism": "Contributes to total DDR usage"
+      }
+    },
+    {
+      "source": "m1",
+      "target": "s1",
+      "type": "CAUSES",
+      "is_causal": true,
+      "confidence": 1.0,
+      "evidence": "",
+      "attributes": {},
+      "causal_effect": {
+        "strength": 0.95,
+        "is_direct": true,
+        "temporal_order": "immediate",
+        "mechanism": "DDR 82.6% forces VCORE 725mV"
+      }
+    },
+    {
+      "source": "h1",
+      "target": "s1",
+      "type": "RULES_OUT",
+      "is_causal": false,
+      "confidence": 0.9,
+      "evidence": "MMDVFS\u7dad\u6301\u5728OPP4",
+      "attributes": {}
+    }
+  ],
+  "metadata": {
+    "num_entities": 10,
+    "num_relations": 10,
+    "entity_types": [
+      "Hypothesis",
+      "Metric",
+      "Symptom",
+      "Component",
+      "RootCause",
+      "Observation"
+    ],
+    "relation_types": [
+      "RULES_OUT",
+      "CAUSES"
+    ]
+  }
+}

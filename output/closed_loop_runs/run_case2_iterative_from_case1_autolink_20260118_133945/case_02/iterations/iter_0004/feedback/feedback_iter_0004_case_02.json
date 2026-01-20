@@ -1,0 +1,88 @@
+{
+  "run_id": "case2_iterative_from_case1_autolink_20260118_133945",
+  "iter_num": 4,
+  "average_score": 8.3,
+  "accuracy_score": 9.0,
+  "per_case": {
+    "case2": {
+      "composite_score": 8.3,
+      "grade": "A",
+      "dimensions": [
+        {
+          "name": "Root Cause Accuracy",
+          "score": 9,
+          "weight": 0.5,
+          "explanation": "The agent correctly identified the CM/PowerHal/DDR voting issue as the root cause, aligning with the human expert report.",
+          "matched_elements": [
+            "CM",
+            "PowerHal",
+            "DDR voting issue"
+          ],
+          "missing_elements": [
+            "拉檔"
+          ]
+        },
+        {
+          "name": "Causal Chain Completeness",
+          "score": 8,
+          "weight": 0.2,
+          "explanation": "The agent captured the CM/PowerHal/DDR voting issue but did not fully elaborate on the CPU and DDR impact on VCORE.",
+          "matched_elements": [
+            "CM",
+            "DDR voting mechanisms (SW_REQ2, SW_REQ3)"
+          ],
+          "missing_elements": [
+            "CPU impact",
+            "full CM → CPU → DDR → VCORE chain"
+          ]
+        },
+        {
+          "name": "Metric Precision",
+          "score": 7,
+          "weight": 0.15,
+          "explanation": "The agent correctly identified the VCORE 29.32% usage but missed specific DDR and CPU frequency metrics.",
+          "matched_elements": [
+            "VCORE 29.32%"
+          ],
+          "missing_elements": [
+            "DDR5460 3.54%",
+            "DDR6370 26.13%",
+            "CPU frequencies"
+          ]
+        },
+        {
+          "name": "Reasoning Quality",
+          "score": 9,
+          "weight": 0.1,
+          "explanation": "The agent's reasoning was logical and correctly ruled out MMDVFS as a cause.",
+          "matched_elements": [
+            "MMDVFS ruled out",
+            "logical flow"
+          ],
+          "missing_elements": []
+        },
+        {
+          "name": "Actionability",
+          "score": 5,
+          "weight": 0.05,
+          "explanation": "The agent did not provide any historical fixes or actionable recommendations.",
+          "matched_elements": [],
+          "missing_elements": [
+            "historical fixes",
+            "recommendations"
+          ]
+        }
+      ]
+    }
+  },
+  "stop_reached": true,
+  "stop": {
+    "min_accuracy": 9.0,
+    "min_overall": 8.0
+  },
+  "source": {
+    "type": "judge_cli_run",
+    "case_name": "case2_iter_0004",
+    "timestamp": "2026-01-18T13:42:00.733468"
+  }
+}

@@ -1,0 +1,245 @@
+{
+  "entities": [
+    {
+      "id": "aug_symptom_525f8af8",
+      "type": "Symptom",
+      "label": "High VCORE usage",
+      "description": "VCORE 725mV usage is higher than expected.",
+      "attributes": {
+        "report_id": "second",
+        "source_text": "VCORE 725mV\u8d85\u904e\u9810\u671f\u768410%\u4f7f\u7528\u7387\u4f86\u523029.32%"
+      },
+      "confidence": 0.95,
+      "source_text": "VCORE 725mV\u8d85\u904e\u9810\u671f\u768410%\u4f7f\u7528\u7387\u4f86\u523029.32%"
+    },
+    {
+      "id": "aug_component_b47eee55",
+      "type": "Component",
+      "label": "VCORE",
+      "description": "Voltage core component with 725mV.",
+      "attributes": {
+        "report_id": "second",
+        "source_text": "VCORE 725mV"
+      },
+      "confidence": 0.95,
+      "source_text": "VCORE 725mV"
+    },
+    {
+      "id": "aug_metric_3d10caba",
+      "type": "Metric",
+      "label": "VCORE usage 29.32%",
+      "description": "VCORE usage reached 29.32%.",
+      "attributes": {
+        "report_id": "second",
+        "source_text": "VCORE 725mV\u8d85\u904e\u9810\u671f\u768410%\u4f7f\u7528\u7387\u4f86\u523029.32%"
+      },
+      "confidence": 0.95,
+      "source_text": "VCORE 725mV\u8d85\u904e\u9810\u671f\u768410%\u4f7f\u7528\u7387\u4f86\u523029.32%"
+    },
+    {
+      "id": "aug_component_524e4229",
+      "type": "Component",
+      "label": "MMDVFS",
+      "description": "Dynamic voltage and frequency scaling component.",
+      "attributes": {
+        "report_id": "second",
+        "source_text": "MMDVFS\u7684\u8cc7\u6599\u4f86\u770b\uff0c\u90fd\u7dad\u6301\u5728OPP4"
+      },
+      "confidence": 0.95,
+      "source_text": "MMDVFS\u7684\u8cc7\u6599\u4f86\u770b\uff0c\u90fd\u7dad\u6301\u5728OPP4"
+    },
+    {
+      "id": "aug_observation_e531bcc3",
+      "type": "Observation",
+      "label": "MMDVFS at OPP4",
+      "description": "MMDVFS maintained at OPP4, not causing the issue.",
+      "attributes": {
+        "report_id": "second",
+        "source_text": "MMDVFS\u7684\u8cc7\u6599\u4f86\u770b\uff0c\u90fd\u7dad\u6301\u5728OPP4\u4ee3\u8868\u4e0d\u662f\u56e0MMDVFS\u9020\u6210"
+      },
+      "confidence": 0.95,
+      "source_text": "MMDVFS\u7684\u8cc7\u6599\u4f86\u770b\uff0c\u90fd\u7dad\u6301\u5728OPP4\u4ee3\u8868\u4e0d\u662f\u56e0MMDVFS\u9020\u6210"
+    },
+    {
+      "id": "aug_component_92ac70a3",
+      "type": "Component",
+      "label": "DDR",
+      "description": "DDR memory components DDR5460 and DDR6370.",
+      "attributes": {
+        "report_id": "second",
+        "source_text": "DDR5460\u4f543.54%\uff0c\u8ddfDDR6370\u4f5426.13%"
+      },
+      "confidence": 0.95,
+      "source_text": "DDR5460\u4f543.54%\uff0c\u8ddfDDR6370\u4f5426.13%"
+    },
+    {
+      "id": "aug_metric_c6516627",
+      "type": "Metric",
+      "label": "DDR usage 29.67%",
+      "description": "Total DDR usage is 29.67%, close to VCORE usage.",
+      "attributes": {
+        "report_id": "second",
+        "source_text": "DDR5460\u8ddfDDR6370\u7e3d\u4f7f\u7528\u6bd4\u4f8b\u662f29.67%"
+      },
+      "confidence": 0.95,
+      "source_text": "DDR5460\u8ddfDDR6370\u7e3d\u4f7f\u7528\u6bd4\u4f8b\u662f29.67%"
+    },
+    {
+      "id": "aug_rootcause_3eb78cc3",
+      "type": "RootCause",
+      "label": "DDR causing VCORE increase",
+      "description": "DDR usage is causing the VCORE level to rise.",
+      "attributes": {
+        "report_id": "second",
+        "source_text": "\u6240\u4ee5\u662fDDR\u9020\u6210VCORE\u6a94\u4f4d\u62c9\u5347"
+      },
+      "confidence": 0.95,
+      "source_text": "\u6240\u4ee5\u662fDDR\u9020\u6210VCORE\u6a94\u4f4d\u62c9\u5347"
+    },
+    {
+      "id": "aug_component_b27eb5ea",
+      "type": "Component",
+      "label": "DDR voting mechanism",
+      "description": "DDR voting mechanism involving SW_REQ2 and SW_REQ3.",
+      "attributes": {
+        "report_id": "second",
+        "source_text": "\u770bDDR\u6295\u7968\u6a5f\u5236 DDR6370\u6709\u6a5f\u6703\u5728SW_REQ2\u4e0a\uff0c\u8ddfSW_REQ3"
+      },
+      "confidence": 0.95,
+      "source_text": "\u770bDDR\u6295\u7968\u6a5f\u5236 DDR6370\u6709\u6a5f\u6703\u5728SW_REQ2\u4e0a\uff0c\u8ddfSW_REQ3"
+    },
+    {
+      "id": "aug_component_5c237e04",
+      "type": "Component",
+      "label": "CPU",
+      "description": "CPU with various frequency levels.",
+      "attributes": {
+        "report_id": "second",
+        "source_text": "\u5f9eCPU\u7684\u90e8\u5206\u53ef\u4ee5\u770b\u5230\u5c0f\u68381000MHZ\uff0c1600MHz, 2100MHz\uff0c \u8ddf\u4e2d\u68381000MHz, 1600MHz, 2400MHz\u3001 \u8ddf\u5927\u68381800MHz, 2200MHz, 2700MHz"
+      },
+      "confidence": 0.95,
+      "source_text": "\u5f9eCPU\u7684\u90e8\u5206\u53ef\u4ee5\u770b\u5230\u5c0f\u68381000MHZ\uff0c1600MHz, 2100MHz\uff0c \u8ddf\u4e2d\u68381000MHz, 1600MHz, 2400MHz\u3001 \u8ddf\u5927\u68381800MHz, 2200MHz, 2700MHz"
+    },
+    {
+      "id": "aug_observation_f4492893",
+      "type": "Observation",
+      "label": "High CPU usage",
+      "description": "High usage observed across various CPU frequencies.",
+      "attributes": {
+        "report_id": "second",
+        "source_text": "\u90fd \u6709\u9ad8\u7684\u4f7f\u7528\u7387"
+      },
+      "confidence": 0.95,
+      "source_text": "\u90fd \u6709\u9ad8\u7684\u4f7f\u7528\u7387"
+    },
+    {
+      "id": "aug_conclusion_1d9490fe",
+      "type": "Conclusion",
+      "label": "CM causing VCORE increase",
+      "description": "CM is confirmed to be causing the VCORE increase.",
+      "attributes": {
+        "report_id": "second",
+        "source_text": "\u53ef\u4ee5\u78ba\u8a8d\u662fCM\u62c9\u6a94\u9020\u6210"
+      },
+      "confidence": 0.95,
+      "source_text": "\u53ef\u4ee5\u78ba\u8a8d\u662fCM\u62c9\u6a94\u9020\u6210"
+    }
+  ],
+  "relations": [
+    {
+      "source": "aug_rootcause_3eb78cc3",
+      "target": "aug_symptom_525f8af8",
+      "type": "CAUSES",
+      "is_causal": true,
+      "confidence": 0.9,
+      "evidence": "\u6240\u4ee5\u662fDDR\u9020\u6210 VCORE\u6a94\u4f4d\u62c9\u5347.",
+      "attributes": {
+        "report_id": "second",
+        "source_text": "\u6240\u4ee5\u662fDDR\u9020\u6210 VCORE\u6a94\u4f4d\u62c9\u5347."
+      },
+      "causal_effect": {
+        "strength": 0.8,
+        "is_direct": true,
+        "temporal_order": "immediate",
+        "mechanism": "Increased DDR usage leads to higher power demand, causing VCORE usage to rise."
+      }
+    },
+    {
+      "source": "aug_observation_e531bcc3",
+      "target": "aug_symptom_525f8af8",
+      "type": "RULES_OUT",
+      "is_causal": false,
+      "confidence": 0.9,
+      "evidence": "MMDVFS\u7684\u8cc7\u6599\u4f86\u770b\uff0c\u90fd\u7dad\u6301\u5728OPP4\u4ee3\u8868\u4e0d\u662f\u56e0MMDVFS\u9020\u6210.",
+      "attributes": {
+        "report_id": "second",
+        "source_text": "MMDVFS\u7684\u8cc7\u6599\u4f86\u770b\uff0c\u90fd\u7dad\u6301\u5728OPP4\u4ee3\u8868\u4e0d\u662f\u56e0MMDVFS\u9020\u6210."
+      }
+    },
+    {
+      "source": "aug_conclusion_1d9490fe",
+      "target": "aug_symptom_525f8af8",
+      "type": "CONFIRMS",
+      "is_causal": false,
+      "confidence": 0.9,
+      "evidence": "\u53ef\u4ee5\u78ba\u8a8d\u662fCM\u62c9\u6a94\u9020\u6210.",
+      "attributes": {
+        "report_id": "second",
+        "source_text": "\u53ef\u4ee5\u78ba\u8a8d\u662fCM\u62c9\u6a94\u9020\u6210."
+      }
+    },
+    {
+      "source": "aug_component_b27eb5ea",
+      "target": "aug_rootcause_3eb78cc3",
+      "type": "CAUSES",
+      "is_causal": true,
+      "confidence": 0.8,
+      "evidence": "\u770bDDR\u6295\u7968\u6a5f\u5236 DDR6370\u6709\u6a5f\u6703\u5728SW_REQ2\u4e0a\uff0c\u8ddfSW_REQ3.",
+      "attributes": {
+        "report_id": "second",
+        "source_text": "\u770bDDR\u6295\u7968\u6a5f\u5236 DDR6370\u6709\u6a5f\u6703\u5728SW_REQ2\u4e0a\uff0c\u8ddfSW_REQ3."
+      },
+      "causal_effect": {
+        "strength": 0.7,
+        "is_direct": true,
+        "temporal_order": "immediate",
+        "mechanism": "DDR voting mechanism influences DDR usage, which in turn affects VCORE levels."
+      }
+    },
+    {
+      "source": "aug_observation_f4492893",
+      "target": "aug_conclusion_1d9490fe",
+      "type": "CAUSES",
+      "is_causal": true,
+      "confidence": 0.8,
+      "evidence": "\u53ef\u4ee5\u78ba\u8a8d\u662fCM\u62c9\u6a94\u9020\u6210.\u9019\u90e8\u5206\u8207\u8abf\u63a7\u7b56\u7565\u76f8\u95dc",
+      "attributes": {
+        "report_id": "second",
+        "source_text": "\u53ef\u4ee5\u78ba\u8a8d\u662fCM\u62c9\u6a94\u9020\u6210.\u9019\u90e8\u5206\u8207\u8abf\u63a7\u7b56\u7565\u76f8\u95dc"
+      },
+      "causal_effect": {
+        "strength": 0.6,
+        "is_direct": true,
+        "temporal_order": "immediate",
+        "mechanism": "High CPU usage triggers CM mechanisms that increase VCORE usage."
+      }
+    }
+  ],
+  "metadata": {
+    "num_entities": 12,
+    "num_relations": 5,
+    "entity_types": [
+      "Symptom",
+      "Observation",
+      "Conclusion",
+      "Metric",
+      "Component",
+      "RootCause"
+    ],
+    "relation_types": [
+      "CAUSES",
+      "RULES_OUT",
+      "CONFIRMS"
+    ]
+  }
+}

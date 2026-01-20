@@ -41,7 +41,7 @@ htmlcov/
 neo4j/
 
 # Generated artifacts (do not commit)
-output/
+
 
 # Judge run artifacts (do not commit)
 judge/qa_results/latest_qa_summary.json

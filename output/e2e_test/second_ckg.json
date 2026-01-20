@@ -1,0 +1,207 @@
+{
+  "entities": [
+    {
+      "id": "e1",
+      "type": "Symptom",
+      "label": "High VCORE usage",
+      "description": "VCORE 725mV usage exceeded expected levels",
+      "attributes": {
+        "source_section": "main"
+      },
+      "confidence": 0.9,
+      "source_text": "VCORE 725mV\u8d85\u904e\u9810\u671f\u768410%\u4f7f\u7528\u7387\u4f86\u523029.32%"
+    },
+    {
+      "id": "e2",
+      "type": "Component",
+      "label": "VCORE",
+      "description": "Voltage core component",
+      "attributes": {
+        "source_section": "main"
+      },
+      "confidence": 0.95,
+      "source_text": "VCORE 725mV"
+    },
+    {
+      "id": "e3",
+      "type": "Metric",
+      "label": "VCORE usage percentage",
+      "description": "VCORE usage reached 29.32%",
+      "attributes": {
+        "source_section": "main"
+      },
+      "confidence": 0.9,
+      "source_text": "VCORE 725mV\u8d85\u904e\u9810\u671f\u768410%\u4f7f\u7528\u7387\u4f86\u523029.32%"
+    },
+    {
+      "id": "e4",
+      "type": "Component",
+      "label": "MIMDVFS",
+      "description": "Dynamic voltage and frequency scaling component",
+      "attributes": {
+        "source_section": "main"
+      },
+      "confidence": 0.85,
+      "source_text": "MIMDVFS\u7684\u8cc7\u6599\u4f86\u770b\uff0c\u90fd\u7dad\u6301\u5728OPP4"
+    },
+    {
+      "id": "e5",
+      "type": "Observation",
+      "label": "MIMDVFS stable",
+      "description": "MIMDVFS maintained at OPP4, indicating it was not the cause",
+      "attributes": {
+        "source_section": "main"
+      },
+      "confidence": 0.9,
+      "source_text": "MIMDVFS\u7684\u8cc7\u6599\u4f86\u770b\uff0c\u90fd\u7dad\u6301\u5728OPP4\u4ee3\u8868\u4e0d\u662f\u56e0MMDVFS\u9020\u6210"
+    },
+    {
+      "id": "e6",
+      "type": "Component",
+      "label": "DDR",
+      "description": "Double Data Rate memory component",
+      "attributes": {
+        "source_section": "main"
+      },
+      "confidence": 0.95,
+      "source_text": "DDR\u7684\u4f7f\u7528\u7387"
+    },
+    {
+      "id": "e7",
+      "type": "Metric",
+      "label": "DDR usage percentage",
+      "description": "DDR5460 usage at 3.54% and DDR6370 at 26.13%",
+      "attributes": {
+        "source_section": "main"
+      },
+      "confidence": 0.9,
+      "source_text": "DDR5460\u4f543.54%\uff0c\u8ddfDDR6370\u4f5426.13%"
+    },
+    {
+      "id": "e8",
+      "type": "RootCause",
+      "label": "DDR causing VCORE increase",
+      "description": "DDR usage caused VCORE level increase",
+      "attributes": {
+        "source_section": "main"
+      },
+      "confidence": 0.95,
+      "source_text": "\u6240\u4ee5\u662fDDR\u9020\u6210VCORE\u6a94\u4f4d\u62c9\u5347"
+    },
+    {
+      "id": "e9",
+      "type": "Component",
+      "label": "SW_REQ2 and SW_REQ3",
+      "description": "Software request components related to CM and PowerHal",
+      "attributes": {
+        "source_section": "main"
+      },
+      "confidence": 0.85,
+      "source_text": "SW_REQ2\u4ee3\u8868CM\u76f8\u95dc\uff0cSW_REQ3\u4ee3\u8868\u8ddf PowerHal\u76f8\u95dc"
+    },
+    {
+      "id": "e10",
+      "type": "Observation",
+      "label": "High CPU usage",
+      "description": "High usage observed in small, medium, and large CPU cores",
+      "attributes": {
+        "source_section": "main"
+      },
+      "confidence": 0.9,
+      "source_text": "\u5c0f\u68381000MHZ\uff0c1600MHz, 2100MHz\uff0c \u8ddf\u4e2d\u68381000MHz, 1600MHz, 2400MHz\u3001 \u8ddf\u5927\u68381800MHz, 2200MHz, 2700MHz\uff0c \u90fd\u6709\u9ad8\u7684\u4f7f\u7528\u7387"
+    },
+    {
+      "id": "e11",
+      "type": "Conclusion",
+      "label": "CM strategy related",
+      "description": "Confirmed that CM strategy caused the issue",
+      "attributes": {
+        "source_section": "main"
+      },
+      "confidence": 0.95,
+      "source_text": "\u53ef\u4ee5\u78ba\u8a8d\u662fCM\u62c9\u6a94\u9020\u6210.\u9019\u90e8\u5206\u8207\u8abf\u63a7\u7b56\u7565\u76f8\u95dc"
+    }
+  ],
+  "relations": [
+    {
+      "source": "e8",
+      "target": "e1",
+      "type": "CAUSES",
+      "is_causal": true,
+      "confidence": 0.9,
+      "evidence": "\u6240\u4ee5\u662fDDR\u9020\u6210 VCORE\u6a94\u4f4d\u62c9\u5347.",
+      "attributes": {},
+      "causal_effect": {
+        "strength": 0.8,
+        "is_direct": true,
+        "temporal_order": "immediate",
+        "mechanism": "Increased DDR usage leads to higher power demands, causing VCORE levels to rise."
+      }
+    },
+    {
+      "source": "e8",
+      "target": "e3",
+      "type": "CAUSES",
+      "is_causal": true,
+      "confidence": 0.9,
+      "evidence": "\u6240\u4ee5\u662fDDR\u9020\u6210 VCORE\u6a94\u4f4d\u62c9\u5347.",
+      "attributes": {},
+      "causal_effect": {
+        "strength": 0.8,
+        "is_direct": true,
+        "temporal_order": "immediate",
+        "mechanism": "DDR usage increase directly affects VCORE usage percentage."
+      }
+    },
+    {
+      "source": "e5",
+      "target": "e8",
+      "type": "RULES_OUT",
+      "is_causal": false,
+      "confidence": 0.9,
+      "evidence": "MIMDVFS\u7684\u8cc7\u6599\u4f86\u770b\uff0c\u90fd\u7dad\u6301\u5728OPP4\u4ee3\u8868\u4e0d\u662f\u56e0MMDVFS\u9020\u6210.",
+      "attributes": {}
+    },
+    {
+      "source": "e11",
+      "target": "e1",
+      "type": "CAUSES",
+      "is_causal": true,
+      "confidence": 0.9,
+      "evidence": "\u53ef\u4ee5\u78ba\u8a8d\u662fCM\u62c9\u6a94\u9020\u6210.\u9019\u90e8\u5206\u8207\u8abf\u63a7\u7b56\u7565\u76f8\u95dc",
+      "attributes": {},
+      "causal_effect": {
+        "strength": 0.7,
+        "is_direct": true,
+        "temporal_order": "immediate",
+        "mechanism": "CM strategy adjustments lead to increased CPU and DDR usage, indirectly causing high VCORE usage."
+      }
+    },
+    {
+      "source": "e10",
+      "target": "e11",
+      "type": "CONFIRMS",
+      "is_causal": false,
+      "confidence": 0.9,
+      "evidence": "\u5f9eCPU\u7684\u90e8\u5206\u53ef\u4ee5\u770b\u5230\u5c0f\u68381000MHZ\uff0c1600MHz, 2100MHz\uff0c \u8ddf\u4e2d\u6838 1000MHz, 1600MHz, 2400MHz\u3001 \u8ddf\u5927 \u68381800MHz, 2200MHz, 2700MHz\uff0c \u90fd \u6709\u9ad8\u7684\u4f7f\u7528\u7387\uff0e\u53ef\u4ee5\u78ba\u8a8d\u662fCM\u62c9\u6a94\u9020\u6210.",
+      "attributes": {}
+    }
+  ],
+  "metadata": {
+    "num_entities": 11,
+    "num_relations": 5,
+    "entity_types": [
+      "Conclusion",
+      "Component",
+      "Symptom",
+      "Metric",
+      "Observation",
+      "RootCause"
+    ],
+    "relation_types": [
+      "RULES_OUT",
+      "CONFIRMS",
+      "CAUSES"
+    ]
+  }
+}

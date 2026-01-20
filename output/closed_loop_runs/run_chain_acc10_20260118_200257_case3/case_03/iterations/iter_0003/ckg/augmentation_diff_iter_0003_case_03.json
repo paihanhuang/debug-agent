@@ -1,0 +1,58 @@
+{
+  "added_entities": [
+    "aug_hypothesis_e48f6214",
+    "aug_conclusion_d1a7c72b"
+  ],
+  "updated_entities": [
+    "aug_symptom_2dcc2b69",
+    "aug_component_38e081f4",
+    "aug_metric_54fe4f22",
+    "aug_metric_c5a766e7",
+    "aug_observation_574b2cd5",
+    "aug_hypothesis_26ac64bf",
+    "aug_observation_ca73cf57"
+  ],
+  "added_relations": [
+    {
+      "source": "aug_observation_574b2cd5",
+      "target": "aug_symptom_2dcc2b69",
+      "type": "CAUSES"
+    },
+    {
+      "source": "aug_hypothesis_e48f6214",
+      "target": "aug_conclusion_d1a7c72b",
+      "type": "LEADS_TO"
+    },
+    {
+      "source": "aug_conclusion_d1a7c72b",
+      "target": "aug_hypothesis_26ac64bf",
+      "type": "CONFIRMS"
+    },
+    {
+      "source": "fb_metric_5e91f87d8f",
+      "target": "aug_component_38e081f4",
+      "type": "INDICATES"
+    }
+  ],
+  "updated_relations": [
+    {
+      "source": "aug_metric_c5a766e7",
+      "target": "aug_metric_54fe4f22",
+      "type": "CAUSES"
+    }
+  ],
+  "skipped_relations": [],
+  "conflicts": [],
+  "feedback_added_entities": [
+    "fb_metric_5e91f87d8f",
+    "fb_observation_db520742d7"
+  ],
+  "feedback_skipped_existing": [
+    "fb_observation_0572b21720",
+    "fb_component_9a6aeeefa1",
+    "aug_component_c2311edd",
+    "fb_metric_8bd428ee24"
+  ],
+  "feedback_added_relations": [],
+  "feedback_skipped_existing_relations": []
+}

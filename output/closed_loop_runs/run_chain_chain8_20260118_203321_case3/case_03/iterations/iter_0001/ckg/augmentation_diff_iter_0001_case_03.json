@@ -1,0 +1,47 @@
+{
+  "added_entities": [
+    "aug_symptom_2dcc2b69",
+    "aug_metric_54fe4f22",
+    "aug_component_b2403290",
+    "aug_observation_6413bae7",
+    "aug_hypothesis_4a1c2367",
+    "aug_hypothesis_51fc3cc9",
+    "aug_observation_3bd6e218",
+    "aug_conclusion_d82256c5"
+  ],
+  "updated_entities": [],
+  "added_relations": [
+    {
+      "source": "aug_component_b2403290",
+      "target": "aug_metric_54fe4f22",
+      "type": "CAUSES"
+    },
+    {
+      "source": "aug_observation_6413bae7",
+      "target": "aug_symptom_2dcc2b69",
+      "type": "CAUSES"
+    },
+    {
+      "source": "aug_observation_6413bae7",
+      "target": "aug_hypothesis_4a1c2367",
+      "type": "CONFIRMS"
+    },
+    {
+      "source": "aug_hypothesis_51fc3cc9",
+      "target": "aug_conclusion_d82256c5",
+      "type": "CONFIRMS"
+    },
+    {
+      "source": "aug_metric_54fe4f22",
+      "target": "aug_component_38e081f4",
+      "type": "INDICATES"
+    }
+  ],
+  "updated_relations": [],
+  "skipped_relations": [],
+  "conflicts": [],
+  "feedback_added_entities": [],
+  "feedback_skipped_existing": [],
+  "feedback_added_relations": [],
+  "feedback_skipped_existing_relations": []
+}

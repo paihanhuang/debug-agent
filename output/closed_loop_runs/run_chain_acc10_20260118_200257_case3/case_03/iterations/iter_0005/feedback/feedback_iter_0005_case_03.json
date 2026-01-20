@@ -1,0 +1,92 @@
+{
+  "run_id": "chain_acc10_20260118_200257_case3",
+  "iter_num": 5,
+  "average_score": 6.9,
+  "accuracy_score": 7.0,
+  "per_case": {
+    "case3": {
+      "composite_score": 6.9,
+      "grade": "C",
+      "dimensions": [
+        {
+          "name": "Root Cause Accuracy",
+          "score": 7,
+          "weight": 0.5,
+          "explanation": "The agent identified DDR and MMDVFS as root causes but missed the CM (CPU Manager) aspect.",
+          "matched_elements": [
+            "DDR",
+            "MMDVFS"
+          ],
+          "missing_elements": [
+            "CM"
+          ]
+        },
+        {
+          "name": "Causal Chain Completeness",
+          "score": 6,
+          "weight": 0.2,
+          "explanation": "The causal chain is partially captured, but the CM → CPU → DDR → VCORE chain is incomplete.",
+          "matched_elements": [
+            "DDR affecting VCORE",
+            "MMDVFS affecting VCORE"
+          ],
+          "missing_elements": [
+            "CM → CPU",
+            "SW_REQ2/SW_REQ3 voting mechanisms"
+          ]
+        },
+        {
+          "name": "Metric Precision",
+          "score": 8,
+          "weight": 0.15,
+          "explanation": "Most metrics are correctly identified, but some specific percentages are missing.",
+          "matched_elements": [
+            "VCORE 52.51%",
+            "DDR5460 23.37%",
+            "DDR6370 30.77%",
+            "CPU frequencies"
+          ],
+          "missing_elements": [
+            "VCORE 82.6%",
+            "VCORE 29.32%"
+          ]
+        },
+        {
+          "name": "Reasoning Quality",
+          "score": 7,
+          "weight": 0.1,
+          "explanation": "The reasoning is logical but lacks depth in ruling out other potential causes.",
+          "matched_elements": [
+            "MMDVFS identified as cause",
+            "Logical explanation flow"
+          ],
+          "missing_elements": [
+            "Ruling out other causes"
+          ]
+        },
+        {
+          "name": "Actionability",
+          "score": 6,
+          "weight": 0.05,
+          "explanation": "Suggested fixes are practical but lack specific historical context.",
+          "matched_elements": [
+            "Investigate DDR voting mechanisms"
+          ],
+          "missing_elements": [
+            "Historical fixes relevance"
+          ]
+        }
+      ]
+    }
+  },
+  "stop_reached": false,
+  "stop": {
+    "min_accuracy": 10.0,
+    "min_overall": 8.01
+  },
+  "source": {
+    "type": "judge_cli_run",
+    "case_name": "case3_iter_0005",
+    "timestamp": "2026-01-18T20:12:48.291725"
+  }
+}

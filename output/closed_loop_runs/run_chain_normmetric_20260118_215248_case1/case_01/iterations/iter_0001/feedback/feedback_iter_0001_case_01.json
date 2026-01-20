@@ -1,0 +1,87 @@
+{
+  "run_id": "chain_normmetric_20260118_215248_case1",
+  "iter_num": 1,
+  "average_score": 8.75,
+  "accuracy_score": 9.0,
+  "per_case": {
+    "case1": {
+      "composite_score": 8.75,
+      "grade": "A",
+      "dimensions": [
+        {
+          "name": "Root Cause Accuracy",
+          "score": 9,
+          "weight": 0.5,
+          "explanation": "The agent correctly identified CM and DDR as root causes for VCORE increase, aligning with the human expert report.",
+          "matched_elements": [
+            "CM causing VCORE increase",
+            "DDR affecting VCORE"
+          ],
+          "missing_elements": [
+            "PowerHal"
+          ]
+        },
+        {
+          "name": "Causal Chain Completeness",
+          "score": 8,
+          "weight": 0.2,
+          "explanation": "The agent captured the main causal links but did not explicitly mention the CPU's role in the chain.",
+          "matched_elements": [
+            "CM → VCORE",
+            "DDR → VCORE"
+          ],
+          "missing_elements": [
+            "CM → CPU → DDR → VCORE"
+          ]
+        },
+        {
+          "name": "Metric Precision",
+          "score": 9,
+          "weight": 0.15,
+          "explanation": "The agent accurately identified the key metrics such as VCORE and DDR usage percentages.",
+          "matched_elements": [
+            "VCORE 82.6%",
+            "DDR5460 and DDR6370 usage"
+          ],
+          "missing_elements": [
+            "CPU frequencies"
+          ]
+        },
+        {
+          "name": "Reasoning Quality",
+          "score": 9,
+          "weight": 0.1,
+          "explanation": "The reasoning is logical and aligns with the human expert's analysis, correctly ruling out MMDVFS.",
+          "matched_elements": [
+            "MMDVFS ruled out",
+            "Logical flow"
+          ],
+          "missing_elements": []
+        },
+        {
+          "name": "Actionability",
+          "score": 8,
+          "weight": 0.05,
+          "explanation": "The suggested fix regarding CM voting is relevant, but lacks additional practical recommendations.",
+          "matched_elements": [
+            "CM voting adjustment"
+          ],
+          "missing_elements": [
+            "Additional recommendations"
+          ]
+        }
+      ]
+    }
+  },
+  "stop_reached": true,
+  "stop": {
+    "min_accuracy": 9.0,
+    "min_overall": 8.01,
+    "min_causal_chain_completeness": 8.0
+  },
+  "source": {
+    "type": "judge_cli_run",
+    "case_name": "case1_iter_0001",
+    "timestamp": "2026-01-18T21:53:26.845148"
+  }
+}

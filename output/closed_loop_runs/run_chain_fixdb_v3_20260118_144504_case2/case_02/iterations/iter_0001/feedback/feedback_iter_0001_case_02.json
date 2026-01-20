@@ -1,0 +1,83 @@
+{
+  "run_id": "chain_fixdb_v3_20260118_144504_case2",
+  "iter_num": 1,
+  "average_score": 8.65,
+  "accuracy_score": 9.0,
+  "per_case": {
+    "case2": {
+      "composite_score": 8.65,
+      "grade": "A",
+      "dimensions": [
+        {
+          "name": "Root Cause Accuracy",
+          "score": 9,
+          "weight": 0.5,
+          "explanation": "The agent correctly identified the CM/PowerHal/DDR voting issue as the root cause, aligning with the human expert report.",
+          "matched_elements": [
+            "CM/PowerHal/DDR voting issue",
+            "VCORE 725mV usage"
+          ],
+          "missing_elements": []
+        },
+        {
+          "name": "Causal Chain Completeness",
+          "score": 8,
+          "weight": 0.2,
+          "explanation": "The agent captured the main causal links but did not explicitly mention the CPU's role in the chain.",
+          "matched_elements": [
+            "CM → DDR → VCORE",
+            "SW_REQ2/SW_REQ3"
+          ],
+          "missing_elements": [
+            "CPU involvement"
+          ]
+        },
+        {
+          "name": "Metric Precision",
+          "score": 8,
+          "weight": 0.15,
+          "explanation": "The agent accurately reported most metrics but missed some CPU frequency details.",
+          "matched_elements": [
+            "VCORE 29.32%",
+            "DDR5460 3.54%",
+            "DDR6370 26.13%"
+          ],
+          "missing_elements": [
+            "CPU frequencies"
+          ]
+        },
+        {
+          "name": "Reasoning Quality",
+          "score": 9,
+          "weight": 0.1,
+          "explanation": "The reasoning was logical and correctly ruled out MMDVFS as a cause.",
+          "matched_elements": [
+            "MMDVFS ruled out",
+            "Logical flow"
+          ],
+          "missing_elements": []
+        },
+        {
+          "name": "Actionability",
+          "score": 9,
+          "weight": 0.05,
+          "explanation": "The suggested fixes were practical and relevant to the identified issues.",
+          "matched_elements": [
+            "Adjust DDR voting mechanisms"
+          ],
+          "missing_elements": []
+        }
+      ]
+    }
+  },
+  "stop_reached": true,
+  "stop": {
+    "min_accuracy": 9.0,
+    "min_overall": 8.0
+  },
+  "source": {
+    "type": "judge_cli_run",
+    "case_name": "case2_iter_0001",
+    "timestamp": "2026-01-18T14:46:13.645596"
+  }
+}

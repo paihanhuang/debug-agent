@@ -1,0 +1,5 @@
+VCORE 725mV usage is at 82.6%.
+DDR5460 and DDR6370 combined usage is 82.6%.
+MMDVFS is at OPP4.
+CPU 大核 at 2700MHz, 中核 at 2500MHz, 小核 at 2100MHz.
+DDR voting shows SW_REQ2 activity.

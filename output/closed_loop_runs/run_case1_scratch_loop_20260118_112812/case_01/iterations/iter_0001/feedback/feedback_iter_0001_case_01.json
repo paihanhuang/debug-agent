@@ -1,0 +1,80 @@
+{
+  "run_id": "case1_scratch_loop_20260118_112812",
+  "iter_num": 1,
+  "average_score": 8.45,
+  "accuracy_score": 9.0,
+  "per_case": {
+    "case1": {
+      "composite_score": 8.45,
+      "grade": "A",
+      "dimensions": [
+        {
+          "name": "Root Cause Accuracy",
+          "score": 9,
+          "weight": 0.5,
+          "missing_elements": [
+            "拉檔"
+          ],
+          "matched_elements": [
+            "CM",
+            "DDR voting"
+          ],
+          "explanation": "The agent correctly identified CM and DDR voting as root causes but did not explicitly mention 拉檔 (frequency throttling)."
+        },
+        {
+          "name": "Causal Chain Completeness",
+          "score": 8,
+          "weight": 0.2,
+          "missing_elements": [
+            "CM → CPU → DDR → VCORE"
+          ],
+          "matched_elements": [
+            "CM → VCORE",
+            "DDR voting → VCORE"
+          ],
+          "explanation": "The agent captured the main causal links but did not fully elaborate on the CPU's role in the chain."
+        },
+        {
+          "name": "Metric Precision",
+          "score": 8,
+          "weight": 0.15,
+          "missing_elements": [
+            "DDR5460",
+            "DDR6370",
+            "CPU frequencies"
+          ],
+          "matched_elements": [
+            "VCORE 82.6%"
+          ],
+          "explanation": "The agent correctly identified the VCORE usage percentage but missed specific DDR and CPU frequency metrics."
+        },
+        {
+          "name": "Reasoning Quality",
+          "score": 9,
+          "weight": 0.1,
+          "missing_elements": [],
+          "matched_elements": [
+            "MMDVFS ruled out"
+          ],
+          "explanation": "The reasoning was logical and correctly ruled out MMDVFS as a cause."
+        },
+        {
+          "name": "Actionability",
+          "score": 5,
+          "weight": 0.05,
+          "missing_elements": [
+            "historical fixes",
+            "recommendations"
+          ],
+          "matched_elements": [],
+          "explanation": "No historical fixes or practical recommendations were provided."
+        }
+      ]
+    }
+  },
+  "stop_reached": true,
+  "stop": {
+    "min_accuracy": 9.0,
+    "min_overall": 8.0
+  }
+}

@@ -1,0 +1,22 @@
+{
+  "case": "case_03",
+  "best_iter": 1,
+  "ranking": {
+    "accuracy": 9.0,
+    "overall": 8.75,
+    "causal_chain_completeness": 8.0
+  },
+  "tie_break": {
+    "prefer_earlier_iter": true,
+    "prefer_smaller_diff": true
+  },
+  "paths": {
+    "ckg": "/home/etem/inference-engine/output/closed_loop_runs/run_chain_bestpick_20260118_224211_case3/case_03/best/iter_0001/ckg/best_ckg.json",
+    "ckg_diff": "/home/etem/inference-engine/output/closed_loop_runs/run_chain_bestpick_20260118_224211_case3/case_03/best/iter_0001/ckg/best_augmentation_diff.json",
+    "fix_db": "/home/etem/inference-engine/output/closed_loop_runs/run_chain_bestpick_20260118_224211_case3/case_03/best/iter_0001/fix/best_fixdb.db",
+    "fix_db_diff": "/home/etem/inference-engine/output/closed_loop_runs/run_chain_bestpick_20260118_224211_case3/case_03/best/iter_0001/fix/best_fixdb_diff.json",
+    "judge": "/home/etem/inference-engine/output/closed_loop_runs/run_chain_bestpick_20260118_224211_case3/case_03/best/iter_0001/judge/best_judge.json",
+    "feedback": "/home/etem/inference-engine/output/closed_loop_runs/run_chain_bestpick_20260118_224211_case3/case_03/best/iter_0001/feedback/best_feedback.json",
+    "agent_report": "/home/etem/inference-engine/output/closed_loop_runs/run_chain_bestpick_20260118_224211_case3/case_03/best/iter_0001/agent/best_agent_report.md"
+  }
+}

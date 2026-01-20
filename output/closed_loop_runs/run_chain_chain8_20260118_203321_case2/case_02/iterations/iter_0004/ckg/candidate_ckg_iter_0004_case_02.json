@@ -1,0 +1,1950 @@
+{
+  "entities": [
+    {
+      "id": "aug_symptom_46d9d2c3",
+      "type": "Symptom",
+      "label": "High VCORE usage",
+      "description": "VCORE usage exceeded expected levels",
+      "attributes": {
+        "report_id": "first",
+        "source_text": "VCORE 725mV \u8d85\u904e\u9810\u671f\u768410%\u4f7f\u7528\u7387\u572882.6%",
+        "provenance": [
+          {
+            "report_id": "first",
+            "source_text": "VCORE 725mV \u8d85\u904e\u9810\u671f\u768410%\u4f7f\u7528\u7387\u572882.6%"
+          },
+          {
+            "report_id": "first",
+            "source_text": "VCORE 725mV \u8d85\u904e\u9810\u671f\u768410%\u4f7f\u7528\u7387\u572882.6%"
+          },
+          {
+            "report_id": "first",
+            "source_text": "VCORE 725mV \u8d85\u904e\u9810\u671f\u768410%\u4f7f\u7528\u7387\u572882.6%"
+          },
+          {
+            "report_id": "second",
+            "source_text": "VCORE 725mV\u8d85\u904e\u9810\u671f\u768410%\u4f7f\u7528\u7387\u4f86\u523029.32%"
+          },
+          {
+            "report_id": "second",
+            "source_text": "VCORE 725mV\u8d85\u904e\u9810\u671f\u768410%\u4f7f\u7528\u7387\u4f86\u523029.32%"
+          },
+          {
+            "report_id": "second",
+            "source_text": "VCORE 725mV\u8d85\u904e\u9810\u671f\u768410%\u4f7f\u7528\u7387\u4f86\u523029.32%"
+          },
+          {
+            "report_id": "second",
+            "source_text": "VCORE 725mV\u8d85\u904e\u9810\u671f\u768410%\u4f7f\u7528\u7387\u4f86\u523029.32%"
+          }
+        ]
+      },
+      "confidence": 0.95,
+      "source_text": "VCORE 725mV \u8d85\u904e\u9810\u671f\u768410%\u4f7f\u7528\u7387\u572882.6%"
+    },
+    {
+      "id": "aug_component_38e081f4",
+      "type": "Component",
+      "label": "VCORE",
+      "description": "Voltage core component",
+      "attributes": {
+        "report_id": "first",
+        "source_text": "VCORE 725mV",
+        "provenance": [
+          {
+            "report_id": "first",
+            "source_text": "VCORE 725mV"
+          },
+          {
+            "report_id": "first",
+            "source_text": "VCORE 725mV"
+          },
+          {
+            "report_id": "first",
+            "source_text": "VCORE 725mV"
+          },
+          {
+            "report_id": "second",
+            "source_text": "VCORE 725mV"
+          },
+          {
+            "report_id": "second",
+            "source_text": "VCORE 725mV"
+          },
+          {
+            "report_id": "second",
+            "source_text": "VCORE 725mV"
+          }
+        ]
+      },
+      "confidence": 0.95,
+      "source_text": "VCORE 725mV"
+    },
+    {
+      "id": "aug_metric_705f2088",
+      "type": "Metric",
+      "label": "VCORE usage 82.6%",
+      "description": "VCORE usage is at 82.6%",
+      "attributes": {
+        "report_id": "first",
+        "source_text": "VCORE 725mV \u8d85\u904e\u9810\u671f\u768410%\u4f7f\u7528\u7387\u572882.6%",
+        "provenance": [
+          {
+            "report_id": "first",
+            "source_text": "VCORE 725mV \u8d85\u904e\u9810\u671f\u768410%\u4f7f\u7528\u7387\u572882.6%"
+          },
+          {
+            "report_id": "first",
+            "source_text": "VCORE 725mV \u8d85\u904e\u9810\u671f\u768410%\u4f7f\u7528\u7387\u572882.6%"
+          },
+          {
+            "report_id": "first",
+            "source_text": "VCORE 725mV \u8d85\u904e\u9810\u671f\u768410%\u4f7f\u7528\u7387\u572882.6%"
+          }
+        ]
+      },
+      "confidence": 0.95,
+      "source_text": "VCORE 725mV \u8d85\u904e\u9810\u671f\u768410%\u4f7f\u7528\u7387\u572882.6%"
+    },
+    {
+      "id": "aug_component_291404fe",
+      "type": "Component",
+      "label": "MMDVFS",
+      "description": "Dynamic voltage and frequency scaling component",
+      "attributes": {
+        "report_id": "first",
+        "source_text": "MMDVFS\u7684\u8cc7\u6599\u4f86\u770b \u90fd\u7dad\u6301\u5728OPP4",
+        "provenance": [
+          {
+            "report_id": "first",
+            "source_text": "MMDVFS\u7684\u8cc7\u6599\u4f86\u770b \u90fd\u7dad\u6301\u5728OPP4"
+          },
+          {
+            "report_id": "first",
+            "source_text": "MMDVFS\u7684\u8cc7\u6599\u4f86\u770b \u90fd\u7dad\u6301\u5728OPP4"
+          },
+          {
+            "report_id": "first",
+            "source_text": "MMDVFS\u7684\u8cc7\u6599\u4f86\u770b \u90fd\u7dad\u6301\u5728OPP4"
+          },
+          {
+            "report_id": "second",
+            "source_text": "MMDVFS\u7684\u8cc7\u6599\u4f86\u770b\uff0c\u90fd\u7dad\u6301\u5728OPP4"
+          },
+          {
+            "report_id": "second",
+            "source_text": "MMDVFS\u7684\u8cc7\u6599\u4f86\u770b\uff0c\u90fd\u7dad\u6301\u5728OPP4"
+          },
+          {
+            "report_id": "second",
+            "source_text": "MMDVFS\u7684\u8cc7\u6599\u4f86\u770b\uff0c\u90fd\u7dad\u6301\u5728OPP4"
+          },
+          {
+            "report_id": "second",
+            "source_text": "MMDVFS\u7684\u8cc7\u6599\u4f86\u770b\uff0c\u90fd\u7dad\u6301\u5728OPP4"
+          }
+        ]
+      },
+      "confidence": 0.95,
+      "source_text": "MMDVFS\u7684\u8cc7\u6599\u4f86\u770b \u90fd\u7dad\u6301\u5728OPP4"
+    },
+    {
+      "id": "aug_observation_911ac35a",
+      "type": "Observation",
+      "label": "MMDVFS at OPP4",
+      "description": "MMDVFS maintained at OPP4 level",
+      "attributes": {
+        "report_id": "first",
+        "source_text": "MMDVFS\u7684\u8cc7\u6599\u4f86\u770b \u90fd\u7dad\u6301\u5728OPP4",
+        "provenance": [
+          {
+            "report_id": "first",
+            "source_text": "MMDVFS\u7684\u8cc7\u6599\u4f86\u770b \u90fd\u7dad\u6301\u5728OPP4\u4ee3\u8868\u4e3b\u8981\u4e0d\u662f\u5f9eMMDVFS\u9020\u6210 VCORE\u6a94\u4f4d\u7684\u62c9\u5347"
+          },
+          {
+            "report_id": "first",
+            "source_text": "MMDVFS\u7684\u8cc7\u6599\u4f86\u770b \u90fd\u7dad\u6301\u5728OPP4"
+          },
+          {
+            "report_id": "first",
+            "source_text": "MMDVFS\u7684\u8cc7\u6599\u4f86\u770b \u90fd\u7dad\u6301\u5728OPP4\u4ee3\u8868\u4e3b\u8981\u4e0d\u662f\u5f9eMMDVFS\u9020\u6210 VCORE\u6a94\u4f4d\u7684\u62c9\u5347"
+          },
+          {
+            "report_id": "second",
+            "source_text": "MMDVFS\u7684\u8cc7\u6599\u4f86\u770b\uff0c\u90fd\u7dad\u6301\u5728OPP4"
+          },
+          {
+            "report_id": "second",
+            "source_text": "MMDVFS\u7684\u8cc7\u6599\u4f86\u770b\uff0c\u90fd\u7dad\u6301\u5728OPP4\u4ee3\u8868\u4e0d\u662f\u56e0MMDVFS\u9020\u6210"
+          },
+          {
+            "report_id": "second",
+            "source_text": "MMDVFS\u7684\u8cc7\u6599\u4f86\u770b\uff0c\u90fd\u7dad\u6301\u5728OPP4\u4ee3\u8868\u4e0d\u662f\u56e0MMDVFS\u9020\u6210"
+          }
+        ]
+      },
+      "confidence": 0.95,
+      "source_text": "MMDVFS\u7684\u8cc7\u6599\u4f86\u770b \u90fd\u7dad\u6301\u5728OPP4"
+    },
+    {
+      "id": "aug_component_2a0bbd55",
+      "type": "Component",
+      "label": "DDR",
+      "description": "Double Data Rate memory component",
+      "attributes": {
+        "report_id": "first",
+        "source_text": "DDR5460\u8ddfDDR6370",
+        "provenance": [
+          {
+            "report_id": "first",
+            "source_text": "DDR5460\u8ddfDDR6370\u52a0\u8d77\u4f86\u7684\u7e3d\u4f7f\u7528\u7387\u662f\u9054\u523082.6%\u5de6\u53f3"
+          },
+          {
+            "report_id": "first",
+            "source_text": "DDR5460\u8ddfDDR6370\u52a0\u8d77\u4f86\u7684\u7e3d\u4f7f\u7528\u7387\u662f\u9054\u523082.6%\u5de6\u53f3"
+          },
+          {
+            "report_id": "first",
+            "source_text": "DDR5460\u8ddfDDR6370"
+          },
+          {
+            "report_id": "second",
+            "source_text": "DDR5460\u4f543.54%\uff0c\u8ddfDDR6370\u4f5426.13%"
+          },
+          {
+            "report_id": "second",
+            "source_text": "DDR\u7684\u4f7f\u7528\u7387"
+          },
+          {
+            "report_id": "second",
+            "source_text": "DDR5460\u4f543.54%\uff0c\u8ddfDDR6370\u4f5426.13%"
+          }
+        ]
+      },
+      "confidence": 0.95,
+      "source_text": "DDR5460\u8ddfDDR6370"
+    },
+    {
+      "id": "aug_metric_e03b56c9",
+      "type": "Metric",
+      "label": "DDR combined usage 82.6%",
+      "description": "Combined usage of DDR5460 and DDR6370 is 82.6%",
+      "attributes": {
+        "report_id": "first",
+        "source_text": "DDR5460\u8ddfDDR6370\u52a0\u8d77\u4f86\u7684\u7e3d\u4f7f\u7528\u7387\u662f\u9054\u523082.6%\u5de6\u53f3"
+      },
+      "confidence": 0.95,
+      "source_text": "DDR5460\u8ddfDDR6370\u52a0\u8d77\u4f86\u7684\u7e3d\u4f7f\u7528\u7387\u662f\u9054\u523082.6%\u5de6\u53f3"
+    },
+    {
+      "id": "aug_hypothesis_26ac64bf",
+      "type": "Hypothesis",
+      "label": "DDR causing VCORE increase",
+      "description": "DDR usage might be causing the VCORE level increase",
+      "attributes": {
+        "report_id": "first",
+        "source_text": "\u770b\u8d77\u4f86\u662fDDR\u9020\u6210 VCORE\u6a94\u4f4d\u62c9\u5347",
+        "provenance": [
+          {
+            "report_id": "first",
+            "source_text": "\u770b\u8d77\u4f86\u662fDDR\u9020\u6210 VCORE\u6a94\u4f4d\u62c9\u5347"
+          },
+          {
+            "report_id": "first",
+            "source_text": "\u770b\u8d77\u4f86\u662fDDR\u9020\u6210 VCORE\u6a94\u4f4d\u62c9\u5347"
+          },
+          {
+            "report_id": "first",
+            "source_text": "\u770b\u8d77\u4f86\u662fDDR\u9020\u6210 VCORE\u6a94\u4f4d\u62c9\u5347"
+          }
+        ]
+      },
+      "confidence": 0.9,
+      "source_text": "\u770b\u8d77\u4f86\u662fDDR\u9020\u6210 VCORE\u6a94\u4f4d\u62c9\u5347"
+    },
+    {
+      "id": "aug_component_c2311edd",
+      "type": "Component",
+      "label": "CPU",
+      "description": "Central Processing Unit",
+      "attributes": {
+        "report_id": "first",
+        "source_text": "CPU \u7684\u90e8\u4efd",
+        "provenance": [
+          {
+            "report_id": "first",
+            "source_text": "CPU \u7684\u90e8\u4efd\u770b\u5230 \u5927\u68382700MHz\uff0c\u4e2d\u68382500MHz\uff0c\u5c0f\u6838 2100MHz"
+          },
+          {
+            "report_id": "first",
+            "source_text": "CPU \u7684\u90e8\u4efd\u770b\u5230 \u5927\u68382700MHz\uff0c\u4e2d\u68382500MHz\uff0c\u5c0f\u6838 2100MHz"
+          },
+          {
+            "report_id": "first",
+            "source_text": "CPU \u7684\u90e8\u4efd\u770b\u5230 \u5927\u68382700MHz\uff0c\u4e2d\u68382500MHz\uff0c\u5c0f\u6838 2100MHz"
+          },
+          {
+            "report_id": "second",
+            "source_text": "\u5f9eCPU\u7684\u90e8\u5206\u53ef\u4ee5\u770b\u5230\u5c0f\u68381000MHZ\uff0c1600MHz, 2100MHz\uff0c \u8ddf\u4e2d\u68381000MHz, 1600MHz, 2400MHz\u3001 \u8ddf\u5927\u68381800MHz, 2200MHz, 2700MHz\uff0c \u90fd\u6709\u9ad8\u7684\u4f7f\u7528\u7387"
+          },
+          {
+            "report_id": "second",
+            "source_text": "CPU\u7684\u90e8\u5206"
+          },
+          {
+            "report_id": "second",
+            "source_text": "\u5f9eCPU\u7684\u90e8\u5206\u53ef\u4ee5\u770b\u5230\u5c0f\u68381000MHZ\uff0c1600MHz, 2100MHz\uff0c \u8ddf\u4e2d\u68381000MHz, 1600MHz, 2400MHz\u3001 \u8ddf\u5927\u68381800MHz, 2200MHz, 2700MHz\uff0c \u90fd\u6709\u9ad8\u7684\u4f7f\u7528\u7387"
+          }
+        ]
+      },
+      "confidence": 0.95,
+      "source_text": "CPU \u7684\u90e8\u4efd"
+    },
+    {
+      "id": "aug_metric_fde67b44",
+      "type": "Metric",
+      "label": "CPU frequencies",
+      "description": "CPU frequencies: \u5927\u6838 2700MHz, \u4e2d\u6838 2500MHz, \u5c0f\u6838 2100MHz",
+      "attributes": {
+        "report_id": "first",
+        "source_text": "CPU \u5927\u68382700MHz\uff0c\u4e2d\u68382500MHz\uff0c\u5c0f\u6838 2100MHz",
+        "provenance": [
+          {
+            "report_id": "first",
+            "source_text": "\u5927\u68382700MHz\uff0c\u4e2d\u68382500MHz\uff0c\u5c0f\u6838 2100MHz \u5c6c\u65bc\u90fd\u9802\u5728\u5929\u82b1\u677f\u7684\u8a2d\u5b9a\u4e0a"
+          },
+          {
+            "report_id": "first",
+            "source_text": "\u5927\u68382700MHz\uff0c\u4e2d\u68382500MHz\uff0c\u5c0f\u6838 2100MHz \u5c6c\u65bc\u90fd\u9802\u5728\u5929\u82b1\u677f\u7684\u8a2d\u5b9a\u4e0a"
+          }
+        ]
+      },
+      "confidence": 0.95,
+      "source_text": "CPU \u5927\u68382700MHz\uff0c\u4e2d\u68382500MHz\uff0c\u5c0f\u6838 2100MHz"
+    },
+    {
+      "id": "aug_observation_385f5052",
+      "type": "Observation",
+      "label": "CPU at max settings",
+      "description": "CPU cores are operating at maximum frequency settings",
+      "attributes": {
+        "report_id": "first",
+        "source_text": "\u5c6c\u65bc\u90fd\u9802\u5728\u5929\u82b1\u677f\u7684\u8a2d\u5b9a\u4e0a\uff0c\u90fd\u6709\u9ad8\u7684\u5360\u6bd4"
+      },
+      "confidence": 0.95,
+      "source_text": "\u5c6c\u65bc\u90fd\u9802\u5728\u5929\u82b1\u677f\u7684\u8a2d\u5b9a\u4e0a\uff0c\u90fd\u6709\u9ad8\u7684\u5360\u6bd4"
+    },
+    {
+      "id": "aug_rootcause_88c610cb",
+      "type": "RootCause",
+      "label": "CM causing VCORE increase",
+      "description": "CM is confirmed to be causing the VCORE level increase",
+      "attributes": {
+        "report_id": "first",
+        "source_text": "\u6240\u4ee5\u53ef\u4ee5\u78ba\u8a8d\u662f\u56e0\u70baCM\u9020\u6210\u62c9\u6a94\u7684\u539f\u56e0\u662f\u78ba\u5b9a\u7684",
+        "provenance": [
+          {
+            "report_id": "first",
+            "source_text": "\u6240\u4ee5\u53ef\u4ee5\u78ba\u8a8d\u662f\u56e0\u70baCM\u9020\u6210\u62c9\u6a94\u7684\u539f\u56e0\u662f\u78ba\u5b9a\u7684"
+          },
+          {
+            "report_id": "first",
+            "source_text": "\u6240\u4ee5\u53ef\u4ee5\u78ba\u8a8d\u662f\u56e0\u70baCM\u9020\u6210\u62c9\u6a94\u7684\u539f\u56e0\u662f\u78ba\u5b9a\u7684"
+          },
+          {
+            "report_id": "first",
+            "source_text": "\u6240\u4ee5\u53ef\u4ee5\u78ba\u8a8d\u662f\u56e0\u70baCM\u9020\u6210\u62c9\u6a94\u7684\u539f\u56e0\u662f\u78ba\u5b9a\u7684"
+          },
+          {
+            "report_id": "second",
+            "source_text": "\u6240\u4ee5\u662fDDR\u9020\u6210VCORE\u6a94\u4f4d\u62c9\u5347"
+          },
+          {
+            "report_id": "second",
+            "source_text": "\u6240\u4ee5\u662fDDR\u9020\u6210VCORE\u6a94\u4f4d\u62c9\u5347"
+          },
+          {
+            "report_id": "second",
+            "source_text": "\u6240\u4ee5\u662fDDR\u9020\u6210VCORE\u6a94\u4f4d\u62c9\u5347"
+          }
+        ]
+      },
+      "confidence": 0.95,
+      "source_text": "\u6240\u4ee5\u53ef\u4ee5\u78ba\u8a8d\u662f\u56e0\u70baCM\u9020\u6210\u62c9\u6a94\u7684\u539f\u56e0\u662f\u78ba\u5b9a\u7684"
+    },
+    {
+      "id": "aug_observation_32a0adae",
+      "type": "Observation",
+      "label": "DDR voting mechanism",
+      "description": "DDR voting mechanism shows activity on SW_REQ2",
+      "attributes": {
+        "report_id": "first",
+        "source_text": "DDR \u6295\u7968\u6a5f\u5236\u5728DDR6370 \u6709\u6a5f\u6703\u5728SW_REQ2\u4e0a",
+        "provenance": [
+          {
+            "report_id": "first",
+            "source_text": "DDR \u6295\u7968\u6a5f\u5236\u5728DDR6370 \u6709\u6a5f\u6703\u5728SW_REQ2\u4e0a"
+          },
+          {
+            "report_id": "first",
+            "source_text": "DDR \u6295\u7968\u6a5f\u5236\u5728DDR6370 \u6709\u6a5f\u6703\u5728SW_REQ2\u4e0a"
+          },
+          {
+            "report_id": "first",
+            "source_text": "DDR \u6295\u7968\u6a5f\u5236\u5728DDR6370 \u6709\u6a5f\u6703\u5728SW_REQ2\u4e0a"
+          },
+          {
+            "report_id": "second",
+            "source_text": "\u770bDDR\u6295\u7968\u6a5f\u5236 DDR6370\u6709\u6a5f\u6703\u5728SW_REQ2\u4e0a\uff0c\u8ddfSW_REQ3"
+          }
+        ]
+      },
+      "confidence": 0.95,
+      "source_text": "DDR \u6295\u7968\u6a5f\u5236\u5728DDR6370 \u6709\u6a5f\u6703\u5728SW_REQ2\u4e0a"
+    },
+    {
+      "id": "aug_metric_85d05592",
+      "type": "Metric",
+      "label": "DDR usage 82.6%",
+      "description": "Combined DDR usage is measured at 82.6%.",
+      "attributes": {
+        "report_id": "first",
+        "source_text": "DDR5460\u8ddfDDR6370\u52a0\u8d77\u4f86\u7684\u7e3d\u4f7f\u7528\u7387\u662f\u9054\u523082.6%\u5de6\u53f3",
+        "provenance": [
+          {
+            "report_id": "first",
+            "source_text": "DDR5460\u8ddfDDR6370\u52a0\u8d77\u4f86\u7684\u7e3d\u4f7f\u7528\u7387\u662f\u9054\u523082.6%\u5de6\u53f3"
+          },
+          {
+            "report_id": "first",
+            "source_text": "DDR5460\u8ddfDDR6370\u52a0\u8d77\u4f86\u7684\u7e3d\u4f7f\u7528\u7387\u662f\u9054\u523082.6%\u5de6\u53f3"
+          },
+          {
+            "report_id": "second",
+            "source_text": "DDR5460\u8ddfDDR6370\u7e3d\u4f7f\u7528\u6bd4\u4f8b\u662f29.67%"
+          }
+        ]
+      },
+      "confidence": 0.95,
+      "source_text": "DDR5460\u8ddfDDR6370\u52a0\u8d77\u4f86\u7684\u7e3d\u4f7f\u7528\u7387\u662f\u9054\u523082.6%\u5de6\u53f3"
+    },
+    {
+      "id": "aug_metric_ea233cd9",
+      "type": "Metric",
+      "label": "CPU core frequencies",
+      "description": "CPU cores are operating at high frequencies: \u5927\u6838 2700MHz, \u4e2d\u6838 2500MHz, \u5c0f\u6838 2100MHz.",
+      "attributes": {
+        "report_id": "first",
+        "source_text": "\u5927\u68382700MHz\uff0c\u4e2d\u68382500MHz\uff0c\u5c0f\u6838 2100MHz"
+      },
+      "confidence": 0.95,
+      "source_text": "\u5927\u68382700MHz\uff0c\u4e2d\u68382500MHz\uff0c\u5c0f\u6838 2100MHz"
+    },
+    {
+      "id": "aug_observation_75b5d1f6",
+      "type": "Observation",
+      "label": "CPU cores at max frequency",
+      "description": "All CPU cores are operating at their maximum frequency settings.",
+      "attributes": {
+        "report_id": "first",
+        "source_text": "\u5c6c\u65bc\u90fd\u9802\u5728\u5929\u82b1\u677f\u7684\u8a2d\u5b9a\u4e0a\uff0c\u90fd\u6709\u9ad8\u7684\u5360\u6bd4"
+      },
+      "confidence": 0.9,
+      "source_text": "\u5c6c\u65bc\u90fd\u9802\u5728\u5929\u82b1\u677f\u7684\u8a2d\u5b9a\u4e0a\uff0c\u90fd\u6709\u9ad8\u7684\u5360\u6bd4"
+    },
+    {
+      "id": "fb_observation_39e567cd0a",
+      "type": "Observation",
+      "label": "\u62c9\u6a94",
+      "description": "",
+      "attributes": {
+        "provenance": [
+          {
+            "source": "closed_loop_feedback",
+            "report_id": "first",
+            "label": "\u62c9\u6a94",
+            "reason": "missing_elements"
+          }
+        ]
+      },
+      "confidence": 1.0,
+      "source_text": ""
+    },
+    {
+      "id": "fb_metric_42e3002479",
+      "type": "Metric",
+      "label": "DDR usage",
+      "description": "",
+      "attributes": {
+        "provenance": [
+          {
+            "source": "closed_loop_feedback",
+            "report_id": "first",
+            "label": "DDR usage",
+            "reason": "missing_elements"
+          }
+        ]
+      },
+      "confidence": 1.0,
+      "source_text": ""
+    },
+    {
+      "id": "fb_observation_98a8215759",
+      "type": "Observation",
+      "label": "SW_REQ2 voting mechanism",
+      "description": "",
+      "attributes": {
+        "provenance": [
+          {
+            "source": "closed_loop_feedback",
+            "report_id": "first",
+            "label": "SW_REQ2 voting mechanism",
+            "reason": "missing_elements"
+          }
+        ]
+      },
+      "confidence": 1.0,
+      "source_text": ""
+    },
+    {
+      "id": "fb_metric_2ec17aa01f",
+      "type": "Metric",
+      "label": "DDR5460 and DDR6370 percentages",
+      "description": "",
+      "attributes": {
+        "provenance": [
+          {
+            "source": "closed_loop_feedback",
+            "report_id": "first",
+            "label": "DDR5460 and DDR6370 percentages",
+            "reason": "missing_elements"
+          }
+        ]
+      },
+      "confidence": 1.0,
+      "source_text": ""
+    },
+    {
+      "id": "fb_metric_19d621253b",
+      "type": "Metric",
+      "label": "Detailed CPU and DDR reasoning",
+      "description": "",
+      "attributes": {
+        "provenance": [
+          {
+            "source": "closed_loop_feedback",
+            "report_id": "first",
+            "label": "Detailed CPU and DDR reasoning",
+            "reason": "missing_elements"
+          }
+        ]
+      },
+      "confidence": 1.0,
+      "source_text": ""
+    },
+    {
+      "id": "fb_metric_b920af239f",
+      "type": "Metric",
+      "label": "Specific CPU and DDR optimizations",
+      "description": "",
+      "attributes": {
+        "provenance": [
+          {
+            "source": "closed_loop_feedback",
+            "report_id": "first",
+            "label": "Specific CPU and DDR optimizations",
+            "reason": "missing_elements"
+          }
+        ]
+      },
+      "confidence": 1.0,
+      "source_text": ""
+    },
+    {
+      "id": "fb_component_9a6aeeefa1",
+      "type": "Component",
+      "label": "PowerHal",
+      "description": "",
+      "attributes": {
+        "provenance": [
+          {
+            "source": "closed_loop_feedback",
+            "report_id": "first",
+            "reason": "missing_relation_target"
+          }
+        ]
+      },
+      "confidence": 1.0,
+      "source_text": ""
+    },
+    {
+      "id": "aug_observation_2f476ac4",
+      "type": "Observation",
+      "label": "High CPU usage",
+      "description": "CPU cores operating at maximum frequency",
+      "attributes": {
+        "report_id": "first",
+        "source_text": "\u5927\u68382700MHz\uff0c\u4e2d\u68382500MHz\uff0c\u5c0f\u6838 2100MHz \u5c6c\u65bc\u90fd\u9802\u5728\u5929\u82b1\u677f\u7684\u8a2d\u5b9a\u4e0a",
+        "provenance": [
+          {
+            "report_id": "first",
+            "source_text": "\u90fd\u9802\u5728\u5929\u82b1\u677f\u7684\u8a2d\u5b9a\u4e0a\uff0c\u90fd\u6709\u9ad8\u7684\u5360\u6bd4"
+          },
+          {
+            "report_id": "second",
+            "source_text": "\u90fd \u6709\u9ad8\u7684\u4f7f\u7528\u7387"
+          },
+          {
+            "report_id": "second",
+            "source_text": "\u5c0f\u68381000MHZ\uff0c1600MHz, 2100MHz\uff0c \u8ddf\u4e2d\u68381000MHz, 1600MHz, 2400MHz\u3001 \u8ddf\u5927\u68381800MHz, 2200MHz, 2700MHz\uff0c \u90fd\u6709\u9ad8\u7684\u4f7f\u7528\u7387"
+          },
+          {
+            "report_id": "second",
+            "source_text": "\u90fd\u6709\u9ad8\u7684\u4f7f\u7528\u7387"
+          }
+        ]
+      },
+      "confidence": 0.95,
+      "source_text": "\u5927\u68382700MHz\uff0c\u4e2d\u68382500MHz\uff0c\u5c0f\u6838 2100MHz \u5c6c\u65bc\u90fd\u9802\u5728\u5929\u82b1\u677f\u7684\u8a2d\u5b9a\u4e0a"
+    },
+    {
+      "id": "fb_metric_c39a41e456",
+      "type": "Metric",
+      "label": "CPU \u2192 DDR \u2192 VCORE chain",
+      "description": "",
+      "attributes": {
+        "provenance": [
+          {
+            "source": "closed_loop_feedback",
+            "report_id": "first",
+            "label": "CPU \u2192 DDR \u2192 VCORE chain",
+            "reason": "missing_elements"
+          }
+        ]
+      },
+      "confidence": 1.0,
+      "source_text": ""
+    },
+    {
+      "id": "fb_observation_a3ca18a62a",
+      "type": "Observation",
+      "label": "specific adjustments for CPU frequencies",
+      "description": "",
+      "attributes": {
+        "provenance": [
+          {
+            "source": "closed_loop_feedback",
+            "report_id": "first",
+            "label": "specific adjustments for CPU frequencies",
+            "reason": "missing_elements"
+          }
+        ]
+      },
+      "confidence": 1.0,
+      "source_text": ""
+    },
+    {
+      "id": "fb_metric_032ba1a098",
+      "type": "Metric",
+      "label": "DDR contribution",
+      "description": "",
+      "attributes": {
+        "provenance": [
+          {
+            "source": "closed_loop_feedback",
+            "report_id": "first",
+            "label": "DDR contribution",
+            "reason": "missing_elements"
+          }
+        ]
+      },
+      "confidence": 1.0,
+      "source_text": ""
+    },
+    {
+      "id": "fb_observation_3887c27bd7",
+      "type": "Observation",
+      "label": "CPU frequency settings",
+      "description": "",
+      "attributes": {
+        "provenance": [
+          {
+            "source": "closed_loop_feedback",
+            "report_id": "first",
+            "label": "CPU frequency settings",
+            "reason": "missing_elements"
+          }
+        ]
+      },
+      "confidence": 1.0,
+      "source_text": ""
+    },
+    {
+      "id": "aug_metric_1840275f",
+      "type": "Metric",
+      "label": "VCORE usage percentage",
+      "description": "VCORE usage percentage at 29.32%",
+      "attributes": {
+        "report_id": "second",
+        "source_text": "VCORE 725mV\u8d85\u904e\u9810\u671f\u768410%\u4f7f\u7528\u7387\u4f86\u523029.32%"
+      },
+      "confidence": 0.95,
+      "source_text": "VCORE 725mV\u8d85\u904e\u9810\u671f\u768410%\u4f7f\u7528\u7387\u4f86\u523029.32%"
+    },
+    {
+      "id": "aug_metric_11521472",
+      "type": "Metric",
+      "label": "DDR usage percentage",
+      "description": "DDR5460 usage at 3.54%, DDR6370 usage at 26.13%",
+      "attributes": {
+        "report_id": "second",
+        "source_text": "DDR5460\u4f543.54%\uff0c\u8ddfDDR6370\u4f5426.13%"
+      },
+      "confidence": 0.95,
+      "source_text": "DDR5460\u4f543.54%\uff0c\u8ddfDDR6370\u4f5426.13%"
+    },
+    {
+      "id": "aug_metric_76ef9a75",
+      "type": "Metric",
+      "label": "CPU frequency usage",
+      "description": "CPU shows high usage across various frequencies",
+      "attributes": {
+        "report_id": "second",
+        "source_text": "\u5f9eCPU\u7684\u90e8\u5206\u53ef\u4ee5\u770b\u5230\u5c0f\u68381000MHZ\uff0c1600MHz, 2100MHz\uff0c \u8ddf\u4e2d\u68381000MHz, 1600MHz, 2400MHz\u3001 \u8ddf\u5927\u68381800MHz, 2200MHz, 2700MHz\uff0c \u90fd\u6709\u9ad8\u7684\u4f7f\u7528\u7387"
+      },
+      "confidence": 0.95,
+      "source_text": "\u5f9eCPU\u7684\u90e8\u5206\u53ef\u4ee5\u770b\u5230\u5c0f\u68381000MHZ\uff0c1600MHz, 2100MHz\uff0c \u8ddf\u4e2d\u68381000MHz, 1600MHz, 2400MHz\u3001 \u8ddf\u5927\u68381800MHz, 2200MHz, 2700MHz\uff0c \u90fd\u6709\u9ad8\u7684\u4f7f\u7528\u7387"
+    },
+    {
+      "id": "aug_conclusion_1d9490fe",
+      "type": "Conclusion",
+      "label": "CM causing VCORE increase",
+      "description": "CM is identified as causing the VCORE level increase",
+      "attributes": {
+        "report_id": "second",
+        "source_text": "\u53ef\u4ee5\u78ba\u8a8d\u662fCM\u62c9\u6a94\u9020\u6210",
+        "provenance": [
+          {
+            "report_id": "second",
+            "source_text": "\u53ef\u4ee5\u78ba\u8a8d\u662fCM\u62c9\u6a94\u9020\u6210.\u9019\u90e8\u5206\u8207\u8abf\u63a7\u7b56\u7565\u76f8\u95dc"
+          }
+        ]
+      },
+      "confidence": 0.95,
+      "source_text": "\u53ef\u4ee5\u78ba\u8a8d\u662fCM\u62c9\u6a94\u9020\u6210"
+    },
+    {
+      "id": "aug_metric_3d10caba",
+      "type": "Metric",
+      "label": "VCORE usage 29.32%",
+      "description": "VCORE usage measured at 29.32%",
+      "attributes": {
+        "report_id": "second",
+        "source_text": "VCORE 725mV\u8d85\u904e\u9810\u671f\u768410%\u4f7f\u7528\u7387\u4f86\u523029.32%",
+        "provenance": [
+          {
+            "report_id": "second",
+            "source_text": "VCORE 725mV\u8d85\u904e\u9810\u671f\u768410%\u4f7f\u7528\u7387\u4f86\u523029.32%"
+          },
+          {
+            "report_id": "second",
+            "source_text": "VCORE 725mV\u8d85\u904e\u9810\u671f\u768410%\u4f7f\u7528\u7387\u4f86\u523029.32%"
+          }
+        ]
+      },
+      "confidence": 0.95,
+      "source_text": "VCORE 725mV\u8d85\u904e\u9810\u671f\u768410%\u4f7f\u7528\u7387\u4f86\u523029.32%"
+    },
+    {
+      "id": "aug_observation_1de9d620",
+      "type": "Observation",
+      "label": "MMDVFS not causing issue",
+      "description": "MMDVFS is not the cause of the issue as it maintains OPP4",
+      "attributes": {
+        "report_id": "second",
+        "source_text": "\u4ee3\u8868\u4e0d\u662f\u56e0MMDVFS\u9020\u6210"
+      },
+      "confidence": 0.9,
+      "source_text": "\u4ee3\u8868\u4e0d\u662f\u56e0MMDVFS\u9020\u6210"
+    },
+    {
+      "id": "aug_metric_e846d2d1",
+      "type": "Metric",
+      "label": "DDR5460 usage 3.54%",
+      "description": "DDR5460 usage measured at 3.54%",
+      "attributes": {
+        "report_id": "second",
+        "source_text": "DDR5460\u4f543.54%",
+        "provenance": [
+          {
+            "report_id": "second",
+            "source_text": "DDR5460\u4f543.54%"
+          }
+        ]
+      },
+      "confidence": 0.95,
+      "source_text": "DDR5460\u4f543.54%"
+    },
+    {
+      "id": "aug_metric_e9b906a8",
+      "type": "Metric",
+      "label": "DDR6370 usage 26.13%",
+      "description": "DDR6370 usage measured at 26.13%",
+      "attributes": {
+        "report_id": "second",
+        "source_text": "DDR6370\u4f5426.13%",
+        "provenance": [
+          {
+            "report_id": "second",
+            "source_text": "DDR6370\u4f5426.13%"
+          }
+        ]
+      },
+      "confidence": 0.95,
+      "source_text": "DDR6370\u4f5426.13%"
+    },
+    {
+      "id": "aug_metric_65e2b985",
+      "type": "Metric",
+      "label": "Total DDR usage 29.67%",
+      "description": "Total DDR usage measured at 29.67%",
+      "attributes": {
+        "report_id": "second",
+        "source_text": "DDR5460\u8ddfDDR6370\u7e3d\u4f7f\u7528\u6bd4\u4f8b\u662f29.67%",
+        "provenance": [
+          {
+            "report_id": "second",
+            "source_text": "DDR5460\u8ddfDDR6370\u7e3d\u4f7f\u7528\u6bd4\u4f8b\u662f29.67%"
+          }
+        ]
+      },
+      "confidence": 0.95,
+      "source_text": "DDR5460\u8ddfDDR6370\u7e3d\u4f7f\u7528\u6bd4\u4f8b\u662f29.67%"
+    },
+    {
+      "id": "aug_component_b27eb5ea",
+      "type": "Component",
+      "label": "DDR voting mechanism",
+      "description": "DDR voting mechanism involving SW_REQ2 and SW_REQ3",
+      "attributes": {
+        "report_id": "second",
+        "source_text": "\u770bDDR\u6295\u7968\u6a5f\u5236 DDR6370\u6709\u6a5f\u6703\u5728SW_REQ2\u4e0a\uff0c\u8ddfSW_REQ3",
+        "provenance": [
+          {
+            "report_id": "second",
+            "source_text": "DDR\u6295\u7968\u6a5f\u5236"
+          },
+          {
+            "report_id": "second",
+            "source_text": "\u770bDDR\u6295\u7968\u6a5f\u5236 DDR6370\u6709\u6a5f\u6703\u5728SW_REQ2\u4e0a\uff0c\u8ddfSW_REQ3"
+          }
+        ]
+      },
+      "confidence": 0.95,
+      "source_text": "\u770bDDR\u6295\u7968\u6a5f\u5236 DDR6370\u6709\u6a5f\u6703\u5728SW_REQ2\u4e0a\uff0c\u8ddfSW_REQ3"
+    },
+    {
+      "id": "aug_component_275e763e",
+      "type": "Component",
+      "label": "CPU frequencies",
+      "description": "CPU operating at various frequencies",
+      "attributes": {
+        "report_id": "second",
+        "source_text": "\u5f9eCPU\u7684\u90e8\u5206\u53ef\u4ee5\u770b\u5230\u5c0f\u68381000MHZ\uff0c1600MHz, 2100MHz\uff0c \u8ddf\u4e2d\u68381000MHz, 1600MHz, 2400MHz\u3001 \u8ddf\u5927\u68381800MHz, 2200MHz, 2700MHz"
+      },
+      "confidence": 0.9,
+      "source_text": "\u5f9eCPU\u7684\u90e8\u5206\u53ef\u4ee5\u770b\u5230\u5c0f\u68381000MHZ\uff0c1600MHz, 2100MHz\uff0c \u8ddf\u4e2d\u68381000MHz, 1600MHz, 2400MHz\u3001 \u8ddf\u5927\u68381800MHz, 2200MHz, 2700MHz"
+    },
+    {
+      "id": "fb_metric_c704e1ce27",
+      "type": "Metric",
+      "label": "DDR causing VCORE elevation",
+      "description": "",
+      "attributes": {
+        "provenance": [
+          {
+            "source": "closed_loop_feedback",
+            "report_id": "second",
+            "label": "DDR causing VCORE elevation",
+            "reason": "missing_elements"
+          }
+        ]
+      },
+      "confidence": 1.0,
+      "source_text": ""
+    },
+    {
+      "id": "fb_metric_2a0b5b7d75",
+      "type": "Metric",
+      "label": "CM \u2192 CPU \u2192 DDR \u2192 VCORE chain",
+      "description": "",
+      "attributes": {
+        "provenance": [
+          {
+            "source": "closed_loop_feedback",
+            "report_id": "second",
+            "label": "CM \u2192 CPU \u2192 DDR \u2192 VCORE chain",
+            "reason": "missing_elements"
+          }
+        ]
+      },
+      "confidence": 1.0,
+      "source_text": ""
+    },
+    {
+      "id": "fb_observation_fe0cf2a3f6",
+      "type": "Observation",
+      "label": "CPU frequencies 2700MHz, 2500MHz, 2100MHz",
+      "description": "",
+      "attributes": {
+        "provenance": [
+          {
+            "source": "closed_loop_feedback",
+            "report_id": "second",
+            "label": "CPU frequencies 2700MHz, 2500MHz, 2100MHz",
+            "reason": "missing_elements"
+          }
+        ]
+      },
+      "confidence": 1.0,
+      "source_text": ""
+    },
+    {
+      "id": "fb_observation_03ddb63a12",
+      "type": "Observation",
+      "label": "Definitive conclusion on root cause",
+      "description": "",
+      "attributes": {
+        "provenance": [
+          {
+            "source": "closed_loop_feedback",
+            "report_id": "second",
+            "label": "Definitive conclusion on root cause",
+            "reason": "missing_elements"
+          }
+        ]
+      },
+      "confidence": 1.0,
+      "source_text": ""
+    },
+    {
+      "id": "fb_observation_0e5c8c49d4",
+      "type": "Observation",
+      "label": "Specific adjustments or fixes",
+      "description": "",
+      "attributes": {
+        "provenance": [
+          {
+            "source": "closed_loop_feedback",
+            "report_id": "second",
+            "label": "Specific adjustments or fixes",
+            "reason": "missing_elements"
+          }
+        ]
+      },
+      "confidence": 1.0,
+      "source_text": ""
+    },
+    {
+      "id": "aug_observation_9c3537e4",
+      "type": "Observation",
+      "label": "SW_REQ2 and SW_REQ3 activity",
+      "description": "Activity observed in SW_REQ2 and SW_REQ3 related to DDR",
+      "attributes": {
+        "report_id": "second",
+        "source_text": "DDR6370\u6709\u6a5f\u6703\u5728SW_REQ2\u4e0a\uff0c\u8ddfSW_REQ3"
+      },
+      "confidence": 0.95,
+      "source_text": "DDR6370\u6709\u6a5f\u6703\u5728SW_REQ2\u4e0a\uff0c\u8ddfSW_REQ3"
+    },
+    {
+      "id": "aug_conclusion_16c3c070",
+      "type": "Conclusion",
+      "label": "CM pulling files causing issue",
+      "description": "The CM pulling files is causing the issue, related to control strategy",
+      "attributes": {
+        "report_id": "second",
+        "source_text": "\u53ef\u4ee5\u78ba\u8a8d\u662fCM\u62c9\u6a94\u9020\u6210.\u9019\u90e8\u5206\u8207\u8abf\u63a7\u7b56\u7565\u76f8\u95dc"
+      },
+      "confidence": 0.95,
+      "source_text": "\u53ef\u4ee5\u78ba\u8a8d\u662fCM\u62c9\u6a94\u9020\u6210.\u9019\u90e8\u5206\u8207\u8abf\u63a7\u7b56\u7565\u76f8\u95dc"
+    },
+    {
+      "id": "fb_observation_73e968582e",
+      "type": "Observation",
+      "label": "CM as root cause",
+      "description": "",
+      "attributes": {
+        "provenance": [
+          {
+            "source": "closed_loop_feedback",
+            "report_id": "second",
+            "label": "CM as root cause",
+            "reason": "missing_elements"
+          }
+        ]
+      },
+      "confidence": 1.0,
+      "source_text": ""
+    },
+    {
+      "id": "fb_observation_b7f3d0386f",
+      "type": "Observation",
+      "label": "Definitive root cause conclusion",
+      "description": "",
+      "attributes": {
+        "provenance": [
+          {
+            "source": "closed_loop_feedback",
+            "report_id": "second",
+            "label": "Definitive root cause conclusion",
+            "reason": "missing_elements"
+          }
+        ]
+      },
+      "confidence": 1.0,
+      "source_text": ""
+    },
+    {
+      "id": "aug_rootcause_e0c40d6d",
+      "type": "RootCause",
+      "label": "DDR affecting VCORE",
+      "description": "DDR usage is causing the VCORE level to rise.",
+      "attributes": {
+        "report_id": "second",
+        "source_text": "\u6240\u4ee5\u662fDDR\u9020\u6210VCORE\u6a94\u4f4d\u62c9\u5347"
+      },
+      "confidence": 0.95,
+      "source_text": "\u6240\u4ee5\u662fDDR\u9020\u6210VCORE\u6a94\u4f4d\u62c9\u5347"
+    },
+    {
+      "id": "aug_hypothesis_225742ca",
+      "type": "Hypothesis",
+      "label": "CM related",
+      "description": "CM related activities might be causing the issue.",
+      "attributes": {
+        "report_id": "second",
+        "source_text": "\u53ef\u4ee5\u78ba\u8a8d\u662fCM\u62c9\u6a94\u9020\u6210"
+      },
+      "confidence": 0.85,
+      "source_text": "\u53ef\u4ee5\u78ba\u8a8d\u662fCM\u62c9\u6a94\u9020\u6210"
+    },
+    {
+      "id": "fb_observation_03e751ba86",
+      "type": "Observation",
+      "label": "CM influence",
+      "description": "",
+      "attributes": {
+        "provenance": [
+          {
+            "source": "closed_loop_feedback",
+            "report_id": "second",
+            "label": "CM influence",
+            "reason": "missing_elements"
+          }
+        ]
+      },
+      "confidence": 1.0,
+      "source_text": ""
+    },
+    {
+      "id": "fb_observation_5091ccd4d3",
+      "type": "Observation",
+      "label": "CM and PowerHal influence explanation",
+      "description": "",
+      "attributes": {
+        "provenance": [
+          {
+            "source": "closed_loop_feedback",
+            "report_id": "second",
+            "label": "CM and PowerHal influence explanation",
+            "reason": "missing_elements"
+          }
+        ]
+      },
+      "confidence": 1.0,
+      "source_text": ""
+    },
+    {
+      "id": "fb_observation_5521ffebca",
+      "type": "Observation",
+      "label": "Specific CM and PowerHal adjustments",
+      "description": "",
+      "attributes": {
+        "provenance": [
+          {
+            "source": "closed_loop_feedback",
+            "report_id": "second",
+            "label": "Specific CM and PowerHal adjustments",
+            "reason": "missing_elements"
+          }
+        ]
+      },
+      "confidence": 1.0,
+      "source_text": ""
+    }
+  ],
+  "relations": [
+    {
+      "source": "aug_rootcause_88c610cb",
+      "target": "aug_symptom_46d9d2c3",
+      "type": "CAUSES",
+      "is_causal": true,
+      "confidence": 0.95,
+      "evidence": "\u6240\u4ee5\u53ef\u4ee5\u78ba\u8a8d\u662f\u56e0\u70baCM\u9020\u6210\u62c9\u6a94\u7684\u539f\u56e0\u662f\u78ba\u5b9a\u7684 | \u6240\u4ee5\u662fDDR\u9020\u6210 VCORE\u6a94\u4f4d\u62c9\u5347.",
+      "attributes": {
+        "report_id": "first",
+        "source_text": "\u6240\u4ee5\u53ef\u4ee5\u78ba\u8a8d\u662f\u56e0\u70baCM\u9020\u6210\u62c9\u6a94\u7684\u539f\u56e0\u662f\u78ba\u5b9a\u7684",
+        "provenance": [
+          {
+            "report_id": "first",
+            "source_text": "\u6240\u4ee5\u53ef\u4ee5\u78ba\u8a8d\u662f\u56e0\u70baCM\u9020\u6210\u62c9\u6a94\u7684\u539f\u56e0\u662f\u78ba\u5b9a\u7684"
+          },
+          {
+            "report_id": "first",
+            "source_text": "\u6240\u4ee5\u53ef\u4ee5\u78ba\u8a8d\u662f\u56e0\u70baCM\u9020\u6210\u62c9\u6a94\u7684\u539f\u56e0\u662f\u78ba\u5b9a\u7684"
+          },
+          {
+            "report_id": "first",
+            "source_text": "\u6240\u4ee5\u53ef\u4ee5\u78ba\u8a8d\u662f\u56e0\u70baCM\u9020\u6210\u62c9\u6a94\u7684\u539f\u56e0\u662f\u78ba\u5b9a\u7684"
+          },
+          {
+            "report_id": "second",
+            "source_text": "\u6240\u4ee5\u662fDDR\u9020\u6210 VCORE\u6a94\u4f4d\u62c9\u5347."
+          },
+          {
+            "report_id": "second",
+            "source_text": "\u6240\u4ee5\u662fDDR\u9020\u6210 VCORE\u6a94\u4f4d\u62c9\u5347."
+          },
+          {
+            "report_id": "second",
+            "source_text": "\u6240\u4ee5\u662fDDR\u9020\u6210 VCORE\u6a94\u4f4d\u62c9\u5347."
+          }
+        ]
+      },
+      "causal_effect": {
+        "strength": 0.9,
+        "is_direct": true,
+        "temporal_order": "immediate",
+        "mechanism": "CM activity increases VCORE usage by affecting CPU and DDR settings."
+      }
+    },
+    {
+      "source": "aug_hypothesis_26ac64bf",
+      "target": "aug_symptom_46d9d2c3",
+      "type": "INDICATES",
+      "is_causal": false,
+      "confidence": 0.7,
+      "evidence": "\u770b\u8d77\u4f86\u662fDDR\u9020\u6210 VCORE\u6a94\u4f4d\u62c9\u5347.",
+      "attributes": {
+        "report_id": "first",
+        "source_text": "\u770b\u8d77\u4f86\u662fDDR\u9020\u6210 VCORE\u6a94\u4f4d\u62c9\u5347.",
+        "provenance": [
+          {
+            "report_id": "first",
+            "source_text": "\u770b\u8d77\u4f86\u662fDDR\u9020\u6210 VCORE\u6a94\u4f4d\u62c9\u5347."
+          },
+          {
+            "report_id": "first",
+            "source_text": "\u770b\u8d77\u4f86\u662fDDR\u9020\u6210 VCORE\u6a94\u4f4d\u62c9\u5347."
+          }
+        ]
+      }
+    },
+    {
+      "source": "aug_observation_911ac35a",
+      "target": "aug_symptom_46d9d2c3",
+      "type": "RULES_OUT",
+      "is_causal": false,
+      "confidence": 0.8,
+      "evidence": "MMDVFS\u7684\u8cc7\u6599\u4f86\u770b \u90fd\u7dad\u6301\u5728OPP4\u4ee3\u8868\u4e3b\u8981\u4e0d\u662f\u5f9eMMDVFS\u9020\u6210 VCORE\u6a94\u4f4d\u7684\u62c9\u5347",
+      "attributes": {
+        "report_id": "first",
+        "source_text": "MMDVFS\u7684\u8cc7\u6599\u4f86\u770b \u90fd\u7dad\u6301\u5728OPP4\u4ee3\u8868\u4e3b\u8981\u4e0d\u662f\u5f9eMMDVFS\u9020\u6210 VCORE\u6a94\u4f4d\u7684\u62c9\u5347",
+        "provenance": [
+          {
+            "report_id": "first",
+            "source_text": "MMDVFS\u7684\u8cc7\u6599\u4f86\u770b \u90fd\u7dad\u6301\u5728OPP4\u4ee3\u8868\u4e3b\u8981\u4e0d\u662f\u5f9eMMDVFS\u9020\u6210 VCORE\u6a94\u4f4d\u7684\u62c9\u5347"
+          }
+        ]
+      }
+    },
+    {
+      "source": "aug_observation_32a0adae",
+      "target": "aug_rootcause_88c610cb",
+      "type": "INDICATES",
+      "is_causal": false,
+      "confidence": 0.8,
+      "evidence": "DDR \u6295\u7968\u6a5f\u5236\u5728DDR6370 \u6709\u6a5f\u6703\u5728SW_REQ2\u4e0a.\u4ee3\u8868\u8ddfCM\u76f8\u95dc",
+      "attributes": {
+        "report_id": "first",
+        "source_text": "DDR \u6295\u7968\u6a5f\u5236\u5728DDR6370 \u6709\u6a5f\u6703\u5728SW_REQ2\u4e0a.\u4ee3\u8868\u8ddfCM\u76f8\u95dc"
+      }
+    },
+    {
+      "source": "aug_observation_385f5052",
+      "target": "aug_rootcause_88c610cb",
+      "type": "CONFIRMS",
+      "is_causal": false,
+      "confidence": 0.9,
+      "evidence": "\u53ef\u4ee5\u5f9eCPU \u7684\u90e8\u4efd\u770b\u5230 \u5927\u68382700MHz\uff0c\u4e2d\u68382500MHz\uff0c\u5c0f\u6838 2100MHz \u5c6c\u65bc\u90fd\u9802\u5728\u5929\u82b1\u677f\u7684\u8a2d\u5b9a\u4e0a\uff0c\u90fd\u6709\u9ad8\u7684\u5360\u6bd4.",
+      "attributes": {
+        "report_id": "first",
+        "source_text": "\u53ef\u4ee5\u5f9eCPU \u7684\u90e8\u4efd\u770b\u5230 \u5927\u68382700MHz\uff0c\u4e2d\u68382500MHz\uff0c\u5c0f\u6838 2100MHz \u5c6c\u65bc\u90fd\u9802\u5728\u5929\u82b1\u677f\u7684\u8a2d\u5b9a\u4e0a\uff0c\u90fd\u6709\u9ad8\u7684\u5360\u6bd4."
+      }
+    },
+    {
+      "source": "aug_metric_705f2088",
+      "target": "aug_component_38e081f4",
+      "type": "INDICATES",
+      "is_causal": false,
+      "confidence": 0.3,
+      "evidence": "autolink_rule: metric indicates component",
+      "attributes": {
+        "provenance": [
+          {
+            "source": "autolink_rule",
+            "report_id": "first",
+            "reason": "connect_isolated_metric_to_component"
+          }
+        ]
+      }
+    },
+    {
+      "source": "aug_metric_e03b56c9",
+      "target": "aug_component_2a0bbd55",
+      "type": "INDICATES",
+      "is_causal": false,
+      "confidence": 0.3,
+      "evidence": "autolink_rule: metric indicates component",
+      "attributes": {
+        "provenance": [
+          {
+            "source": "autolink_rule",
+            "report_id": "first",
+            "reason": "connect_isolated_metric_to_component"
+          }
+        ]
+      }
+    },
+    {
+      "source": "aug_metric_fde67b44",
+      "target": "aug_component_c2311edd",
+      "type": "INDICATES",
+      "is_causal": false,
+      "confidence": 0.3,
+      "evidence": "autolink_rule: metric indicates component",
+      "attributes": {
+        "provenance": [
+          {
+            "source": "autolink_rule",
+            "report_id": "first",
+            "reason": "connect_isolated_metric_to_component"
+          }
+        ]
+      }
+    },
+    {
+      "source": "aug_observation_911ac35a",
+      "target": "aug_hypothesis_26ac64bf",
+      "type": "RULES_OUT",
+      "is_causal": false,
+      "confidence": 0.8,
+      "evidence": "MMDVFS\u7684\u8cc7\u6599\u4f86\u770b \u90fd\u7dad\u6301\u5728OPP4\u4ee3\u8868\u4e3b\u8981\u4e0d\u662f\u5f9eMMDVFS\u9020\u6210 VCORE\u6a94\u4f4d\u7684\u62c9\u5347",
+      "attributes": {
+        "report_id": "first",
+        "source_text": "MMDVFS\u7684\u8cc7\u6599\u4f86\u770b \u90fd\u7dad\u6301\u5728OPP4\u4ee3\u8868\u4e3b\u8981\u4e0d\u662f\u5f9eMMDVFS\u9020\u6210 VCORE\u6a94\u4f4d\u7684\u62c9\u5347",
+        "provenance": [
+          {
+            "report_id": "first",
+            "source_text": "MMDVFS\u7684\u8cc7\u6599\u4f86\u770b \u90fd\u7dad\u6301\u5728OPP4\u4ee3\u8868\u4e3b\u8981\u4e0d\u662f\u5f9eMMDVFS\u9020\u6210 VCORE\u6a94\u4f4d\u7684\u62c9\u5347"
+          }
+        ]
+      }
+    },
+    {
+      "source": "aug_observation_32a0adae",
+      "target": "aug_rootcause_88c610cb",
+      "type": "CONFIRMS",
+      "is_causal": false,
+      "confidence": 0.8,
+      "evidence": "DDR \u6295\u7968\u6a5f\u5236\u5728DDR6370 \u6709\u6a5f\u6703\u5728SW_REQ2\u4e0a.\u4ee3\u8868\u8ddfCM\u76f8\u95dc",
+      "attributes": {
+        "report_id": "first",
+        "source_text": "DDR \u6295\u7968\u6a5f\u5236\u5728DDR6370 \u6709\u6a5f\u6703\u5728SW_REQ2\u4e0a.\u4ee3\u8868\u8ddfCM\u76f8\u95dc"
+      }
+    },
+    {
+      "source": "aug_observation_75b5d1f6",
+      "target": "aug_rootcause_88c610cb",
+      "type": "CONFIRMS",
+      "is_causal": false,
+      "confidence": 0.8,
+      "evidence": "\u53ef\u4ee5\u5f9eCPU \u7684\u90e8\u4efd\u770b\u5230 \u5927\u68382700MHz\uff0c\u4e2d\u68382500MHz\uff0c\u5c0f\u6838 2100MHz \u5c6c\u65bc\u90fd\u9802\u5728\u5929\u82b1\u677f\u7684\u8a2d\u5b9a\u4e0a\uff0c\u90fd\u6709\u9ad8\u7684\u5360\u6bd4.",
+      "attributes": {
+        "report_id": "first",
+        "source_text": "\u53ef\u4ee5\u5f9eCPU \u7684\u90e8\u4efd\u770b\u5230 \u5927\u68382700MHz\uff0c\u4e2d\u68382500MHz\uff0c\u5c0f\u6838 2100MHz \u5c6c\u65bc\u90fd\u9802\u5728\u5929\u82b1\u677f\u7684\u8a2d\u5b9a\u4e0a\uff0c\u90fd\u6709\u9ad8\u7684\u5360\u6bd4."
+      }
+    },
+    {
+      "source": "fb_observation_39e567cd0a",
+      "target": "aug_rootcause_88c610cb",
+      "type": "INDICATES",
+      "is_causal": false,
+      "confidence": 0.3,
+      "evidence": "closed_loop_feedback_relation:throttling_indicates_cm",
+      "attributes": {
+        "provenance": [
+          {
+            "source": "closed_loop_feedback_relation",
+            "report_id": "first",
+            "reason": "missing_elements",
+            "rule_id": "throttling_indicates_cm"
+          }
+        ]
+      }
+    },
+    {
+      "source": "fb_metric_2ec17aa01f",
+      "target": "aug_component_2a0bbd55",
+      "type": "INDICATES",
+      "is_causal": false,
+      "confidence": 0.3,
+      "evidence": "closed_loop_feedback_relation:ddr_metric_indicates_ddr",
+      "attributes": {
+        "provenance": [
+          {
+            "source": "closed_loop_feedback_relation",
+            "report_id": "first",
+            "reason": "missing_elements",
+            "rule_id": "ddr_metric_indicates_ddr"
+          }
+        ]
+      }
+    },
+    {
+      "source": "aug_metric_85d05592",
+      "target": "aug_component_2a0bbd55",
+      "type": "INDICATES",
+      "is_causal": false,
+      "confidence": 0.3,
+      "evidence": "autolink_rule: metric indicates component",
+      "attributes": {
+        "provenance": [
+          {
+            "source": "autolink_rule",
+            "report_id": "first",
+            "reason": "connect_isolated_metric_to_component"
+          }
+        ]
+      }
+    },
+    {
+      "source": "aug_metric_ea233cd9",
+      "target": "aug_component_c2311edd",
+      "type": "INDICATES",
+      "is_causal": false,
+      "confidence": 0.3,
+      "evidence": "autolink_rule: metric indicates component",
+      "attributes": {
+        "provenance": [
+          {
+            "source": "autolink_rule",
+            "report_id": "first",
+            "reason": "connect_isolated_metric_to_component"
+          }
+        ]
+      }
+    },
+    {
+      "source": "fb_metric_42e3002479",
+      "target": "aug_component_2a0bbd55",
+      "type": "INDICATES",
+      "is_causal": false,
+      "confidence": 0.3,
+      "evidence": "autolink_rule: metric indicates component",
+      "attributes": {
+        "provenance": [
+          {
+            "source": "autolink_rule",
+            "report_id": "first",
+            "reason": "connect_isolated_metric_to_component"
+          }
+        ]
+      }
+    },
+    {
+      "source": "fb_metric_19d621253b",
+      "target": "aug_component_2a0bbd55",
+      "type": "INDICATES",
+      "is_causal": false,
+      "confidence": 0.3,
+      "evidence": "autolink_rule: metric indicates component",
+      "attributes": {
+        "provenance": [
+          {
+            "source": "autolink_rule",
+            "report_id": "first",
+            "reason": "connect_isolated_metric_to_component"
+          }
+        ]
+      }
+    },
+    {
+      "source": "fb_metric_b920af239f",
+      "target": "aug_component_2a0bbd55",
+      "type": "INDICATES",
+      "is_causal": false,
+      "confidence": 0.3,
+      "evidence": "autolink_rule: metric indicates component",
+      "attributes": {
+        "provenance": [
+          {
+            "source": "autolink_rule",
+            "report_id": "first",
+            "reason": "connect_isolated_metric_to_component"
+          }
+        ]
+      }
+    },
+    {
+      "source": "aug_hypothesis_26ac64bf",
+      "target": "aug_symptom_46d9d2c3",
+      "type": "LEADS_TO",
+      "is_causal": false,
+      "confidence": 0.7,
+      "evidence": "\u770b\u8d77\u4f86\u662fDDR\u9020\u6210 VCORE\u6a94\u4f4d\u62c9\u5347.",
+      "attributes": {
+        "report_id": "first",
+        "source_text": "\u770b\u8d77\u4f86\u662fDDR\u9020\u6210 VCORE\u6a94\u4f4d\u62c9\u5347."
+      }
+    },
+    {
+      "source": "aug_observation_32a0adae",
+      "target": "aug_hypothesis_26ac64bf",
+      "type": "INDICATES",
+      "is_causal": false,
+      "confidence": 0.8,
+      "evidence": "DDR \u6295\u7968\u6a5f\u5236\u5728DDR6370 \u6709\u6a5f\u6703\u5728SW_REQ2\u4e0a. | \u53bb\u770bDDR \u6295\u7968\u6a5f\u5236\u5728DDR6370 \u6709\u6a5f\u6703\u5728SW_REQ2\u4e0a.\u4ee3\u8868\u8ddfCM\u76f8\u95dc",
+      "attributes": {
+        "report_id": "first",
+        "source_text": "DDR \u6295\u7968\u6a5f\u5236\u5728DDR6370 \u6709\u6a5f\u6703\u5728SW_REQ2\u4e0a.",
+        "provenance": [
+          {
+            "report_id": "first",
+            "source_text": "\u53bb\u770bDDR \u6295\u7968\u6a5f\u5236\u5728DDR6370 \u6709\u6a5f\u6703\u5728SW_REQ2\u4e0a.\u4ee3\u8868\u8ddfCM\u76f8\u95dc"
+          }
+        ]
+      }
+    },
+    {
+      "source": "aug_observation_2f476ac4",
+      "target": "aug_rootcause_88c610cb",
+      "type": "CONFIRMS",
+      "is_causal": false,
+      "confidence": 0.9,
+      "evidence": "\u53ef\u4ee5\u5f9eCPU \u7684\u90e8\u4efd\u770b\u5230 \u5927\u68382700MHz\uff0c\u4e2d\u68382500MHz\uff0c\u5c0f\u6838 2100MHz \u5c6c\u65bc\u90fd\u9802\u5728\u5929\u82b1\u677f\u7684\u8a2d\u5b9a\u4e0a\uff0c\u90fd\u6709\u9ad8\u7684\u5360\u6bd4.",
+      "attributes": {
+        "report_id": "first",
+        "source_text": "\u53ef\u4ee5\u5f9eCPU \u7684\u90e8\u4efd\u770b\u5230 \u5927\u68382700MHz\uff0c\u4e2d\u68382500MHz\uff0c\u5c0f\u6838 2100MHz \u5c6c\u65bc\u90fd\u9802\u5728\u5929\u82b1\u677f\u7684\u8a2d\u5b9a\u4e0a\uff0c\u90fd\u6709\u9ad8\u7684\u5360\u6bd4.",
+        "provenance": [
+          {
+            "report_id": "first",
+            "source_text": "\u53ef\u4ee5\u5f9eCPU \u7684\u90e8\u4efd\u770b\u5230 \u5927\u68382700MHz\uff0c\u4e2d\u68382500MHz\uff0c\u5c0f\u6838 2100MHz \u5c6c\u65bc\u90fd\u9802\u5728\u5929\u82b1\u677f\u7684\u8a2d\u5b9a\u4e0a\uff0c\u90fd\u6709\u9ad8\u7684\u5360\u6bd4."
+          }
+        ]
+      }
+    },
+    {
+      "source": "aug_component_c2311edd",
+      "target": "aug_component_2a0bbd55",
+      "type": "LEADS_TO",
+      "is_causal": false,
+      "confidence": 0.3,
+      "evidence": "closed_loop_feedback_relation:chain_leads_to",
+      "attributes": {
+        "provenance": [
+          {
+            "source": "closed_loop_feedback_relation",
+            "report_id": "first",
+            "reason": "missing_elements",
+            "rule_id": "chain_leads_to"
+          }
+        ]
+      }
+    },
+    {
+      "source": "aug_component_2a0bbd55",
+      "target": "fb_metric_c39a41e456",
+      "type": "LEADS_TO",
+      "is_causal": false,
+      "confidence": 0.3,
+      "evidence": "closed_loop_feedback_relation:chain_leads_to",
+      "attributes": {
+        "provenance": [
+          {
+            "source": "closed_loop_feedback_relation",
+            "report_id": "first",
+            "reason": "missing_elements",
+            "rule_id": "chain_leads_to"
+          }
+        ]
+      }
+    },
+    {
+      "source": "fb_metric_c39a41e456",
+      "target": "aug_component_38e081f4",
+      "type": "INDICATES",
+      "is_causal": false,
+      "confidence": 0.3,
+      "evidence": "autolink_rule: metric indicates component",
+      "attributes": {
+        "provenance": [
+          {
+            "source": "autolink_rule",
+            "report_id": "first",
+            "reason": "connect_isolated_metric_to_component"
+          }
+        ]
+      }
+    },
+    {
+      "source": "fb_metric_032ba1a098",
+      "target": "aug_component_2a0bbd55",
+      "type": "INDICATES",
+      "is_causal": false,
+      "confidence": 0.3,
+      "evidence": "autolink_rule: metric indicates component",
+      "attributes": {
+        "provenance": [
+          {
+            "source": "autolink_rule",
+            "report_id": "first",
+            "reason": "connect_isolated_metric_to_component"
+          }
+        ]
+      }
+    },
+    {
+      "source": "aug_conclusion_1d9490fe",
+      "target": "aug_symptom_46d9d2c3",
+      "type": "CAUSES",
+      "is_causal": true,
+      "confidence": 0.9,
+      "evidence": "\u53ef\u4ee5\u78ba\u8a8d\u662fCM\u62c9\u6a94\u9020\u6210. | \u53ef\u4ee5\u78ba\u8a8d\u662fCM\u62c9\u6a94\u9020\u6210.\u9019\u90e8\u5206\u8207\u8abf\u63a7\u7b56\u7565\u76f8\u95dc",
+      "attributes": {
+        "report_id": "second",
+        "source_text": "\u53ef\u4ee5\u78ba\u8a8d\u662fCM\u62c9\u6a94\u9020\u6210.",
+        "provenance": [
+          {
+            "report_id": "second",
+            "source_text": "\u53ef\u4ee5\u78ba\u8a8d\u662fCM\u62c9\u6a94\u9020\u6210.\u9019\u90e8\u5206\u8207\u8abf\u63a7\u7b56\u7565\u76f8\u95dc"
+          }
+        ]
+      },
+      "causal_effect": {
+        "strength": 0.8,
+        "is_direct": true,
+        "temporal_order": "immediate",
+        "mechanism": "CM activity increases power demand, leading to higher VCORE usage."
+      }
+    },
+    {
+      "source": "aug_observation_911ac35a",
+      "target": "aug_rootcause_88c610cb",
+      "type": "RULES_OUT",
+      "is_causal": false,
+      "confidence": 0.9,
+      "evidence": "MMDVFS\u7684\u8cc7\u6599\u4f86\u770b\uff0c\u90fd\u7dad\u6301\u5728OPP4\u4ee3\u8868\u4e0d\u662f\u56e0MMDVFS\u9020\u6210.",
+      "attributes": {
+        "report_id": "second",
+        "source_text": "MMDVFS\u7684\u8cc7\u6599\u4f86\u770b\uff0c\u90fd\u7dad\u6301\u5728OPP4\u4ee3\u8868\u4e0d\u662f\u56e0MMDVFS\u9020\u6210.",
+        "provenance": [
+          {
+            "report_id": "second",
+            "source_text": "MMDVFS\u7684\u8cc7\u6599\u4f86\u770b\uff0c\u90fd\u7dad\u6301\u5728OPP4\u4ee3\u8868\u4e0d\u662f\u56e0MMDVFS\u9020\u6210."
+          }
+        ]
+      }
+    },
+    {
+      "source": "aug_observation_32a0adae",
+      "target": "aug_conclusion_1d9490fe",
+      "type": "INDICATES",
+      "is_causal": false,
+      "confidence": 0.8,
+      "evidence": "DDR voting shows activity on SW_REQ2 and SW_REQ3. SW_REQ2\u4ee3\u8868CM\u76f8\u95dc.",
+      "attributes": {
+        "report_id": "second",
+        "source_text": "DDR voting shows activity on SW_REQ2 and SW_REQ3. SW_REQ2\u4ee3\u8868CM\u76f8\u95dc."
+      }
+    },
+    {
+      "source": "aug_metric_1840275f",
+      "target": "aug_component_38e081f4",
+      "type": "INDICATES",
+      "is_causal": false,
+      "confidence": 0.3,
+      "evidence": "autolink_rule: metric indicates component",
+      "attributes": {
+        "provenance": [
+          {
+            "source": "autolink_rule",
+            "report_id": "second",
+            "reason": "connect_isolated_metric_to_component"
+          }
+        ]
+      }
+    },
+    {
+      "source": "aug_metric_11521472",
+      "target": "aug_component_2a0bbd55",
+      "type": "INDICATES",
+      "is_causal": false,
+      "confidence": 0.3,
+      "evidence": "autolink_rule: metric indicates component",
+      "attributes": {
+        "provenance": [
+          {
+            "source": "autolink_rule",
+            "report_id": "second",
+            "reason": "connect_isolated_metric_to_component"
+          }
+        ]
+      }
+    },
+    {
+      "source": "aug_metric_76ef9a75",
+      "target": "aug_component_c2311edd",
+      "type": "INDICATES",
+      "is_causal": false,
+      "confidence": 0.3,
+      "evidence": "autolink_rule: metric indicates component",
+      "attributes": {
+        "provenance": [
+          {
+            "source": "autolink_rule",
+            "report_id": "second",
+            "reason": "connect_isolated_metric_to_component"
+          }
+        ]
+      }
+    },
+    {
+      "source": "aug_observation_1de9d620",
+      "target": "aug_symptom_46d9d2c3",
+      "type": "RULES_OUT",
+      "is_causal": false,
+      "confidence": 0.9,
+      "evidence": "\u90fd\u7dad\u6301\u5728OPP4\u4ee3\u8868\u4e0d\u662f\u56e0MMDVFS\u9020\u6210.",
+      "attributes": {
+        "report_id": "second",
+        "source_text": "\u90fd\u7dad\u6301\u5728OPP4\u4ee3\u8868\u4e0d\u662f\u56e0MMDVFS\u9020\u6210."
+      }
+    },
+    {
+      "source": "aug_component_b27eb5ea",
+      "target": "aug_rootcause_88c610cb",
+      "type": "ENABLES",
+      "is_causal": true,
+      "confidence": 0.85,
+      "evidence": "\u770bDDR\u6295\u7968\u6a5f\u5236 DDR6370\u6709\u6a5f\u6703\u5728SW_REQ2\u4e0a\uff0c\u8ddfSW_REQ3.",
+      "attributes": {
+        "report_id": "second",
+        "source_text": "\u770bDDR\u6295\u7968\u6a5f\u5236 DDR6370\u6709\u6a5f\u6703\u5728SW_REQ2\u4e0a\uff0c\u8ddfSW_REQ3."
+      },
+      "causal_effect": {
+        "strength": 0.7,
+        "is_direct": true,
+        "temporal_order": "immediate",
+        "mechanism": "The DDR voting mechanism allows for adjustments in DDR usage, which can lead to increased VCORE levels."
+      }
+    },
+    {
+      "source": "aug_observation_2f476ac4",
+      "target": "aug_conclusion_1d9490fe",
+      "type": "INDICATES",
+      "is_causal": false,
+      "confidence": 0.85,
+      "evidence": "\u90fd \u6709\u9ad8\u7684\u4f7f\u7528\u7387\uff0e\u53ef\u4ee5\u78ba\u8a8d\u662fCM\u62c9\u6a94\u9020\u6210.",
+      "attributes": {
+        "report_id": "second",
+        "source_text": "\u90fd \u6709\u9ad8\u7684\u4f7f\u7528\u7387\uff0e\u53ef\u4ee5\u78ba\u8a8d\u662fCM\u62c9\u6a94\u9020\u6210."
+      }
+    },
+    {
+      "source": "aug_rootcause_88c610cb",
+      "target": "aug_component_c2311edd",
+      "type": "LEADS_TO",
+      "is_causal": false,
+      "confidence": 0.3,
+      "evidence": "closed_loop_feedback_relation:chain_leads_to",
+      "attributes": {
+        "provenance": [
+          {
+            "source": "closed_loop_feedback_relation",
+            "report_id": "second",
+            "reason": "missing_elements",
+            "rule_id": "chain_leads_to"
+          }
+        ]
+      }
+    },
+    {
+      "source": "aug_metric_3d10caba",
+      "target": "aug_component_38e081f4",
+      "type": "INDICATES",
+      "is_causal": false,
+      "confidence": 0.3,
+      "evidence": "autolink_rule: metric indicates component",
+      "attributes": {
+        "provenance": [
+          {
+            "source": "autolink_rule",
+            "report_id": "second",
+            "reason": "connect_isolated_metric_to_component"
+          }
+        ]
+      }
+    },
+    {
+      "source": "aug_metric_e846d2d1",
+      "target": "aug_component_2a0bbd55",
+      "type": "INDICATES",
+      "is_causal": false,
+      "confidence": 0.3,
+      "evidence": "autolink_rule: metric indicates component",
+      "attributes": {
+        "provenance": [
+          {
+            "source": "autolink_rule",
+            "report_id": "second",
+            "reason": "connect_isolated_metric_to_component"
+          }
+        ]
+      }
+    },
+    {
+      "source": "aug_metric_e9b906a8",
+      "target": "aug_component_2a0bbd55",
+      "type": "INDICATES",
+      "is_causal": false,
+      "confidence": 0.3,
+      "evidence": "autolink_rule: metric indicates component",
+      "attributes": {
+        "provenance": [
+          {
+            "source": "autolink_rule",
+            "report_id": "second",
+            "reason": "connect_isolated_metric_to_component"
+          }
+        ]
+      }
+    },
+    {
+      "source": "aug_metric_65e2b985",
+      "target": "aug_component_2a0bbd55",
+      "type": "INDICATES",
+      "is_causal": false,
+      "confidence": 0.3,
+      "evidence": "autolink_rule: metric indicates component",
+      "attributes": {
+        "provenance": [
+          {
+            "source": "autolink_rule",
+            "report_id": "second",
+            "reason": "connect_isolated_metric_to_component"
+          }
+        ]
+      }
+    },
+    {
+      "source": "fb_metric_c704e1ce27",
+      "target": "aug_component_38e081f4",
+      "type": "INDICATES",
+      "is_causal": false,
+      "confidence": 0.3,
+      "evidence": "autolink_rule: metric indicates component",
+      "attributes": {
+        "provenance": [
+          {
+            "source": "autolink_rule",
+            "report_id": "second",
+            "reason": "connect_isolated_metric_to_component"
+          }
+        ]
+      }
+    },
+    {
+      "source": "fb_metric_2a0b5b7d75",
+      "target": "aug_component_38e081f4",
+      "type": "INDICATES",
+      "is_causal": false,
+      "confidence": 0.3,
+      "evidence": "autolink_rule: metric indicates component",
+      "attributes": {
+        "provenance": [
+          {
+            "source": "autolink_rule",
+            "report_id": "second",
+            "reason": "connect_isolated_metric_to_component"
+          }
+        ]
+      }
+    },
+    {
+      "source": "aug_metric_65e2b985",
+      "target": "aug_rootcause_88c610cb",
+      "type": "CAUSES",
+      "is_causal": true,
+      "confidence": 0.8,
+      "evidence": "DDR5460\u8ddf DDR6370\u7e3d\u4f7f\u7528\u6bd4\u4f8b\u662f29.67%.\u8207 VCORE 725mV \u63a5\u8fd1.\u6240\u4ee5\u662fDDR\u9020\u6210 VCORE\u6a94\u4f4d\u62c9\u5347.",
+      "attributes": {
+        "report_id": "second",
+        "source_text": "DDR5460\u8ddf DDR6370\u7e3d\u4f7f\u7528\u6bd4\u4f8b\u662f29.67%.\u8207 VCORE 725mV \u63a5\u8fd1.\u6240\u4ee5\u662fDDR\u9020\u6210 VCORE\u6a94\u4f4d\u62c9\u5347."
+      },
+      "causal_effect": {
+        "strength": 0.7,
+        "is_direct": true,
+        "temporal_order": "immediate",
+        "mechanism": "The total DDR usage is high, which increases the load on VCORE, causing its usage to rise."
+      }
+    },
+    {
+      "source": "aug_observation_9c3537e4",
+      "target": "aug_conclusion_16c3c070",
+      "type": "INDICATES",
+      "is_causal": false,
+      "confidence": 0.7,
+      "evidence": "SW_REQ2\u4ee3\u8868CM\u76f8\u95dc\uff0cSW_REQ3\u4ee3\u8868\u8ddf PowerHal\u76f8\u95dc.\u4f46\u90fd\u8207CPU\u4f7f\u7528\u6a5f\u5236\u76f8\u95dc.",
+      "attributes": {
+        "report_id": "second",
+        "source_text": "SW_REQ2\u4ee3\u8868CM\u76f8\u95dc\uff0cSW_REQ3\u4ee3\u8868\u8ddf PowerHal\u76f8\u95dc.\u4f46\u90fd\u8207CPU\u4f7f\u7528\u6a5f\u5236\u76f8\u95dc."
+      }
+    },
+    {
+      "source": "aug_observation_2f476ac4",
+      "target": "aug_conclusion_16c3c070",
+      "type": "CONFIRMS",
+      "is_causal": false,
+      "confidence": 0.8,
+      "evidence": "\u53ef\u4ee5\u78ba\u8a8d\u662fCM\u62c9\u6a94\u9020\u6210.\u9019\u90e8\u5206\u8207\u8abf\u63a7\u7b56\u7565\u76f8\u95dc",
+      "attributes": {
+        "report_id": "second",
+        "source_text": "\u53ef\u4ee5\u78ba\u8a8d\u662fCM\u62c9\u6a94\u9020\u6210.\u9019\u90e8\u5206\u8207\u8abf\u63a7\u7b56\u7565\u76f8\u95dc"
+      }
+    },
+    {
+      "source": "aug_component_275e763e",
+      "target": "aug_component_c2311edd",
+      "type": "INDICATES",
+      "is_causal": false,
+      "confidence": 0.3,
+      "evidence": "closed_loop_feedback_relation:cpu_freq_indicates_cpu",
+      "attributes": {
+        "provenance": [
+          {
+            "source": "closed_loop_feedback_relation",
+            "report_id": "second",
+            "reason": "missing_elements",
+            "rule_id": "cpu_freq_indicates_cpu"
+          }
+        ]
+      }
+    },
+    {
+      "source": "aug_component_2a0bbd55",
+      "target": "aug_rootcause_e0c40d6d",
+      "type": "CAUSES",
+      "is_causal": true,
+      "confidence": 0.95,
+      "evidence": "\u6240\u4ee5\u662fDDR\u9020\u6210 VCORE\u6a94\u4f4d\u62c9\u5347.",
+      "attributes": {
+        "report_id": "second",
+        "source_text": "\u6240\u4ee5\u662fDDR\u9020\u6210 VCORE\u6a94\u4f4d\u62c9\u5347."
+      },
+      "causal_effect": {
+        "strength": 0.9,
+        "is_direct": true,
+        "temporal_order": "immediate",
+        "mechanism": "Increased DDR usage leads to higher VCORE levels."
+      }
+    },
+    {
+      "source": "aug_rootcause_e0c40d6d",
+      "target": "aug_symptom_46d9d2c3",
+      "type": "CAUSES",
+      "is_causal": true,
+      "confidence": 0.9,
+      "evidence": "\u6240\u4ee5\u662fDDR\u9020\u6210 VCORE\u6a94\u4f4d\u62c9\u5347.",
+      "attributes": {
+        "report_id": "second",
+        "source_text": "\u6240\u4ee5\u662fDDR\u9020\u6210 VCORE\u6a94\u4f4d\u62c9\u5347."
+      },
+      "causal_effect": {
+        "strength": 0.8,
+        "is_direct": true,
+        "temporal_order": "immediate",
+        "mechanism": "DDR affecting VCORE causes high VCORE usage."
+      }
+    },
+    {
+      "source": "aug_observation_911ac35a",
+      "target": "aug_hypothesis_225742ca",
+      "type": "RULES_OUT",
+      "is_causal": false,
+      "confidence": 0.85,
+      "evidence": "MMDVFS\u7684\u8cc7\u6599\u4f86\u770b\uff0c\u90fd\u7dad\u6301\u5728OPP4\u4ee3\u8868\u4e0d\u662f\u56e0MMDVFS\u9020\u6210.",
+      "attributes": {
+        "report_id": "second",
+        "source_text": "MMDVFS\u7684\u8cc7\u6599\u4f86\u770b\uff0c\u90fd\u7dad\u6301\u5728OPP4\u4ee3\u8868\u4e0d\u662f\u56e0MMDVFS\u9020\u6210."
+      }
+    },
+    {
+      "source": "aug_component_b27eb5ea",
+      "target": "aug_component_2a0bbd55",
+      "type": "ASSOCIATED_WITH",
+      "is_causal": false,
+      "confidence": 0.7,
+      "evidence": "\u770bDDR\u6295\u7968\u6a5f\u5236 DDR6370\u6709\u6a5f\u6703\u5728SW_REQ2\u4e0a\uff0c\u8ddfSW_REQ3.",
+      "attributes": {
+        "report_id": "second",
+        "source_text": "\u770bDDR\u6295\u7968\u6a5f\u5236 DDR6370\u6709\u6a5f\u6703\u5728SW_REQ2\u4e0a\uff0c\u8ddfSW_REQ3."
+      }
+    },
+    {
+      "source": "aug_observation_2f476ac4",
+      "target": "aug_hypothesis_225742ca",
+      "type": "CONFIRMS",
+      "is_causal": false,
+      "confidence": 0.8,
+      "evidence": "\u53ef\u4ee5\u78ba\u8a8d\u662fCM\u62c9\u6a94\u9020\u6210.",
+      "attributes": {
+        "report_id": "second",
+        "source_text": "\u53ef\u4ee5\u78ba\u8a8d\u662fCM\u62c9\u6a94\u9020\u6210."
+      }
+    }
+  ],
+  "metadata": {
+    "num_entities": 53,
+    "num_relations": 50,
+    "entity_types": [
+      "Symptom",
+      "Component",
+      "Metric",
+      "Conclusion",
+      "Observation",
+      "RootCause",
+      "Hypothesis"
+    ],
+    "relation_types": [
+      "LEADS_TO",
+      "ASSOCIATED_WITH",
+      "INDICATES",
+      "CAUSES",
+      "ENABLES",
+      "CONFIRMS",
+      "RULES_OUT"
+    ]
+  }
+}

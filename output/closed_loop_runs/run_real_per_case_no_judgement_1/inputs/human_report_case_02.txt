@@ -1,0 +1,39 @@
+造段區間 主要在於VCORE 725mV超過
+
+預期的10%使用率來到29.32%.從
+
+MMDVFS的資料來看，都維持在OPP4代表不是因MMDVFS造成.
+
+接著看DDR的使用率，可以看到會影響
+
+VCORE 725mV的DDR5460佔3.54%，跟DDR6370佔26.13%，DDR5460跟
+
+DDR6370總使用比例是29.67%.與
+
+VCORE 725mV 接近.所以是DDR造成
+
+VCORE檔位拉升.
+
+看DDR投票機制 DDR6370有機會在SW_REQ2上，跟SW_REQ3. 其中
+
+SW_REQ2代表CM相關，SW_REQ3代表跟 PowerHal相關.但都與CPU使用機制相關.
+
+從CPU的部分可以看到小核1000MHZ，
+
+1600MHz, 2100MHz， 跟中核
+
+1000MHz, 1600MHz, 2400MHz、 跟大
+
+核1800MHz, 2200MHz, 2700MHz， 都
+
+有高的使用率．可以確認是CM拉檔造
+
+成.這部分與調控策略相關
+
+---
+E2E Test Query (judgement-free):
+VCORE 725mV usage is at 29.32%.
+DDR5460 at 3.54%, DDR6370 at 26.13%. Total DDR at 29.67%.
+MMDVFS is at OPP4.
+CPU shows various frequencies.
+DDR voting shows SW_REQ2 and SW_REQ3 activity.

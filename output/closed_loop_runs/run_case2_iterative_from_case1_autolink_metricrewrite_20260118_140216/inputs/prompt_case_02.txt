@@ -1,0 +1,5 @@
+VCORE 725mV usage is at 29.32%.
+DDR5460 at 3.54%, DDR6370 at 26.13%. Total DDR at 29.67%.
+MMDVFS is at OPP4.
+CPU shows various frequencies.
+DDR voting shows SW_REQ2 and SW_REQ3 activity.

@@ -1,0 +1,105 @@
+{
+  "added_entities": [
+    "aug_metric_85d05592",
+    "aug_metric_ea233cd9",
+    "aug_observation_75b5d1f6"
+  ],
+  "updated_entities": [
+    "aug_symptom_46d9d2c3",
+    "aug_component_38e081f4",
+    "aug_metric_705f2088",
+    "aug_component_291404fe",
+    "aug_observation_911ac35a",
+    "aug_component_2a0bbd55",
+    "aug_hypothesis_26ac64bf",
+    "aug_component_c2311edd",
+    "aug_rootcause_88c610cb",
+    "aug_observation_32a0adae"
+  ],
+  "added_relations": [
+    {
+      "source": "aug_observation_911ac35a",
+      "target": "aug_hypothesis_26ac64bf",
+      "type": "RULES_OUT"
+    },
+    {
+      "source": "aug_observation_32a0adae",
+      "target": "aug_rootcause_88c610cb",
+      "type": "CONFIRMS"
+    },
+    {
+      "source": "aug_observation_75b5d1f6",
+      "target": "aug_rootcause_88c610cb",
+      "type": "CONFIRMS"
+    },
+    {
+      "source": "aug_metric_85d05592",
+      "target": "aug_component_2a0bbd55",
+      "type": "INDICATES"
+    },
+    {
+      "source": "aug_metric_ea233cd9",
+      "target": "aug_component_c2311edd",
+      "type": "INDICATES"
+    },
+    {
+      "source": "fb_metric_42e3002479",
+      "target": "aug_component_2a0bbd55",
+      "type": "INDICATES"
+    },
+    {
+      "source": "fb_metric_19d621253b",
+      "target": "aug_component_2a0bbd55",
+      "type": "INDICATES"
+    },
+    {
+      "source": "fb_metric_b920af239f",
+      "target": "aug_component_2a0bbd55",
+      "type": "INDICATES"
+    }
+  ],
+  "updated_relations": [
+    {
+      "source": "aug_rootcause_88c610cb",
+      "target": "aug_symptom_46d9d2c3",
+      "type": "CAUSES"
+    },
+    {
+      "source": "aug_hypothesis_26ac64bf",
+      "target": "aug_symptom_46d9d2c3",
+      "type": "INDICATES"
+    }
+  ],
+  "skipped_relations": [],
+  "conflicts": [],
+  "feedback_added_entities": [
+    "fb_observation_39e567cd0a",
+    "fb_metric_42e3002479",
+    "fb_observation_98a8215759",
+    "fb_metric_2ec17aa01f",
+    "fb_metric_19d621253b",
+    "fb_metric_b920af239f"
+  ],
+  "feedback_skipped_existing": [
+    "aug_metric_fde67b44"
+  ],
+  "feedback_added_relations": [
+    {
+      "source": "fb_observation_39e567cd0a",
+      "target": "aug_rootcause_88c610cb",
+      "type": "INDICATES"
+    },
+    {
+      "source": "fb_metric_2ec17aa01f",
+      "target": "aug_component_2a0bbd55",
+      "type": "INDICATES"
+    }
+  ],
+  "feedback_skipped_existing_relations": [
+    {
+      "source": "aug_metric_fde67b44",
+      "target": "aug_component_c2311edd",
+      "type": "INDICATES"
+    }
+  ]
+}

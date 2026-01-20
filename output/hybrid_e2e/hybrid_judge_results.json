@@ -1,0 +1,51 @@
+{
+  "results": [
+    {
+      "case": "case1",
+      "anomalies": 3,
+      "has_dual_issue": true,
+      "llm_calls": 5,
+      "score": 8.8,
+      "grade": "A",
+      "dimensions": {
+        "Root Cause Accuracy": 9,
+        "Causal Chain Completeness": 8,
+        "Metric Precision": 9,
+        "Reasoning Quality": 9,
+        "Actionability": 9
+      }
+    },
+    {
+      "case": "case2",
+      "anomalies": 1,
+      "has_dual_issue": false,
+      "llm_calls": 3,
+      "score": 8.45,
+      "grade": "A",
+      "dimensions": {
+        "Root Cause Accuracy": 9,
+        "Causal Chain Completeness": 8,
+        "Metric Precision": 7,
+        "Reasoning Quality": 9,
+        "Actionability": 8
+      }
+    },
+    {
+      "case": "case3",
+      "anomalies": 5,
+      "has_dual_issue": true,
+      "llm_calls": 7,
+      "score": 8.45,
+      "grade": "A",
+      "dimensions": {
+        "Root Cause Accuracy": 9,
+        "Causal Chain Completeness": 8,
+        "Metric Precision": 7,
+        "Reasoning Quality": 9,
+        "Actionability": 8
+      }
+    }
+  ],
+  "average_score": 8.566666666666666,
+  "total_llm_calls": 15
+}

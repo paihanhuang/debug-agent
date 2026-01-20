@@ -1,0 +1,19 @@
+這段區間 主要在於 VCORE 725mV 超過預期的10%使用率在82.6%.從
+
+MMDVFS的資料來看 都維持在OPP4代表主要不是從MMDVFS造成 VCORE檔位的拉升
+
+接著看DDR的使用率，可以看到
+
+DDR5460跟DDR6370加起來的總使用率是達到82.6%左右.看起來是DDR造成 VCORE檔位拉升.
+
+去看DDR 投票機制在DDR6370 有機會在SW_REQ2上.代表跟CM相關 所以去看下CPU部分.
+
+可以從CPU 的部份看到 大核2700MHz，中核2500MHz，小核 2100MHz 屬於都頂在天花板的設定上，都有高的占比.所以可以確認是因為CM造成拉檔的原因是確定的
+
+---
+E2E Test Query (judgement-free):
+VCORE 725mV usage is at 82.6%.
+DDR5460 and DDR6370 combined usage is 82.6%.
+MMDVFS is at OPP4.
+CPU 大核 at 2700MHz, 中核 at 2500MHz, 小核 at 2100MHz.
+DDR voting shows SW_REQ2 activity.

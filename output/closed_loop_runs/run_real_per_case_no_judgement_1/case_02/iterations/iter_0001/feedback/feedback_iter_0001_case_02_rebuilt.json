@@ -1,0 +1,75 @@
+{
+  "run_id": "real_per_case_no_judgement_1",
+  "iter_num": 1,
+  "average_score": 8.6,
+  "accuracy_score": 9.0,
+  "stop_reached": true,
+  "per_case": {
+    "case2": {
+      "composite_score": 8.6,
+      "grade": "A",
+      "dimensions": [
+        {
+          "name": "Root Cause Accuracy",
+          "score": 9,
+          "weight": 0.5,
+          "missing_elements": [
+            "MMDVFS"
+          ],
+          "matched_elements": [
+            "CM",
+            "PowerHal",
+            "拉檔"
+          ]
+        },
+        {
+          "name": "Causal Chain Completeness",
+          "score": 8,
+          "weight": 0.2,
+          "missing_elements": [
+            "SW_REQ2",
+            "SW_REQ3"
+          ],
+          "matched_elements": [
+            "CM",
+            "DDR",
+            "VCORE"
+          ]
+        },
+        {
+          "name": "Metric Precision",
+          "score": 9,
+          "weight": 0.15,
+          "missing_elements": [
+            "VCORE 82.6%",
+            "VCORE 52.51%"
+          ],
+          "matched_elements": [
+            "VCORE 29.32%",
+            "DDR6370 26.13%",
+            "Total DDR 29.67%"
+          ]
+        },
+        {
+          "name": "Reasoning Quality",
+          "score": 9,
+          "weight": 0.1,
+          "missing_elements": [],
+          "matched_elements": [
+            "MMDVFS ruled out"
+          ]
+        },
+        {
+          "name": "Actionability",
+          "score": 5,
+          "weight": 0.05,
+          "missing_elements": [
+            "historical fixes",
+            "recommendations"
+          ],
+          "matched_elements": []
+        }
+      ]
+    }
+  }
+}

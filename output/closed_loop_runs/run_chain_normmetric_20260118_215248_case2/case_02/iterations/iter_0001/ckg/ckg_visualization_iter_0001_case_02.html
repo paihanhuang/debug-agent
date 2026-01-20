@@ -1,0 +1,40 @@
+<!doctype html>
+<html>
+<head>
+  <meta charset="utf-8"/>
+  <title>CKG Visualization (case2 iter_0001)</title>
+  <style>
+    body { margin: 0; font-family: Arial, sans-serif; }
+    #topbar { padding: 10px 14px; border-bottom: 1px solid #eee; }
+    #network { width: 100%; height: calc(100vh - 52px); }
+    .meta { color: #666; font-size: 12px; }
+  </style>
+  <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/vis-network/9.1.2/dist/vis-network.min.css" />
+  <script src="https://cdnjs.cloudflare.com/ajax/libs/vis-network/9.1.2/dist/vis-network.min.js"></script>
+</head>
+<body>
+  <div id="topbar">
+    <div><b>CKG Visualization (case2 iter_0001)</b></div>
+    <div class="meta">Source JSON: /home/etem/inference-engine/output/closed_loop_runs/run_chain_normmetric_20260118_215248_case2/case_02/iterations/iter_0001/ckg/candidate_ckg_iter_0001_case_02.json</div>
+    <div class="meta">Nodes: 14 | Edges: 11 (dashed = non-causal / weak)</div>
+  </div>
+  <div id="network"></div>
+
+  <script>
+    const nodes = new vis.DataSet([{"id": "aug_symptom_46d9d2c3", "label": "High VCORE usage\n(Symptom)", "group": "Symptom", "color": "#ffa94d", "title": "VCORE usage is higher than expected at 82.6%\n\nsource_text: VCORE 725mV 超過預期的10%使用率在82.6%"}, {"id": "aug_component_38e081f4", "label": "VCORE\n(Component)", "group": "Component", "color": "#74c0fc", "title": "Voltage core component\n\nsource_text: VCORE 725mV"}, {"id": "aug_metric_7c3fc48a", "label": "VCORE usage\n(Metric)", "group": "Metric", "color": "#69db7c", "title": "VCORE usage is at 82.6%\n\nsource_text: VCORE 725mV 超過預期的10%使用率在82.6%"}, {"id": "aug_component_291404fe", "label": "MMDVFS\n(Component)", "group": "Component", "color": "#74c0fc", "title": "Dynamic voltage and frequency scaling component\n\nsource_text: MMDVFS的資料來看 都維持在OPP4"}, {"id": "aug_observation_911ac35a", "label": "MMDVFS at OPP4\n(Observation)", "group": "Observation", "color": "#f1f3f5", "title": "MMDVFS is operating at OPP4 level\n\nsource_text: MMDVFS的資料來看 都維持在OPP4"}, {"id": "aug_component_2a0bbd55", "label": "DDR\n(Component)", "group": "Component", "color": "#74c0fc", "title": "Double Data Rate memory\n\nsource_text: DDR5460跟DDR6370"}, {"id": "aug_metric_297bff61", "label": "DDR usage\n(Metric)", "group": "Metric", "color": "#69db7c", "title": "Combined DDR usage is at 82.6%\n\nsource_text: DDR5460跟DDR6370加起來的總使用率是達到82.6%左右"}, {"id": "aug_hypothesis_26ac64bf", "label": "DDR causing VCORE increase\n(Hypothesis)", "group": "Hypothesis", "color": "#ffd43b", "title": "DDR usage is suspected to cause VCORE level increase\n\nsource_text: 看起來是DDR造成 VCORE檔位拉升"}, {"id": "aug_component_c2311edd", "label": "CPU\n(Component)", "group": "Component", "color": "#74c0fc", "title": "Central Processing Unit\n\nsource_text: CPU 的部份看到 大核2700MHz，中核2500MHz，小核 2100MHz"}, {"id": "aug_observation_a31ff0e5", "label": "CPU frequencies at max\n(Observation)", "group": "Observation", "color": "#f1f3f5", "title": "CPU cores are operating at maximum frequencies\n\nsource_text: 大核2700MHz，中核2500MHz，小核 2100MHz 屬於都頂在天花板的設定上"}, {"id": "aug_rootcause_88c610cb", "label": "CM causing VCORE increase\n(RootCause)", "group": "RootCause", "color": "#ff6b6b", "title": "CM is confirmed to be causing the VCORE level increase\n\nsource_text: 所以可以確認是因為CM造成拉檔的原因是確定的"}, {"id": "aug_observation_44a266c1", "label": "DDR voting SW_REQ2\n(Observation)", "group": "Observation", "color": "#f1f3f5", "title": "DDR voting mechanism shows activity on SW_REQ2\n\nsource_text: DDR 投票機制在DDR6370 有機會在SW_REQ2上"}, {"id": "aug_observation_f4492893", "label": "High CPU usage\n(Observation)", "group": "Observation", "color": "#f1f3f5", "title": "CPU shows high usage across various frequencies\n\nsource_text: 都有高的使用率"}, {"id": "aug_component_5030a4fe", "label": "SW_REQ2 and SW_REQ3\n(Component)", "group": "Component", "color": "#74c0fc", "title": "Software request components related to CM and PowerHal\n\nsource_text: SW_REQ2代表CM相關，SW_REQ3代表跟 PowerHal相關"}]);
+    const edges = new vis.DataSet([{"from": "aug_rootcause_88c610cb", "to": "aug_symptom_46d9d2c3", "label": "CAUSES", "arrows": "to", "dashes": false}, {"from": "aug_observation_44a266c1", "to": "aug_rootcause_88c610cb", "label": "INDICATES", "arrows": "to", "dashes": true}, {"from": "aug_hypothesis_26ac64bf", "to": "aug_symptom_46d9d2c3", "label": "LEADS_TO", "arrows": "to", "dashes": true}, {"from": "aug_observation_911ac35a", "to": "aug_hypothesis_26ac64bf", "label": "RULES_OUT", "arrows": "to", "dashes": true}, {"from": "aug_observation_a31ff0e5", "to": "aug_rootcause_88c610cb", "label": "CONFIRMS", "arrows": "to", "dashes": true}, {"from": "aug_metric_7c3fc48a", "to": "aug_component_38e081f4", "label": "INDICATES", "arrows": "to", "dashes": true}, {"from": "aug_metric_297bff61", "to": "aug_component_2a0bbd55", "label": "INDICATES", "arrows": "to", "dashes": true}, {"from": "aug_rootcause_88c610cb", "to": "aug_metric_7c3fc48a", "label": "CAUSES", "arrows": "to", "dashes": false}, {"from": "aug_observation_911ac35a", "to": "aug_symptom_46d9d2c3", "label": "RULES_OUT", "arrows": "to", "dashes": true}, {"from": "aug_hypothesis_26ac64bf", "to": "aug_symptom_46d9d2c3", "label": "CONFIRMS", "arrows": "to", "dashes": true}, {"from": "aug_observation_f4492893", "to": "aug_hypothesis_26ac64bf", "label": "CONFIRMS", "arrows": "to", "dashes": true}]);
+
+    const container = document.getElementById('network');
+    const data = { nodes, edges };
+    const options = {
+      layout: { improvedLayout: true },
+      interaction: { hover: true, navigationButtons: true },
+      physics: { stabilization: true },
+      nodes: { shape: 'box', margin: 10, font: { multi: 'html', size: 13 } },
+      edges: { smooth: { type: 'dynamic' }, font: { align: 'middle' } }
+    };
+
+    new vis.Network(container, data, options);
+  </script>
+</body>
+</html>

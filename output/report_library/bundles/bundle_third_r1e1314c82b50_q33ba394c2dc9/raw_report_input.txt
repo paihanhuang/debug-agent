@@ -1,0 +1,32 @@
+這段區間，有兩個狀況 一個是 VCORE
+
+600mV 的一個地板（最低應為 VCORE
+
+575mV）.跟一個是 VCORE 725mV超過預期10%的使用率來到52.51%.從
+
+MMDVFS的資料來看，有OPP3的100%使用率，而MMDVFS OPP3會影
+
+EVCORE 600mV. FFLX VCORE 600mV
+
+的地板是因為MMDVFS OPP3所造成.
+
+接著看DDR的使用率，可以看到影響
+
+VCORE 725mV的DDR5460佔23.37%. DDR6370佔30.77%. 總共比例是54.14%.與VCORE 725mV 接近.
+
+所以DDR造成 VCORE 725mV檔位拉升.
+
+因為沒有DDR投票機制，先猜測可能與
+
+CM相關，所以先看CPU資訊來確認從CPU的部分可以看到 小核2100MHz，中核2500MHz，大核2700MHz 有高的使用率，可以確認這次DDR拉檔與CM
+
+相關.這部分同樣與調控策略相關.
+
+---
+E2E Test Query (judgement-free):
+VCORE 725mV usage is at 52.51%.
+VCORE floor is 600mV.
+MMDVFS is at OPP3 with 100% usage.
+DDR5460 at 23.37%, DDR6370 at 30.77%. Total DDR at 54.14%.
+CPU 大核 at 2700MHz, 中核 at 2500MHz, 小核 at 2100MHz.
+No DDR voting data available.

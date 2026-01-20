@@ -1,0 +1,84 @@
+{
+  "run_id": "chain_acc10_20260118_200257_case1",
+  "iter_num": 5,
+  "average_score": 3.75,
+  "accuracy_score": 3.0,
+  "per_case": {
+    "case1": {
+      "composite_score": 3.75,
+      "grade": "F",
+      "dimensions": [
+        {
+          "name": "Root Cause Accuracy",
+          "score": 3,
+          "weight": 0.5,
+          "explanation": "The agent failed to identify the root cause related to CM and frequency throttling.",
+          "matched_elements": [],
+          "missing_elements": [
+            "CM",
+            "拉檔"
+          ]
+        },
+        {
+          "name": "Causal Chain Completeness",
+          "score": 2,
+          "weight": 0.2,
+          "explanation": "The agent did not capture the causal chain from CM to CPU to DDR to VCORE.",
+          "matched_elements": [],
+          "missing_elements": [
+            "CM → CPU → DDR → VCORE",
+            "SW_REQ2/SW_REQ3"
+          ]
+        },
+        {
+          "name": "Metric Precision",
+          "score": 8,
+          "weight": 0.15,
+          "explanation": "The agent correctly identified most metrics but missed some specific percentages.",
+          "matched_elements": [
+            "VCORE 82.6%",
+            "DDR5460 and DDR6370 combined usage"
+          ],
+          "missing_elements": [
+            "VCORE 29.32%",
+            "VCORE 52.51%"
+          ]
+        },
+        {
+          "name": "Reasoning Quality",
+          "score": 4,
+          "weight": 0.1,
+          "explanation": "The reasoning was not fully logical as it abstained from making a grounded diagnosis.",
+          "matched_elements": [
+            "MMDVFS at OPP4"
+          ],
+          "missing_elements": [
+            "logical flow from CM to VCORE"
+          ]
+        },
+        {
+          "name": "Actionability",
+          "score": 5,
+          "weight": 0.05,
+          "explanation": "The suggested actions were basic and lacked specific historical fixes.",
+          "matched_elements": [
+            "REQUEST_MORE_DATA_OR_AUGMENT_CKG"
+          ],
+          "missing_elements": [
+            "specific historical fixes"
+          ]
+        }
+      ]
+    }
+  },
+  "stop_reached": false,
+  "stop": {
+    "min_accuracy": 10.0,
+    "min_overall": 8.01
+  },
+  "source": {
+    "type": "judge_cli_run",
+    "case_name": "case1_iter_0005",
+    "timestamp": "2026-01-18T20:05:21.458111"
+  }
+}

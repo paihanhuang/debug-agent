@@ -1,0 +1,84 @@
+{
+  "run_id": "chain_chain8_20260118_203321_case1",
+  "iter_num": 3,
+  "average_score": 8.4,
+  "accuracy_score": 9.0,
+  "per_case": {
+    "case1": {
+      "composite_score": 8.4,
+      "grade": "A",
+      "dimensions": [
+        {
+          "name": "Root Cause Accuracy",
+          "score": 9,
+          "weight": 0.5,
+          "explanation": "The agent correctly identified CM as the root cause of the VCORE increase.",
+          "matched_elements": [
+            "CM causing VCORE increase",
+            "MMDVFS ruled out"
+          ],
+          "missing_elements": []
+        },
+        {
+          "name": "Causal Chain Completeness",
+          "score": 7,
+          "weight": 0.2,
+          "explanation": "The agent captured the main causal link but missed some details about the DDR and CPU contributions.",
+          "matched_elements": [
+            "CM causing VCORE increase"
+          ],
+          "missing_elements": [
+            "DDR contribution",
+            "CPU frequency settings"
+          ]
+        },
+        {
+          "name": "Metric Precision",
+          "score": 8,
+          "weight": 0.15,
+          "explanation": "The agent correctly identified the VCORE usage percentage but missed specific DDR and CPU frequency metrics.",
+          "matched_elements": [
+            "VCORE 82.6%"
+          ],
+          "missing_elements": [
+            "DDR5460 and DDR6370 percentages",
+            "CPU frequencies"
+          ]
+        },
+        {
+          "name": "Reasoning Quality",
+          "score": 9,
+          "weight": 0.1,
+          "explanation": "The reasoning was logical and correctly ruled out MMDVFS as a cause.",
+          "matched_elements": [
+            "Logical reasoning",
+            "MMDVFS ruled out"
+          ],
+          "missing_elements": []
+        },
+        {
+          "name": "Actionability",
+          "score": 8,
+          "weight": 0.05,
+          "explanation": "The suggested fixes are practical and relevant, focusing on CM and CPU adjustments.",
+          "matched_elements": [
+            "CM voting adjustment",
+            "CPU frequency optimization"
+          ],
+          "missing_elements": []
+        }
+      ]
+    }
+  },
+  "stop_reached": false,
+  "stop": {
+    "min_accuracy": 9.0,
+    "min_overall": 8.01,
+    "min_causal_chain_completeness": 8.0
+  },
+  "source": {
+    "type": "judge_cli_run",
+    "case_name": "case1_iter_0003",
+    "timestamp": "2026-01-18T20:35:26.688504"
+  }
+}

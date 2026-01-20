@@ -1,0 +1,724 @@
+{
+  "entities": [
+    {
+      "id": "rc_policy",
+      "type": "RootCause",
+      "label": "\u8abf\u63a7\u7b56\u7565 (Control Policy)",
+      "description": "System control policy drives CM behavior",
+      "attributes": {},
+      "confidence": 1.0,
+      "source_text": ""
+    },
+    {
+      "id": "rc_cm",
+      "type": "RootCause",
+      "label": "CM (CPU Manager)",
+      "description": "CPU management controls frequency and DDR voting via SW_REQ2",
+      "attributes": {},
+      "confidence": 1.0,
+      "source_text": ""
+    },
+    {
+      "id": "rc_powerhal",
+      "type": "RootCause",
+      "label": "PowerHal",
+      "description": "Power HAL affects DDR voting via SW_REQ3",
+      "attributes": {},
+      "confidence": 1.0,
+      "source_text": ""
+    },
+    {
+      "id": "rc_mmdvfs",
+      "type": "RootCause",
+      "label": "MMDVFS OPP3",
+      "description": "Multimedia DVFS at OPP3 - causes VCORE 600mV floor (Case3 only)",
+      "attributes": {},
+      "confidence": 1.0,
+      "source_text": ""
+    },
+    {
+      "id": "cpu_big",
+      "type": "Component",
+      "label": "CPU \u5927\u6838",
+      "description": "Large cores (1800-2700MHz)",
+      "attributes": {},
+      "confidence": 1.0,
+      "source_text": ""
+    },
+    {
+      "id": "cpu_mid",
+      "type": "Component",
+      "label": "CPU \u4e2d\u6838",
+      "description": "Medium cores (1000-2500MHz)",
+      "attributes": {},
+      "confidence": 1.0,
+      "source_text": ""
+    },
+    {
+      "id": "cpu_small",
+      "type": "Component",
+      "label": "CPU \u5c0f\u6838",
+      "description": "Small cores (1000-2100MHz)",
+      "attributes": {},
+      "confidence": 1.0,
+      "source_text": ""
+    },
+    {
+      "id": "sw_req2",
+      "type": "Component",
+      "label": "SW_REQ2",
+      "description": "DDR voting signal from CM (CPU Manager). If SW_REQ2 is active, root cause is CM.",
+      "attributes": {
+        "source": "CM",
+        "indicates": [
+          "rc_cm"
+        ]
+      },
+      "confidence": 1.0,
+      "source_text": ""
+    },
+    {
+      "id": "sw_req3",
+      "type": "Component",
+      "label": "SW_REQ3",
+      "description": "DDR voting signal from PowerHal. If SW_REQ3 is active, root cause is PowerHal.",
+      "attributes": {
+        "source": "PowerHal",
+        "indicates": [
+          "rc_powerhal"
+        ]
+      },
+      "confidence": 1.0,
+      "source_text": ""
+    },
+    {
+      "id": "ddr_vote",
+      "type": "Component",
+      "label": "DDR 投票機制",
+      "description": "DDR voting mechanism. Check SW_REQ2 for CM, SW_REQ3 for PowerHal.",
+      "attributes": {},
+      "confidence": 1.0,
+      "source_text": ""
+    },
+    {
+      "id": "ddr5460",
+      "type": "Component",
+      "label": "DDR5460",
+      "description": "DDR at 5460 frequency",
+      "attributes": {},
+      "confidence": 1.0,
+      "source_text": ""
+    },
+    {
+      "id": "ddr6370",
+      "type": "Component",
+      "label": "DDR6370",
+      "description": "DDR at 6370 frequency",
+      "attributes": {},
+      "confidence": 1.0,
+      "source_text": ""
+    },
+    {
+      "id": "c1_ddr",
+      "type": "Metric",
+      "label": "Case1: DDR 82.6%",
+      "description": "First case - high DDR usage",
+      "attributes": {},
+      "confidence": 1.0,
+      "source_text": ""
+    },
+    {
+      "id": "c1_vcore",
+      "type": "Symptom",
+      "label": "Case1: VCORE 725mV @ 82.6%",
+      "description": "Severe - ceiling CPUs",
+      "attributes": {},
+      "confidence": 1.0,
+      "source_text": ""
+    },
+    {
+      "id": "c2_ddr",
+      "type": "Metric",
+      "label": "Case2: DDR 29.67%",
+      "description": "Second case - moderate DDR",
+      "attributes": {},
+      "confidence": 1.0,
+      "source_text": ""
+    },
+    {
+      "id": "c2_vcore",
+      "type": "Symptom",
+      "label": "Case2: VCORE 725mV @ 29.32%",
+      "description": "Moderate - SW_REQ2+3",
+      "attributes": {},
+      "confidence": 1.0,
+      "source_text": ""
+    },
+    {
+      "id": "c3_ddr",
+      "type": "Metric",
+      "label": "Case3: DDR 54.14%",
+      "description": "Third case - DDR5460 23.37% + DDR6370 30.77%",
+      "attributes": {},
+      "confidence": 1.0,
+      "source_text": ""
+    },
+    {
+      "id": "c3_vcore_high",
+      "type": "Symptom",
+      "label": "Case3: VCORE 725mV @ 52.51%",
+      "description": "High - DDR caused",
+      "attributes": {},
+      "confidence": 1.0,
+      "source_text": ""
+    },
+    {
+      "id": "c3_vcore_floor",
+      "type": "Symptom",
+      "label": "Case3: VCORE 600mV floor",
+      "description": "Should be 575mV - MMDVFS caused",
+      "attributes": {},
+      "confidence": 1.0,
+      "source_text": ""
+    },
+    {
+      "id": "h_mmdvfs",
+      "type": "Hypothesis",
+      "label": "MMDVFS (OPP4)",
+      "description": "Ruled out for Case1/2 - stayed at OPP4",
+      "attributes": {},
+      "confidence": 1.0,
+      "source_text": ""
+    },
+    {
+      "id": "pattern_vcore_ceiling_sw_req2",
+      "type": "AnomalyPattern",
+      "label": "VCORE 725mV via SW_REQ2 (CM)",
+      "description": "VCORE 725mV >10% with SW_REQ2 activity indicates CM (CPU Manager) as root cause. SW_REQ2 = CM only.",
+      "attributes": {
+        "metric": "vcore_725mv_pct",
+        "threshold": 10,
+        "threshold_type": "gt",
+        "requires_signal": "SW_REQ2",
+        "indicates": [
+          "rc_cm"
+        ]
+      },
+      "confidence": 1.0,
+      "source_text": ""
+    },
+    {
+      "id": "pattern_vcore_ceiling_sw_req3",
+      "type": "AnomalyPattern",
+      "label": "VCORE 725mV via SW_REQ3 (PowerHal)",
+      "description": "VCORE 725mV >10% with SW_REQ3 activity indicates PowerHal as root cause. SW_REQ3 = PowerHal only.",
+      "attributes": {
+        "metric": "vcore_725mv_pct",
+        "threshold": 10,
+        "threshold_type": "gt",
+        "requires_signal": "SW_REQ3",
+        "indicates": [
+          "rc_powerhal"
+        ]
+      },
+      "confidence": 1.0,
+      "source_text": ""
+    },
+    {
+      "id": "pattern_vcore_ceiling_both",
+      "type": "AnomalyPattern",
+      "label": "VCORE 725mV via SW_REQ2+SW_REQ3 (CM+PowerHal)",
+      "description": "VCORE 725mV >10% with BOTH SW_REQ2 AND SW_REQ3 activity indicates both CM and PowerHal as root causes.",
+      "attributes": {
+        "metric": "vcore_725mv_pct",
+        "threshold": 10,
+        "threshold_type": "gt",
+        "requires_signal": [
+          "SW_REQ2",
+          "SW_REQ3"
+        ],
+        "indicates": [
+          "rc_cm",
+          "rc_powerhal"
+        ]
+      },
+      "confidence": 1.0,
+      "source_text": ""
+    },
+    {
+      "id": "pattern_vcore_floor",
+      "type": "AnomalyPattern",
+      "label": "VCORE Floor Elevated",
+      "description": "VCORE floor above 575mV indicates MMDVFS issue. If floor is 600mV, check MMDVFS OPP3 usage.",
+      "attributes": {
+        "metric": "vcore_floor_mv",
+        "threshold": 575,
+        "threshold_type": "gt",
+        "indicates": [
+          "rc_mmdvfs"
+        ],
+        "exclude_when": {
+          "condition": "MMDVFS is at OPP4",
+          "trigger_text": [
+            "OPP4",
+            "MMDVFS at OPP4",
+            "MMDVFS is at OPP4"
+          ],
+          "reason": "OPP4 is normal operation - no floor issue"
+        }
+      },
+      "confidence": 1.0,
+      "source_text": ""
+    },
+    {
+      "id": "pattern_mmdvfs_opp3_high",
+      "type": "AnomalyPattern",
+      "label": "MMDVFS OPP3 High Usage",
+      "description": "MMDVFS OPP3 at >50% usage causes VCORE floor lock at 600mV instead of normal 575mV.",
+      "attributes": {
+        "metric": "mmdvfs_opp3_pct",
+        "threshold": 50,
+        "threshold_type": "gt",
+        "indicates": [
+          "rc_mmdvfs"
+        ],
+        "exclude_when": {
+          "condition": "MMDVFS is at OPP4",
+          "trigger_text": [
+            "OPP4",
+            "MMDVFS at OPP4",
+            "MMDVFS is at OPP4"
+          ],
+          "reason": "OPP4 means OPP3 is not active"
+        }
+      },
+      "confidence": 1.0,
+      "source_text": ""
+    },
+    {
+      "id": "pattern_dual_vcore_issue",
+      "type": "AnomalyPattern",
+      "label": "Dual VCORE Issue (Floor + Ceiling)",
+      "description": "When BOTH VCORE floor (>575mV) AND VCORE 725mV (>10%) are abnormal, there are TWO independent root causes: MMDVFS for floor, CM/DDR for ceiling.",
+      "attributes": {
+        "requires": [
+          "pattern_vcore_floor",
+          "pattern_vcore_ceiling"
+        ],
+        "indicates": [
+          "rc_mmdvfs",
+          "rc_cm"
+        ]
+      },
+      "confidence": 1.0,
+      "source_text": ""
+    }
+  ],
+  "relations": [
+    {
+      "source": "rc_policy",
+      "target": "rc_cm",
+      "type": "CAUSES",
+      "is_causal": true,
+      "confidence": 1.0,
+      "evidence": "",
+      "attributes": {},
+      "causal_effect": {
+        "strength": 0.95,
+        "is_direct": true,
+        "temporal_order": "immediate",
+        "mechanism": "Policy drives CM"
+      }
+    },
+    {
+      "source": "rc_cm",
+      "target": "cpu_big",
+      "type": "CAUSES",
+      "is_causal": true,
+      "confidence": 1.0,
+      "evidence": "",
+      "attributes": {},
+      "causal_effect": {
+        "strength": 0.95,
+        "is_direct": true,
+        "temporal_order": "immediate",
+        "mechanism": "CM sets CPU freq"
+      }
+    },
+    {
+      "source": "rc_cm",
+      "target": "cpu_mid",
+      "type": "CAUSES",
+      "is_causal": true,
+      "confidence": 1.0,
+      "evidence": "",
+      "attributes": {},
+      "causal_effect": {
+        "strength": 0.95,
+        "is_direct": true,
+        "temporal_order": "immediate",
+        "mechanism": "CM sets CPU freq"
+      }
+    },
+    {
+      "source": "rc_cm",
+      "target": "cpu_small",
+      "type": "CAUSES",
+      "is_causal": true,
+      "confidence": 1.0,
+      "evidence": "",
+      "attributes": {},
+      "causal_effect": {
+        "strength": 0.95,
+        "is_direct": true,
+        "temporal_order": "immediate",
+        "mechanism": "CM sets CPU freq"
+      }
+    },
+    {
+      "source": "cpu_big",
+      "target": "sw_req2",
+      "type": "CAUSES",
+      "is_causal": true,
+      "confidence": 1.0,
+      "evidence": "",
+      "attributes": {},
+      "causal_effect": {
+        "strength": 0.9,
+        "is_direct": true,
+        "temporal_order": "immediate",
+        "mechanism": "CM drives CPU which triggers SW_REQ2"
+      }
+    },
+    {
+      "source": "sw_req2",
+      "target": "ddr_vote",
+      "type": "CAUSES",
+      "is_causal": true,
+      "confidence": 1.0,
+      "evidence": "SW_REQ2 signal triggers DDR voting from CM",
+      "attributes": {},
+      "causal_effect": {
+        "strength": 0.95,
+        "is_direct": true,
+        "temporal_order": "immediate",
+        "mechanism": "SW_REQ2 is the CM voting signal"
+      }
+    },
+    {
+      "source": "rc_powerhal",
+      "target": "sw_req3",
+      "type": "CAUSES",
+      "is_causal": true,
+      "confidence": 1.0,
+      "evidence": "",
+      "attributes": {},
+      "causal_effect": {
+        "strength": 0.9,
+        "is_direct": true,
+        "temporal_order": "immediate",
+        "mechanism": "PowerHal triggers SW_REQ3"
+      }
+    },
+    {
+      "source": "sw_req3",
+      "target": "ddr_vote",
+      "type": "CAUSES",
+      "is_causal": true,
+      "confidence": 1.0,
+      "evidence": "SW_REQ3 signal triggers DDR voting from PowerHal",
+      "attributes": {},
+      "causal_effect": {
+        "strength": 0.95,
+        "is_direct": true,
+        "temporal_order": "immediate",
+        "mechanism": "SW_REQ3 is the PowerHal voting signal"
+      }
+    },
+    {
+      "source": "ddr_vote",
+      "target": "ddr5460",
+      "type": "CAUSES",
+      "is_causal": true,
+      "confidence": 1.0,
+      "evidence": "",
+      "attributes": {},
+      "causal_effect": {
+        "strength": 0.8,
+        "is_direct": true,
+        "temporal_order": "seconds",
+        "mechanism": "Elevates DDR5460"
+      }
+    },
+    {
+      "source": "ddr_vote",
+      "target": "ddr6370",
+      "type": "CAUSES",
+      "is_causal": true,
+      "confidence": 1.0,
+      "evidence": "",
+      "attributes": {},
+      "causal_effect": {
+        "strength": 0.9,
+        "is_direct": true,
+        "temporal_order": "seconds",
+        "mechanism": "Elevates DDR6370"
+      }
+    },
+    {
+      "source": "ddr5460",
+      "target": "c1_ddr",
+      "type": "CAUSES",
+      "is_causal": true,
+      "confidence": 1.0,
+      "evidence": "",
+      "attributes": {},
+      "causal_effect": {
+        "strength": 0.5,
+        "is_direct": true,
+        "temporal_order": "immediate",
+        "mechanism": "Contributes to 82.6%"
+      }
+    },
+    {
+      "source": "ddr6370",
+      "target": "c1_ddr",
+      "type": "CAUSES",
+      "is_causal": true,
+      "confidence": 1.0,
+      "evidence": "",
+      "attributes": {},
+      "causal_effect": {
+        "strength": 0.5,
+        "is_direct": true,
+        "temporal_order": "immediate",
+        "mechanism": "Contributes to 82.6%"
+      }
+    },
+    {
+      "source": "c1_ddr",
+      "target": "c1_vcore",
+      "type": "CAUSES",
+      "is_causal": true,
+      "confidence": 1.0,
+      "evidence": "",
+      "attributes": {},
+      "causal_effect": {
+        "strength": 0.95,
+        "is_direct": true,
+        "temporal_order": "immediate",
+        "mechanism": "DDR forces VCORE"
+      }
+    },
+    {
+      "source": "ddr5460",
+      "target": "c2_ddr",
+      "type": "CAUSES",
+      "is_causal": true,
+      "confidence": 1.0,
+      "evidence": "",
+      "attributes": {},
+      "causal_effect": {
+        "strength": 0.12,
+        "is_direct": true,
+        "temporal_order": "immediate",
+        "mechanism": "3.54% contribution"
+      }
+    },
+    {
+      "source": "ddr6370",
+      "target": "c2_ddr",
+      "type": "CAUSES",
+      "is_causal": true,
+      "confidence": 1.0,
+      "evidence": "",
+      "attributes": {},
+      "causal_effect": {
+        "strength": 0.88,
+        "is_direct": true,
+        "temporal_order": "immediate",
+        "mechanism": "26.13% contribution"
+      }
+    },
+    {
+      "source": "c2_ddr",
+      "target": "c2_vcore",
+      "type": "CAUSES",
+      "is_causal": true,
+      "confidence": 1.0,
+      "evidence": "",
+      "attributes": {},
+      "causal_effect": {
+        "strength": 0.95,
+        "is_direct": true,
+        "temporal_order": "immediate",
+        "mechanism": "DDR forces VCORE"
+      }
+    },
+    {
+      "source": "ddr5460",
+      "target": "c3_ddr",
+      "type": "CAUSES",
+      "is_causal": true,
+      "confidence": 1.0,
+      "evidence": "",
+      "attributes": {},
+      "causal_effect": {
+        "strength": 0.43,
+        "is_direct": true,
+        "temporal_order": "immediate",
+        "mechanism": "23.37% contribution"
+      }
+    },
+    {
+      "source": "ddr6370",
+      "target": "c3_ddr",
+      "type": "CAUSES",
+      "is_causal": true,
+      "confidence": 1.0,
+      "evidence": "",
+      "attributes": {},
+      "causal_effect": {
+        "strength": 0.57,
+        "is_direct": true,
+        "temporal_order": "immediate",
+        "mechanism": "30.77% contribution"
+      }
+    },
+    {
+      "source": "c3_ddr",
+      "target": "c3_vcore_high",
+      "type": "CAUSES",
+      "is_causal": true,
+      "confidence": 1.0,
+      "evidence": "",
+      "attributes": {},
+      "causal_effect": {
+        "strength": 0.95,
+        "is_direct": true,
+        "temporal_order": "immediate",
+        "mechanism": "DDR 54% forces VCORE 725mV"
+      }
+    },
+    {
+      "source": "rc_mmdvfs",
+      "target": "c3_vcore_floor",
+      "type": "CAUSES",
+      "is_causal": true,
+      "confidence": 1.0,
+      "evidence": "",
+      "attributes": {},
+      "causal_effect": {
+        "strength": 1.0,
+        "is_direct": true,
+        "temporal_order": "immediate",
+        "mechanism": "OPP3 100% locks VCORE 600mV"
+      }
+    },
+    {
+      "source": "h_mmdvfs",
+      "target": "c1_vcore",
+      "type": "RULES_OUT",
+      "is_causal": false,
+      "confidence": 0.9,
+      "evidence": "MMDVFS at OPP4 is normal - not causing VCORE issue",
+      "attributes": {}
+    },
+    {
+      "source": "h_mmdvfs",
+      "target": "c2_vcore",
+      "type": "RULES_OUT",
+      "is_causal": false,
+      "confidence": 0.9,
+      "evidence": "MMDVFS at OPP4 is normal - not causing VCORE issue",
+      "attributes": {}
+    },
+    {
+      "source": "pattern_vcore_ceiling_sw_req2",
+      "target": "rc_cm",
+      "type": "INDICATES",
+      "is_causal": false,
+      "confidence": 0.95,
+      "evidence": "SW_REQ2 activity indicates CM (CPU Manager) as root cause"
+    },
+    {
+      "source": "pattern_vcore_ceiling_sw_req3",
+      "target": "rc_powerhal",
+      "type": "INDICATES",
+      "is_causal": false,
+      "confidence": 0.95,
+      "evidence": "SW_REQ3 activity indicates PowerHal as root cause"
+    },
+    {
+      "source": "sw_req2",
+      "target": "rc_cm",
+      "type": "INDICATES",
+      "is_causal": false,
+      "confidence": 1.0,
+      "evidence": "SW_REQ2 is the DDR voting signal from CM"
+    },
+    {
+      "source": "sw_req3",
+      "target": "rc_powerhal",
+      "type": "INDICATES",
+      "is_causal": false,
+      "confidence": 1.0,
+      "evidence": "SW_REQ3 is the DDR voting signal from PowerHal"
+    },
+    {
+      "source": "pattern_vcore_floor",
+      "target": "rc_mmdvfs",
+      "type": "INDICATES",
+      "is_causal": false,
+      "confidence": 0.95,
+      "evidence": "Elevated VCORE floor (600mV vs 575mV) caused by MMDVFS OPP3"
+    },
+    {
+      "source": "pattern_mmdvfs_opp3_high",
+      "target": "c3_vcore_floor",
+      "type": "CAUSES",
+      "is_causal": true,
+      "confidence": 1.0,
+      "causal_effect": {
+        "strength": 1.0,
+        "is_direct": true,
+        "mechanism": "OPP3 at 100% forces minimum VCORE to 600mV"
+      }
+    },
+    {
+      "source": "pattern_dual_vcore_issue",
+      "target": "c3_vcore_floor",
+      "type": "INDICATES",
+      "is_causal": false,
+      "confidence": 0.95,
+      "evidence": "Case 3 has dual issue - this pattern matches"
+    },
+    {
+      "source": "pattern_dual_vcore_issue",
+      "target": "c3_vcore_high",
+      "type": "INDICATES",
+      "is_causal": false,
+      "confidence": 0.95,
+      "evidence": "Case 3 has dual issue - this pattern matches"
+    }
+  ],
+  "metadata": {
+    "num_entities": 27,
+    "num_relations": 30,
+    "entity_types": [
+      "Hypothesis",
+      "RootCause",
+      "Metric",
+      "Component",
+      "Symptom",
+      "AnomalyPattern"
+    ],
+    "relation_types": [
+      "RULES_OUT",
+      "CAUSES",
+      "INDICATES"
+    ],
+    "version": "1.1.0",
+    "enhancement": "Added AnomalyPattern entities for dual-issue detection"
+  }
+}

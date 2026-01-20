@@ -1,0 +1,77 @@
+{
+  "case_name": "case2_from_case1",
+  "composite_score": 7.75,
+  "grade": "B",
+  "summary": "The agent report is generally accurate with a good understanding of the root cause and logical reasoning, but it lacks some specific metrics and actionable recommendations.",
+  "dimensions": [
+    {
+      "name": "Root Cause Accuracy",
+      "score": 8,
+      "weight": 0.5,
+      "explanation": "The agent correctly identified the CM/PowerHal/DDR voting issue as the root cause but did not explicitly mention 拉檔 (frequency throttling).",
+      "matched_elements": [
+        "CM/PowerHal/DDR voting issue",
+        "VCORE 725mV usage"
+      ],
+      "missing_elements": [
+        "拉檔 (frequency throttling)"
+      ],
+      "weighted_score": 4.0
+    },
+    {
+      "name": "Causal Chain Completeness",
+      "score": 7,
+      "weight": 0.2,
+      "explanation": "The agent captured the CM/PowerHal/DDR voting issue but did not fully elaborate on the SW_REQ2/SW_REQ3 mechanisms.",
+      "matched_elements": [
+        "CM/PowerHal/DDR voting issue"
+      ],
+      "missing_elements": [
+        "SW_REQ2",
+        "SW_REQ3"
+      ],
+      "weighted_score": 1.4000000000000001
+    },
+    {
+      "name": "Metric Precision",
+      "score": 8,
+      "weight": 0.15,
+      "explanation": "The agent accurately identified the VCORE 725mV usage percentage but missed specific DDR and CPU frequency metrics.",
+      "matched_elements": [
+        "VCORE 725mV usage at 29.32%"
+      ],
+      "missing_elements": [
+        "DDR5460 percentage",
+        "DDR6370 percentage",
+        "CPU frequencies"
+      ],
+      "weighted_score": 1.2
+    },
+    {
+      "name": "Reasoning Quality",
+      "score": 9,
+      "weight": 0.1,
+      "explanation": "The reasoning was logical and correctly ruled out MMDVFS as a cause.",
+      "matched_elements": [
+        "MMDVFS ruled out"
+      ],
+      "missing_elements": [],
+      "weighted_score": 0.9
+    },
+    {
+      "name": "Actionability",
+      "score": 5,
+      "weight": 0.05,
+      "explanation": "No historical fixes or practical recommendations were provided.",
+      "matched_elements": [],
+      "missing_elements": [
+        "historical fixes",
+        "recommendations"
+      ],
+      "weighted_score": 0.25
+    }
+  ],
+  "human_report_path": "output/closed_loop_runs/run_case2_from_case1_20260118_124927/inputs/human_report_case2.txt",
+  "agent_report_path": "output/closed_loop_runs/run_case2_from_case1_20260118_124927/case_02/iter_bundle/agent_report_case2.md",
+  "timestamp": "2026-01-18T12:50:59.025298"
+}

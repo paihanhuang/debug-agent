@@ -1,0 +1,15 @@
+{
+  "report_id": "first",
+  "source_report_path": "/home/etem/inference-engine/data/first",
+  "source_query_path": "/home/etem/inference-engine/output/closed_loop_runs/run_chain_archive_20260118_182948_case1/inputs/prompt_case_01.txt",
+  "query_source": "explicit_file",
+  "run_id": "chain_archive_20260118_182948_case1",
+  "case_num": 1,
+  "iter_num": 1,
+  "llm_provider": "openai",
+  "case_filter": "case1",
+  "ckg_in_path": null,
+  "ckg_out_path": "/home/etem/inference-engine/output/closed_loop_runs/run_chain_archive_20260118_182948_case1/case_01/iterations/iter_0001/ckg/candidate_ckg_iter_0001_case_01.json",
+  "fix_db_in_path": null,
+  "fix_db_out_path": "/home/etem/inference-engine/output/closed_loop_runs/run_chain_archive_20260118_182948_case1/case_01/iterations/iter_0001/fix/fixes_iter_0001_case_01.db"
+}

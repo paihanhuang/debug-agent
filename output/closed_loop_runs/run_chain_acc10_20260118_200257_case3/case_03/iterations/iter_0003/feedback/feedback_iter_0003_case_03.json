@@ -1,0 +1,87 @@
+{
+  "run_id": "chain_acc10_20260118_200257_case3",
+  "iter_num": 3,
+  "average_score": 7.2,
+  "accuracy_score": 7.0,
+  "per_case": {
+    "case3": {
+      "composite_score": 7.2,
+      "grade": "B",
+      "dimensions": [
+        {
+          "name": "Root Cause Accuracy",
+          "score": 7,
+          "weight": 0.5,
+          "explanation": "The agent identified MMDVFS as a root cause but did not mention CM or PowerHal.",
+          "matched_elements": [
+            "MMDVFS"
+          ],
+          "missing_elements": [
+            "CM",
+            "PowerHal"
+          ]
+        },
+        {
+          "name": "Causal Chain Completeness",
+          "score": 6,
+          "weight": 0.2,
+          "explanation": "The agent captured the DDR impact on VCORE but missed the CM and CPU links.",
+          "matched_elements": [
+            "DDR impact on VCORE"
+          ],
+          "missing_elements": [
+            "CM",
+            "CPU"
+          ]
+        },
+        {
+          "name": "Metric Precision",
+          "score": 9,
+          "weight": 0.15,
+          "explanation": "The agent accurately reported VCORE and DDR percentages and CPU frequencies.",
+          "matched_elements": [
+            "VCORE 52.51%",
+            "DDR5460 23.37%",
+            "DDR6370 30.77%",
+            "CPU frequencies"
+          ],
+          "missing_elements": []
+        },
+        {
+          "name": "Reasoning Quality",
+          "score": 8,
+          "weight": 0.1,
+          "explanation": "The reasoning is mostly logical but lacks clarity on ruling out other causes.",
+          "matched_elements": [
+            "MMDVFS identified as cause"
+          ],
+          "missing_elements": [
+            "Ruling out other causes"
+          ]
+        },
+        {
+          "name": "Actionability",
+          "score": 7,
+          "weight": 0.05,
+          "explanation": "The suggested fixes are practical but lack specific historical context.",
+          "matched_elements": [
+            "Investigate DDR voting mechanisms"
+          ],
+          "missing_elements": [
+            "Historical context"
+          ]
+        }
+      ]
+    }
+  },
+  "stop_reached": false,
+  "stop": {
+    "min_accuracy": 10.0,
+    "min_overall": 8.01
+  },
+  "source": {
+    "type": "judge_cli_run",
+    "case_name": "case3_iter_0003",
+    "timestamp": "2026-01-18T20:10:57.207381"
+  }
+}

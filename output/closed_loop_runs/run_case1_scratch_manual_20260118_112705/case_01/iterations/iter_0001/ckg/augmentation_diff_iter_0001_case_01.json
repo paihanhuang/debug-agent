@@ -1,0 +1,39 @@
+{
+  "added_entities": [
+    "aug_metric_7c3fc48a",
+    "aug_component_291404fe",
+    "aug_observation_77b39d7d",
+    "aug_hypothesis_26ac64bf",
+    "aug_observation_4a19b98f",
+    "aug_rootcause_88c610cb",
+    "aug_observation_32a0adae"
+  ],
+  "updated_entities": [],
+  "added_relations": [
+    {
+      "source": "aug_rootcause_88c610cb",
+      "target": "aug_metric_7c3fc48a",
+      "type": "CAUSES"
+    },
+    {
+      "source": "aug_observation_77b39d7d",
+      "target": "aug_hypothesis_26ac64bf",
+      "type": "INDICATES"
+    },
+    {
+      "source": "aug_component_291404fe",
+      "target": "aug_metric_7c3fc48a",
+      "type": "RULES_OUT"
+    },
+    {
+      "source": "aug_observation_32a0adae",
+      "target": "aug_rootcause_88c610cb",
+      "type": "INDICATES"
+    }
+  ],
+  "updated_relations": [],
+  "skipped_relations": [],
+  "conflicts": [],
+  "feedback_added_entities": [],
+  "feedback_skipped_existing": []
+}

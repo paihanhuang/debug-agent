@@ -1,0 +1,90 @@
+{
+  "run_id": "chain_acc10_20260118_200257_case3",
+  "iter_num": 2,
+  "average_score": 7.25,
+  "accuracy_score": 7.0,
+  "per_case": {
+    "case3": {
+      "composite_score": 7.25,
+      "grade": "B",
+      "dimensions": [
+        {
+          "name": "Root Cause Accuracy",
+          "score": 7,
+          "weight": 0.5,
+          "explanation": "The agent identified MMDVFS as a root cause but did not mention CM or PowerHal.",
+          "matched_elements": [
+            "MMDVFS"
+          ],
+          "missing_elements": [
+            "CM",
+            "PowerHal"
+          ]
+        },
+        {
+          "name": "Causal Chain Completeness",
+          "score": 6,
+          "weight": 0.2,
+          "explanation": "The causal chain from DDR to VCORE was identified, but the CM to CPU link was missing.",
+          "matched_elements": [
+            "DDR impact on VCORE"
+          ],
+          "missing_elements": [
+            "CM",
+            "CPU"
+          ]
+        },
+        {
+          "name": "Metric Precision",
+          "score": 9,
+          "weight": 0.15,
+          "explanation": "Most metrics were correctly identified, except for some missing VCORE percentages.",
+          "matched_elements": [
+            "VCORE 52.51%",
+            "DDR5460 23.37%",
+            "DDR6370 30.77%",
+            "CPU frequencies"
+          ],
+          "missing_elements": [
+            "VCORE 82.6%",
+            "VCORE 29.32%"
+          ]
+        },
+        {
+          "name": "Reasoning Quality",
+          "score": 8,
+          "weight": 0.1,
+          "explanation": "The reasoning was mostly logical, but the role of MMDVFS was not fully explored.",
+          "matched_elements": [
+            "Logical flow",
+            "MMDVFS identification"
+          ],
+          "missing_elements": [
+            "Full exploration of MMDVFS role"
+          ]
+        },
+        {
+          "name": "Actionability",
+          "score": 8,
+          "weight": 0.05,
+          "explanation": "The suggested fixes were practical and aligned with historical fixes.",
+          "matched_elements": [
+            "Historical fixes",
+            "Practical recommendations"
+          ],
+          "missing_elements": []
+        }
+      ]
+    }
+  },
+  "stop_reached": false,
+  "stop": {
+    "min_accuracy": 10.0,
+    "min_overall": 8.01
+  },
+  "source": {
+    "type": "judge_cli_run",
+    "case_name": "case3_iter_0002",
+    "timestamp": "2026-01-18T20:10:04.532513"
+  }
+}
